@@ -1,0 +1,46 @@
+{
+  "menu": [
+    {
+      "url": "dashboard",
+      "icon": "menu-icon icon-base bx bx-home-smile",
+      "name": "DASHBOARD",
+      "slug": "dashboard"
+    },
+    {
+      "menuHeader": "DATA TRANSAKSI"
+    },
+    {
+      "name": "BPHTB",
+      "icon": "menu-icon icon-base bx bx-landscape",
+      "slug": "bphtb",
+      "submenu": [
+        {
+          "url": "bphtb/ppat",
+          "name": "PPAT",
+          "slug": "bphtb.ppat"
+        },
+        {
+          "url": "forms/basic-inputs",
+          "name": "MENUNGGU ATR/BPN",
+          "slug": "forms-basic-inputs"
+        },
+        {
+          "url": "forms/basic-inputs",
+          "name": "AKSES ATR/BPN",
+          "slug": "forms-basic-inputs"
+        },
+        {
+          "url": "forms/input-groups",
+          "name": "SELESAI ATR/BPN",
+          "slug": "forms-input-groups"
+        }
+      ]
+    },
+    {
+      "url": "peta-integrasi",
+      "icon": "menu-icon icon-base bx bx-map",
+      "name": "PETA INTEGRASI",
+      "slug": "peta-integrasi"
+    }
+  ]
+}
