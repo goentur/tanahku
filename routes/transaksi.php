@@ -7,8 +7,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('bphtb')->name('bphtb.')->group(function () {
-  Route::get('/', [BPHTBController::class, 'index'])->name('profile.edit');
+  Route::get('/', [BPHTBController::class, 'index'])->name('index');
   Route::get('ppat', [BPHTBController::class, 'ppat'])->name('ppat');
+  Route::get('berkas', [BPHTBController::class, 'berkas'])->name('berkas');
+  Route::get('bpn', [BPHTBController::class, 'bpn'])->name('bpn');
+  Route::get('selesai', [BPHTBController::class, 'selesai'])->name('selesai');
 });
 
 

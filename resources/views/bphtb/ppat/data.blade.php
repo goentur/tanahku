@@ -37,6 +37,7 @@
               </div>
             @endif
         </form>
+        {{ $ppats->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
     </div>
     <table class="table table-bordered table-sm">
         <thead>
@@ -70,9 +71,5 @@
             @endforelse
         </tbody>
     </table>
-    <!-- Pagination -->
-    <div class="card-footer d-flex justify-content-end">
-        {{ $ppats->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
-    </div>
 </div>
 @endsection

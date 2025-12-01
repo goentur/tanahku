@@ -20,19 +20,19 @@
           "slug": "bphtb.ppat"
         },
         {
-          "url": "forms/basic-inputs",
-          "name": "MENUNGGU ATR/BPN",
-          "slug": "forms-basic-inputs"
+          "url": "bphtb/berkas",
+          "name": "BERKAS",
+          "slug": "bphtb.berkas"
         },
         {
-          "url": "forms/basic-inputs",
-          "name": "AKSES ATR/BPN",
-          "slug": "forms-basic-inputs"
+          "url": "bphtb/bpn",
+          "name": "PROSES ATR/BPN",
+          "slug": "bphtb.bpn"
         },
         {
-          "url": "forms/input-groups",
+          "url": "bphtb/selesai",
           "name": "SELESAI ATR/BPN",
-          "slug": "forms-input-groups"
+          "slug": "bphtb.selesai"
         }
       ]
     },
