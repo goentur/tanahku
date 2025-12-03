@@ -41,7 +41,7 @@
     </div>
     <table class="table table-bordered table-sm">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th>NO</th>
                 <th>NAMA</th>
                 <th>ALAMAT</th>

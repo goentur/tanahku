@@ -10,31 +10,28 @@
       "menuHeader": "DATA TRANSAKSI"
     },
     {
+      "url": "bphtb/berkas",
+      "icon": "menu-icon icon-base bx bx-folder-open",
       "name": "BPHTB",
-      "icon": "menu-icon icon-base bx bx-landscape",
-      "slug": "bphtb",
-      "submenu": [
-        {
-          "url": "bphtb/ppat",
-          "name": "PPAT",
-          "slug": "bphtb.ppat"
-        },
-        {
-          "url": "bphtb/berkas",
-          "name": "BERKAS",
-          "slug": "bphtb.berkas"
-        },
-        {
-          "url": "bphtb/bpn",
-          "name": "PROSES ATR/BPN",
-          "slug": "bphtb.bpn"
-        },
-        {
-          "url": "bphtb/selesai",
-          "name": "SELESAI ATR/BPN",
-          "slug": "bphtb.selesai"
-        }
-      ]
+      "slug": "bphtb.berkas"
+    },
+    {
+      "url": "bphtb/bpn",
+      "icon": "menu-icon icon-base bx bx-recycle",
+      "name": "PROSES ATR/BPN",
+      "slug": "bphtb.bpn"
+    },
+    {
+      "url": "bphtb/selesai",
+      "icon": "menu-icon icon-base bx bx-check",
+      "name": "SELESAI ATR/BPN",
+      "slug": "bphtb.selesai"
+    },
+    {
+      "url": "bphtb/ppat",
+      "icon": "menu-icon icon-base bx bx-universal-access",
+      "name": "PPAT",
+      "slug": "bphtb.ppat"
     },
     {
       "url": "peta-integrasi",

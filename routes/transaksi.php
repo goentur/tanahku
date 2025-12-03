@@ -12,6 +12,7 @@ Route::middleware(['auth', 'verified'])->prefix('bphtb')->name('bphtb.')->group(
   Route::get('berkas', [BPHTBController::class, 'berkas'])->name('berkas');
   Route::get('bpn', [BPHTBController::class, 'bpn'])->name('bpn');
   Route::get('selesai', [BPHTBController::class, 'selesai'])->name('selesai');
+  Route::post('singkronisasi', [BPHTBController::class, 'singkronisasi'])->name('singkronisasi');
 });
 
 
