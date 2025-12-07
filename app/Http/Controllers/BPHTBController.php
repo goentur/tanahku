@@ -2,12 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Dat\StatusBerkas;
-use App\Enums\Dat\StatusLampiran;
-use App\Enums\Dat\StatusPenelitian;
-use App\Enums\Dat\StatusPengendalian;
-use App\Enums\Dat\StatusSelesai;
-use App\Enums\Dat\StatusVerifikasi;
 use App\Models\BPHTB\DataAtrBpn;
 use App\Models\BPHTB\DatPerolehanHak;
 use App\Models\BPHTB\PPAT;
@@ -18,12 +12,14 @@ use App\Models\PBB\DatOpBumi;
 use App\Models\PBB\DatSubjekPajak;
 use App\Models\PBB\PendataanLspop;
 use App\Models\PBB\PendataanSpop;
+use App\Repositories\BphtbRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class BPHTBController extends Controller
 {
+	public function __construct(protected BphtbRepository $bphtb_repository) {}
 	public function ppat(Request $request): View
 	{
 		$perPage = $request->get('per_page', 25);
@@ -53,10 +49,10 @@ class BPHTBController extends Controller
 		$status = (string) $request->get('status', '0');
 		$search = trim((string) $request->get('search', ''));
 
-		$query = DatPerolehanHak::with('refJph', 'ppat', 'wpPenerimaHak');
+		$query = DatPerolehanHak::with('sptpd', 'skpdkb', 'refJph', 'ppat', 'wpPenerimaHak');
 
 		if ($status !== '') {
-			$this->posisiBerkas($query, $status);
+			$this->bphtb_repository->posisiBerkas($query, $status);
 		}
 		if ($search !== '') {
 			$query->where(function ($q) use ($search) {
@@ -76,86 +72,12 @@ class BPHTBController extends Controller
 		return view('bphtb.berkas.data', compact('datas'));
 	}
 
-	public function posisiBerkas($query, $value)
-	{
-		switch ($value) {
-			case '0':
-				$query->where('status_berkas', StatusBerkas::Konsep);
-				break;
-
-			case '1':
-				$query->where('status_berkas', StatusBerkas::Baru)
-					->where('status_penelitian', StatusPenelitian::Belum);
-				break;
-
-			case '2':
-				$query->whereIn('status_berkas', [StatusBerkas::Koreksi, StatusBerkas::Proses])
-					->whereIn('status_penelitian', [StatusPenelitian::Proses])
-					->where('status_verifikasi', StatusVerifikasi::Belum);
-				break;
-
-			case '3':
-				$query->whereIn('status_berkas', [StatusBerkas::Baru, StatusBerkas::Koreksi, StatusBerkas::Proses])
-					->where('status_penelitian', StatusPenelitian::Selesai)
-					->where('status_verifikasi', StatusVerifikasi::Belum);
-				break;
-
-			case '31':
-				$query->where('status_verifikasi', StatusVerifikasi::Selesai);
-				break;
-
-			case '32':
-				$query->where('status_verifikasi', StatusVerifikasi::Tolak);
-				break;
-
-			case '4':
-				$query->whereHas('sptpd', fn($q) => $q->whereDoesntHave('sspd'));
-				break;
-
-			case '5':
-				$query->whereHas('sptpd.sspd')
-					->where('status_pengendalian', StatusPengendalian::Belum);
-				break;
-
-			case '6':
-				$query->where('status_pengendalian', StatusPengendalian::Pemeriksaan)
-					->whereDoesntHave('datPemeriksaan');
-				break;
-
-			case '7':
-				$query->where('status_pengendalian', StatusPengendalian::Pemeriksaan)
-					->whereHas('skpdkb', fn($q) => $q->whereDoesntHave('sspd'));
-				break;
-
-			case '8':
-				$query->where('status_berkas', StatusBerkas::Selesai)
-					->whereIn('status_selesai', [StatusSelesai::Belum, StatusSelesai::Selesai]);
-				break;
-
-			case '9':
-				$query->where(function ($q) {
-					$q->whereIn('status_berkas', [StatusBerkas::Koreksi])
-						->orWhereIn('status_lampiran', [StatusLampiran::Koreksi])
-						->orWhereIn('status_penelitian', [StatusPenelitian::Koreksi]);
-				});
-				break;
-
-			case '10':
-				$query->where(function ($q) {
-					$q->whereIn('status_berkas', [StatusBerkas::Selesai, StatusBerkas::Tolak, StatusBerkas::Batal])
-						->orWhereIn('status_penelitian', [StatusPenelitian::Tolak, StatusPenelitian::Tunda, StatusPenelitian::Batal])
-						->orWhereIn('status_selesai', [StatusSelesai::Selesai, StatusSelesai::Tolak, StatusSelesai::Tunda, StatusSelesai::Batal]);
-				});
-				break;
-		}
-	}
-
 	public function bpn(Request $request): View
 	{
 		$perPage = (int) $request->get('per_page', 25);
 		$search = trim((string) $request->get('search', ''));
 
-		$query = DatPerolehanHak::with('refJph', 'ppat', 'wpPenerimaHak', 'sptpd')
+		$query = DatPerolehanHak::with('refJph', 'ppat', 'wpPenerimaHak', 'sptpd', 'skpdkb')
 			->whereHas('sptpd', function ($q) {
 				$q->whereNotNull('tgl_akses_bpn')
 					->whereNull('tgl_selesai_bpn');
@@ -184,7 +106,7 @@ class BPHTBController extends Controller
 		$perPage = (int) $request->get('per_page', 25);
 		$search = trim((string) $request->get('search', ''));
 
-		$query = DatPerolehanHak::with('refJph', 'ppat', 'wpPenerimaHak', 'sptpd')
+		$query = DatPerolehanHak::with('refJph', 'ppat', 'wpPenerimaHak', 'sptpd', 'skpdkb')
 			->join('bphtb.sptpd', 'bphtb.dat_perolehan_hak.id', '=', 'bphtb.sptpd.dat_perolehan_hak_id')
 			->whereNotNull('bphtb.sptpd.tgl_selesai_bpn')
 			->where('bphtb.dat_perolehan_hak.tahun_perolehan', date('Y'))

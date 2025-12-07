@@ -71,4 +71,16 @@ class DatPerolehanHak extends Model
                 $this->kd_jns_op
         ));
     }
+    public function noptanpaFormat(): Attribute
+    {
+        return Attribute::get(fn() => value(
+            $this->kd_propinsi .
+                $this->kd_dati2 .
+                $this->kd_kecamatan .
+                $this->kd_kelurahan .
+                $this->kd_blok .
+                $this->no_urut .
+                $this->kd_jns_op
+        ));
+    }
 }
