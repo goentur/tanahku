@@ -28,8 +28,8 @@
 		/* Sidebar position */
 		.sidebar {
 			position: absolute;
-			top: 10px;
-			left: 10px;
+			top: 9px;
+			left: 9px;
 			width: 375px;
 			z-index: 1000;
 		}
@@ -47,82 +47,71 @@
 
 <body>
 	<div id="map"></div>
-
-	<!-- Sidebar Overlay - Bootstrap Native -->
 	<div class="sidebar">
-		<div class="card shadow-sm">
-			<!-- Header: Search -->
+		<div class="card" style="background-color: rgba(255, 255, 255, 0.7);">
 			<div class="card-header d-flex gap-2">
 				<input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Cari Lokasi..." />
 				<button id="searchBtn" class="btn btn-sm btn-primary">Cari</button>
 			</div>
-
-			<!-- Tab Navigation -->
 			<ul class="nav nav-tabs">
 				<li class="nav-item">
-					<a class="nav-link active" data-bs-toggle="tab" href="#infoTab">Informasi data layer</a>
+					<a class="nav-link active" data-bs-toggle="tab" href="#dataLayerTab">DATA LAYER</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" data-bs-toggle="tab" href="#mejaTab">Meja Kerja</a>
+					<a class="nav-link" data-bs-toggle="tab" href="#informasiTab">INFORMASI</a>
 				</li>
 			</ul>
 
-			<!-- Tab Content -->
 			<div class="card-body p-3">
 				<div class="tab-content">
-					<div class="tab-pane fade show active" id="infoTab">
-						<p class="mb-2">Daftar layer yang tersedia akan ditampilkan di sini.</p>
+					<div class="tab-pane fade show active" id="dataLayerTab">
 						<ul class="list-group list-group-flush">
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #FF4500; height: 20px;"></div>
-									<div class="col-6"> BELUM BAYAR</div>
+									<div class="col-1" style="background-color: #ff0000; height: 20px;"></div>
+									<div class="col-11">BELUM BAYAR</div>
 								</div>
 							</li>
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #39FF14; height: 20px;"></div>
-									<div class="col-6"> WASDAL</div>
+									<div class="col-1" style="background-color: #39FF14; height: 20px;"></div>
+									<div class="col-11">WASDAL</div>
 								</div>
 							</li>
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #1E90FF; height: 20px;"></div>
-									<div class="col-6"> PEMERIKSAAN</div>
+									<div class="col-1" style="background-color: #0000FF; height: 20px;"></div>
+									<div class="col-11">PEMERIKSAAN</div>
 								</div>
 							</li>
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #FFFF00; height: 20px;"></div>
-									<div class="col-6"> KURANG BAYAR</div>
+									<div class="col-1" style="background-color: #FFFF00; height: 20px;"></div>
+									<div class="col-11">KURANG BAYAR</div>
 								</div>
 							</li>
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #FF1493; height: 20px;"></div>
-									<div class="col-6"> PROSES ATR/BPN</div>
+									<div class="col-1" style="background-color: #FF1493; height: 20px;"></div>
+									<div class="col-11">PROSES ATR/BPN</div>
 								</div>
 							</li>
-							<li class="list-group-item">
+							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
 								<div class="row">
-									<div class="col-6" style="background-color: #00FFFF; height: 20px;"></div>
-									<div class="col-6"> SELESAI ATR/BPN</div>
+									<div class="col-1" style="background-color: #00FFFF; height: 20px;"></div>
+									<div class="col-11">SELESAI ATR/BPN</div>
 								</div>
 							</li>
 						</ul>
 					</div>
-					<div class="tab-pane fade" id="mejaTab">
-						<p>Proyek atau data kerja Anda akan muncul di sini.</p>
-						<div class="alert alert-info mb-0">
-							Belum ada proyek aktif.
+					<div class="tab-pane fade" id="informasiTab">
+						<div id="informasidata">
+							<div class="alert alert-info mb-0">
+								Belum ada data yang dipilih.
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<!-- Footer: Koordinat -->
-			<div class="coord-footer">
-				<i class="bi bi-geo-alt"></i> Koordinat: <span id="coords">-</span>
 			</div>
 		</div>
 	</div>
@@ -133,159 +122,311 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- OpenLayers -->
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
-
 	<script>
-		$(document).ready(function () {
-    // === Variabel global untuk data BPHTB ===
-    let dataBPHTB = [];
+		$(document).ready(function() {
+			let dataBPHTB = [];
+			let selectedFeature = null; // Simpan fitur yang sedang dipilih
 
-    // === Vector Layer ===
-    const vectorSource = new ol.source.Vector();
-    const vectorLayer = new ol.layer.Vector({
-					source: vectorSource,
-					style: function (feature) {
-							const d_nop = feature.get('d_nop');
-							const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
+			// === Fungsi Style Default (dengan label dinamis) ===
+			function getDefaultStyle(feature, resolution) {
+				const d_nop = feature.get('d_nop');
+				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
 
-							// Default style (jika tidak ditemukan atau status tidak dikenali)
-							let strokeColor = 'white';
-							let fillColor = 'rgba(255, 255, 255, 0.1)';
+				let strokeColor = 'white';
+				let fillColor = 'rgba(255, 255, 255, 0)';
 
-							if (matchedItem && matchedItem.status) {
-									const status = String(matchedItem.status); // pastikan berupa string
-
-									// Mapping status ke warna
-									
-									switch (status) {
-    case '4':
-        strokeColor = '#FF4500'; // Orange Red (lebih cerah dari oranye biasa)
-        fillColor = 'rgba(255, 69, 0, 0.4)';
-        break;
-    case '5':
-        strokeColor = '#39FF14'; // Neon Green (hijau neon pure)
-        fillColor = 'rgba(57, 255, 20, 0.4)';
-        break;
-    case '6':
-        strokeColor = '#1E90FF'; // Dodger Blue (biru cerah & bersih)
-        fillColor = 'rgba(30, 144, 255, 0.4)';
-        break;
-    case '7':
-        strokeColor = '#FFFF00'; // Pure Yellow (kuning terang penuh)
-        fillColor = 'rgba(255, 255, 0, 0.4)';
-        break;
-    case '11':
-        strokeColor = '#FF1493'; // Deep Pink (pink neon kuat)
-        fillColor = 'rgba(255, 20, 147, 0.4)';
-        break;
-    case '12':
-        strokeColor = '#00FFFF'; // Cyan (cyan penuh / aqua)
-        fillColor = 'rgba(0, 255, 255, 0.4)';
-        break;
-    default:
-        // Warna fallback: abu-abu terang jika tidak cocok
-        strokeColor = '#CCCCCC';
-        fillColor = 'rgba(204, 204, 204, 0.2)';
-        break;
-}
-							}
-
-							return new ol.style.Style({
-									stroke: new ol.style.Stroke({
-											color: strokeColor,
-											width: 1
-									}),
-									fill: new ol.style.Fill({
-											color: fillColor
-									})
-							});
+				if (matchedItem && matchedItem.status) {
+					const status = String(matchedItem.status);
+					switch (status) {
+						case '4':
+							strokeColor = '#FF0000';
+							fillColor = 'rgba(255, 0, 0, 0.4)';
+							break;
+						case '5':
+							strokeColor = '#39FF14';
+							fillColor = 'rgba(57, 255, 20, 0.4)';
+							break;
+						case '6':
+							strokeColor = '#0000FF';
+							fillColor = 'rgba(0, 0, 255, 0.4)';
+							break;
+						case '7':
+							strokeColor = '#FFFF00';
+							fillColor = 'rgba(255, 255, 0, 0.4)';
+							break;
+						case '11':
+							strokeColor = '#FF1493';
+							fillColor = 'rgba(255, 20, 147, 0.4)';
+							break;
+						case '12':
+							strokeColor = '#00FFFF';
+							fillColor = 'rgba(0, 255, 255, 0.4)';
+							break;
+						default:
+							strokeColor = '#CCCCCC';
+							fillColor = 'rgba(204, 204, 204, 0.2)';
+							break;
 					}
+				}
+
+				// --- Hitung luas untuk kontrol label ---
+				const geometry = feature.getGeometry();
+				let areaM2 = 0;
+				if (geometry.getType() === 'Polygon') {
+					areaM2 = ol.sphere.getArea(geometry);
+				} else if (geometry.getType() === 'MultiPolygon') {
+					const polygons = geometry.getPolygons();
+					for (const poly of polygons) {
+						areaM2 += ol.sphere.getArea(poly);
+					}
+				}
+				const pixelPerMeter = 1 / resolution;
+				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+				const MIN_AREA_PX2 = 10000;
+				const showLabel = areaPx2 >= MIN_AREA_PX2;
+
+				const nop = feature.get('nop') || '';
+				const nib = feature.get('NIB') || '';
+				const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
+
+				return new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: strokeColor,
+						width: 1
+					}),
+					fill: new ol.style.Fill({
+						color: fillColor
+					}),
+					text: labelText ? new ol.style.Text({
+						text: labelText,
+						font: '12px Arial, sans-serif',
+						fill: new ol.style.Fill({
+							color: '#FFFFFF'
+						}),
+						stroke: new ol.style.Stroke({
+							color: '#000000',
+							width: 0.1
+						}),
+						overflow: true,
+						textAlign: 'center',
+						textBaseline: 'middle',
+						maxAngle: 0,
+						offsetY: -10
+					}) : undefined
+				});
+			}
+
+			// === Fungsi Style Saat Dipilih (highlight) ===
+			function getSelectedStyle(feature, resolution) {
+				const d_nop = feature.get('d_nop');
+				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
+
+				let strokeColor = '#EFBF04';
+				let fillColor = 'rgba(0, 0, 0, 0)';
+
+				if (matchedItem && matchedItem.status) {
+					const status = String(matchedItem.status);
+					switch (status) {
+						case '4':
+							strokeColor = '#FF0000';
+							fillColor = 'rgba(255, 0, 0, 0.8)';
+							break;
+						case '5':
+							strokeColor = '#00AA00';
+							fillColor = 'rgba(57, 255, 20, 0.8)';
+							break;
+						case '6':
+							strokeColor = '#0000AA';
+							fillColor = 'rgba(0, 0, 255, 0.8)';
+							break;
+						case '7':
+							strokeColor = '#AAAA00';
+							fillColor = 'rgba(255, 255, 0, 0.8)';
+							break;
+						case '11':
+							strokeColor = '#AA0077';
+							fillColor = 'rgba(255, 20, 147, 0.8)';
+							break;
+						case '12':
+							strokeColor = '#00AAAA';
+							fillColor = 'rgba(0, 255, 255, 0.8)';
+							break;
+						default:
+							strokeColor = '#FF00FF';
+							fillColor = 'rgba(255, 0, 255, 0.8)';
+							break;
+					}
+				}
+
+				// Label tetap muncul saat dipilih (opsional)
+				const geometry = feature.getGeometry();
+				let areaM2 = 0;
+				if (geometry.getType() === 'Polygon') {
+					areaM2 = ol.sphere.getArea(geometry);
+				} else if (geometry.getType() === 'MultiPolygon') {
+					const polygons = geometry.getPolygons();
+					for (const poly of polygons) {
+						areaM2 += ol.sphere.getArea(poly);
+					}
+				}
+
+				const pixelPerMeter = 1 / resolution;
+				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+				const MIN_AREA_PX2 = 10000;
+				const showLabel = areaPx2 >= MIN_AREA_PX2;
+
+				const nop = feature.get('nop') || '';
+				const nib = feature.get('NIB') || '';
+				const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
+
+				return new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: strokeColor,
+						width: 3 // lebih tebal saat dipilih
+					}),
+					fill: new ol.style.Fill({
+						color: fillColor
+					}),
+					text: labelText ? new ol.style.Text({
+						text: labelText,
+						font: '12px Arial, sans-serif',
+						fill: new ol.style.Fill({
+							color: '#FFFFFF'
+						}),
+						stroke: new ol.style.Stroke({
+							color: '#000000',
+							width: 0.1
+						}),
+						overflow: true,
+						textAlign: 'center',
+						textBaseline: 'middle',
+						maxAngle: 0,
+						offsetY: -10
+					}) : undefined
+				});
+			}
+
+			const vectorSource = new ol.source.Vector();
+			const vectorLayer = new ol.layer.Vector({
+				source: vectorSource,
+				style: getDefaultStyle
 			});
 
-    // === Google Satellite Layer ===
-    const googleSatelliteLayer = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-            url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-            attributions: 'Map data ©2025 Google',
-            maxZoom: 19
-        })
-    });
+			// Google Satellite Layer
+			const googleSatelliteLayer = new ol.layer.Tile({
+				source: new ol.source.XYZ({
+					url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+					attributions: 'Map data ©2025 Google',
+					maxZoom: 19
+				})
+			});
 
-    const map = new ol.Map({
-        target: 'map',
-        layers: [googleSatelliteLayer, vectorLayer],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([109.6753, -6.8885]),
-            zoom: 16
-        })
-    });
+			const map = new ol.Map({
+				target: 'map',
+				layers: [googleSatelliteLayer, vectorLayer],
+				view: new ol.View({
+					center: ol.proj.fromLonLat([109.6753, -6.8885]),
+					zoom: 16
+				})
+			});
 
-    // === Muat data peta (hanya sekali) ===
-    async function loadPetaData() {
-        try {
-            const response = await fetch('{{ route("beranda.data-peta") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            if (!response.ok) throw new Error('Gagal mengambil data peta');
-            const geojsonData = await response.json();
-            vectorSource.clear();
-            const features = new ol.format.GeoJSON().readFeatures(geojsonData, {
-                dataProjection: 'EPSG:4326',
-                featureProjection: 'EPSG:3857'
-            });
-            vectorSource.addFeatures(features);
-            console.log("Data peta dimuat.");
-        } catch (err) {
-            console.error(err);
-            alert('Gagal memuat data peta.');
-        }
-    }
+			// === Event Klik ===
+			map.on('click', function(evt) {
+				let clickedFeature = null;
+				map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+					clickedFeature = feature;
+				});
 
-    // === Muat data BPHTB (tanpa reload peta) ===
-    async function loadDataBphtb() {
-        try {
-            const response = await fetch('{{ route("beranda.data-bphtb") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            if (!response.ok) throw new Error('Gagal mengambil data BPHTB');
-            dataBPHTB = await response.json();
-            
-            // === PENTING: Beri tahu OpenLayers untuk render ulang style ===
-            vectorLayer.changed();
+				if (selectedFeature) {
+					selectedFeature.setStyle(null);
+					selectedFeature = null;
+				}
 
-            console.log("Data BPHTB dimuat, style diperbarui.");
-        } catch (err) {
-            console.error(err);
-            alert('Gagal memuat data BPHTB.');
-        }
-    }
+				if (clickedFeature) {
+					selectedFeature = clickedFeature;
+					const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === clickedFeature.get('d_nop'));
+					selectedFeature.setStyle(function(feature, resolution) {
+						return getSelectedStyle(feature, resolution);
+					});
+					$('a[href="#informasiTab"]').tab('show');
+					$('#informasidata').html(`
+						<div class="text-center py-3">
+							<div class="spinner-border text-primary" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</div>
+							<p class="mt-2">Memuat informasi...</p>
+						</div>
+					`);
+					loadInformasiData(clickedFeature.get('d_nop'), clickedFeature.get('NIB'), matchedItem?.id)
+				}
+			});
 
-    // === Jalankan sekali saat halaman dibuka ===
-    loadPetaData();      // Muat geometri peta
-    loadDataBphtb();     // Muat data BPHTB, lalu update style
+			async function loadInformasiData(nop, nib, bphtb) {
+				$.ajax({
+					url: '{{ route("beranda.data-informasi") }}',
+					type: 'POST',
+					data: {
+						_token: $('meta[name="csrf-token"]').attr('content'),
+						nop: nop,
+						nib: nib,
+						bphtb: bphtb
+					},
+					dataType:'HTML',
+					success: function(htmlResponse) {
+						$('#informasidata').html(htmlResponse);
+					},
+					error: function(xhr, status, error) {
+						console.error('Error:', error);
+						$('#informasidata').html('<p class="text-danger">Gagal memuat informasi.</p>');
+					}
+				});
+			}
 
-    // === Fitur tambahan ===
-    $('#searchBtn').on('click', function () {
-        const query = $('#searchInput').val().trim();
-        if (!query) return;
-        alert("Pencarian untuk: " + query + "\n(Fungsi ini bisa dikembangkan dengan geocoding API)");
-    });
+			// === Muat Data ===
+			async function loadPetaData() {
+				try {
+					const response = await fetch('{{ route("beranda.data-peta") }}', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+						}
+					});
+					if (!response.ok) throw new Error('Gagal mengambil data peta');
+					const geojsonData = await response.json();
+					vectorSource.clear();
+					const features = new ol.format.GeoJSON().readFeatures(geojsonData, {
+						dataProjection: 'EPSG:4326',
+						featureProjection: 'EPSG:3857'
+					});
+					vectorSource.addFeatures(features);
+				} catch (err) {
+					console.error(err);
+					alert('Gagal memuat data peta.');
+				}
+			}
 
-    map.on('pointermove', function (evt) {
-        const coordinate = evt.coordinate;
-        const lonlat = ol.proj.toLonLat(coordinate);
-        $('#coords').text(lonlat[1].toFixed(6) + ', ' + lonlat[0].toFixed(6));
-    });
+			async function loadDataBphtb() {
+				try {
+					const response = await fetch('{{ route("beranda.data-bphtb") }}', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+						}
+					});
+					if (!response.ok) throw new Error('Gagal mengambil data BPHTB');
+					dataBPHTB = await response.json();
+					vectorLayer.changed();
+				} catch (err) {
+					console.error(err);
+					alert('Gagal memuat data BPHTB.');
+				}
+			}
 
-    console.log("Peta satelit Google + data GeoJSON dimuat via OpenLayers");
-});
+			loadPetaData();
+			loadDataBphtb();
+		});
 	</script>
 </body>
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\BPHTB\DatPerolehanHak;
+use App\Models\BPHTB\DatPerolehanHakLog;
+use App\Models\PBB\DatObjekPajak;
 use App\Repositories\BphtbRepository;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
@@ -66,7 +68,11 @@ class BerandaController extends Controller
                 )->whereHas('sptpd', function ($q) {
                     $q->whereNotNull('tgl_akses_bpn')
                         ->whereNull('tgl_selesai_bpn');
-                })->where('tahun_perolehan', date('Y'));
+                })->where([
+                    'tahun_perolehan' => date('Y'),
+                    'kd_kecamatan' => '020',
+                    'kd_kelurahan' => '013',
+                ]);
 
                 $data = $query->orderBy('id', 'desc')->get();
             } elseif ($status == '12') {
@@ -81,7 +87,11 @@ class BerandaController extends Controller
                     'dat_perolehan_hak.kd_jns_op'
                 )->join('bphtb.sptpd', 'bphtb.dat_perolehan_hak.id', '=', 'bphtb.sptpd.dat_perolehan_hak_id')
                     ->whereNotNull('bphtb.sptpd.tgl_selesai_bpn')
-                    ->where('tahun_perolehan', date('Y'))
+                    ->where([
+                        'dat_perolehan_hak.tahun_perolehan' => date('Y'),
+                        'dat_perolehan_hak.kd_kecamatan' => '020',
+                        'dat_perolehan_hak.kd_kelurahan' => '013',
+                    ])
                     ->orderByRaw('CASE WHEN bphtb.sptpd.tgl_singkron IS NULL THEN 0 ELSE 1 END')
                     ->orderBy('bphtb.sptpd.tgl_selesai_bpn', 'ASC')
                     ->get();
@@ -100,7 +110,11 @@ class BerandaController extends Controller
 
                 $this->bphtb_repository->posisiBerkas($query, $status);
 
-                $data = $query->where('tahun_perolehan', date('Y'))
+                $data = $query->where([
+                    'tahun_perolehan' => date('Y'),
+                    'kd_kecamatan' => '020',
+                    'kd_kelurahan' => '013',
+                ])
                     ->orderBy('id', 'desc')
                     ->get();
             }
@@ -131,5 +145,39 @@ class BerandaController extends Controller
         $result = collect(array_values($uniqueData));
 
         return response()->json($result);
+    }
+    public function dataInformasi(Request $request): View
+    {
+        $request->validate([
+            'nib' => 'required|numeric',
+            'nop' => 'required|numeric|digits:18',
+            'bphtb' => 'nullable|numeric',
+        ]);
+        $nop = $request->nop;
+        $info = $request->info;
+        $nop1 = substr($nop, 0, 2);
+        $nop2 = substr($nop, 2, 2);
+        $nop3 = substr($nop, 4, 3);
+        $nop4 = substr($nop, 7, 3);
+        $nop5 = substr($nop, 10, 3);
+        $nop6 = substr($nop, 13, 4);
+        $nop7 = substr($nop, 17, 1);
+        $objekPajak = DatObjekPajak::with('datSubjekPajak')
+            ->where('kd_propinsi', $nop1)
+            ->where('kd_dati2', $nop2)
+            ->where('kd_kecamatan', $nop3)
+            ->where('kd_kelurahan', $nop4)
+            ->where('kd_blok', $nop5)
+            ->where('no_urut', $nop6)
+            ->where('kd_jns_op', $nop7)
+            ->first();
+        if ($request->bphtb) {
+            $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)
+                ->orderBy('id')
+                ->get(); // opsional: urutkan lagi berdasarkan id
+            return view('beranda.informasi-data', compact('objekPajak', 'info', 'bphtb'));
+        } else {
+            return view('beranda.informasi-data', compact('objekPajak', 'info'));
+        }
     }
 }
