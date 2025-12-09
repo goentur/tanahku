@@ -48,7 +48,7 @@
 				INFORMASI PERTANAHAN
 			</button>
 		</h2>
-		<div id="informasiPertanahan" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+		<div id="informasiPertanahan" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
 			<div class="accordion-body">
 				<table style="font-size: 12px">
 					<tr>
