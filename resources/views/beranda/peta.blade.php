@@ -109,12 +109,12 @@
 							<tr>
 								<td>Kecamatan</td>
 								<td class="w-1">:</td>
-								<td>Pekalongan Timur</td>
+								<td class="fw-bold">Pekalongan Timur</td>
 							</tr>
 							<tr>
 								<td>Kelurahan</td>
 								<td class="w-1">:</td>
-								<td>Gamer</td>
+								<td class="fw-bold">Gamer</td>
 							</tr>
 						</table>
 						<div id="informasidata">

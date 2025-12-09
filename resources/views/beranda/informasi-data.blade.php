@@ -38,6 +38,19 @@
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $objekPajak->total_luas_bng }}</td>
 					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#informasiPertanahan" aria-expanded="true" aria-controls="informasiPertanahan">
+				INFORMASI PERTANAHAN
+			</button>
+		</h2>
+		<div id="informasiPertanahan" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+			<div class="accordion-body">
+				<table style="font-size: 12px">
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TER TUL</td>
 						<td style="vertical-align: top" class="w-1">:</td>
