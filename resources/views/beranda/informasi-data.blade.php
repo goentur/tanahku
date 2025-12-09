@@ -37,7 +37,36 @@
 						<td style="vertical-align: top" class="fw-bold text-nowrap">BANGUNAN</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $objekPajak->total_luas_bng }}</td>
-						<td>{{ $info }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TER TUL</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['LUASTERTUL'] }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['NIB'] }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NO HAK</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['Nomor_Hak'] }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">PEMILIK AKHIR</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['Pemilik_Ak'] }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">SURAT UKUR</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['Surat_Ukur'] }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">TIPE HAK</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['TIPEHAK'] }}</td>
 					</tr>
 				</table>
 			</div>

@@ -105,6 +105,18 @@
 						</ul>
 					</div>
 					<div class="tab-pane fade" id="informasiTab">
+						<table>
+							<tr>
+								<td>Kecamatan</td>
+								<td class="w-1">:</td>
+								<td>Pekalongan Timur</td>
+							</tr>
+							<tr>
+								<td>Kelurahan</td>
+								<td class="w-1">:</td>
+								<td>Gamer</td>
+							</tr>
+						</table>
 						<div id="informasidata">
 							<div class="alert alert-info mb-0">
 								Belum ada data yang dipilih.
@@ -133,7 +145,7 @@
 				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
 
 				let strokeColor = 'white';
-				let fillColor = 'rgba(255, 255, 255, 0)';
+				let fillColor = 'rgba(255, 255, 255, 0.1)';
 
 				if (matchedItem && matchedItem.status) {
 					const status = String(matchedItem.status);
@@ -344,6 +356,15 @@
 
 				if (clickedFeature) {
 					selectedFeature = clickedFeature;
+					const datakirim = {
+						'LUASTERTUL' : clickedFeature.get('LUASTERTUL'),
+						'NIB' : clickedFeature.get('NIB'),
+						'Nomor_Hak' : clickedFeature.get('Nomor_Hak'),
+						'Pemilik_Ak' : clickedFeature.get('Pemilik_Ak'),
+						'Surat_Ukur' : clickedFeature.get('Surat_Ukur'),
+						'TIPEHAK' : clickedFeature.get('TIPEHAK'),
+						'TIPEHAK' : clickedFeature.get('TIPEHAK'),
+					};
 					const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === clickedFeature.get('d_nop'));
 					selectedFeature.setStyle(function(feature, resolution) {
 						return getSelectedStyle(feature, resolution);
@@ -357,18 +378,18 @@
 							<p class="mt-2">Memuat informasi...</p>
 						</div>
 					`);
-					loadInformasiData(clickedFeature.get('d_nop'), clickedFeature.get('NIB'), matchedItem?.id)
+					loadInformasiData(clickedFeature.get('d_nop'), datakirim, matchedItem?.id)
 				}
 			});
 
-			async function loadInformasiData(nop, nib, bphtb) {
+			async function loadInformasiData(nop, datakirim, bphtb) {
 				$.ajax({
 					url: '{{ route("beranda.data-informasi") }}',
 					type: 'POST',
 					data: {
 						_token: $('meta[name="csrf-token"]').attr('content'),
 						nop: nop,
-						nib: nib,
+						datakirim: datakirim,
 						bphtb: bphtb
 					},
 					dataType:'HTML',

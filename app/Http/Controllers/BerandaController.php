@@ -149,12 +149,12 @@ class BerandaController extends Controller
     public function dataInformasi(Request $request): View
     {
         $request->validate([
-            'nib' => 'required|numeric',
             'nop' => 'required|numeric|digits:18',
+            'datakirim' => 'required|array',
             'bphtb' => 'nullable|numeric',
         ]);
+        $dataKirim = $request->datakirim;
         $nop = $request->nop;
-        $info = $request->info;
         $nop1 = substr($nop, 0, 2);
         $nop2 = substr($nop, 2, 2);
         $nop3 = substr($nop, 4, 3);
@@ -175,9 +175,9 @@ class BerandaController extends Controller
             $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)
                 ->orderBy('id')
                 ->get(); // opsional: urutkan lagi berdasarkan id
-            return view('beranda.informasi-data', compact('objekPajak', 'info', 'bphtb'));
+            return view('beranda.informasi-data', compact('objekPajak', 'dataKirim', 'bphtb'));
         } else {
-            return view('beranda.informasi-data', compact('objekPajak', 'info'));
+            return view('beranda.informasi-data', compact('objekPajak', 'dataKirim'));
         }
     }
 }
