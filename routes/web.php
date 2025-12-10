@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BerandaController::class, 'index'])->name('beranda.index');
 Route::get('peta', [BerandaController::class, 'peta'])->name('beranda.peta');
-Route::post('data-peta', [BerandaController::class, 'dataPeta'])->name('beranda.data-peta');
-Route::post('data-bphtb', [BerandaController::class, 'dataBPHTB'])->name('beranda.data-bphtb');
-Route::post('data-informasi', [BerandaController::class, 'dataInformasi'])->name('beranda.data-informasi');
 // Route::get('/', function () {
 //     return Redirect('login');
 // });

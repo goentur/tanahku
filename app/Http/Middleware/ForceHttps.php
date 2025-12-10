@@ -15,9 +15,14 @@ class ForceHttps
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // if (!$request->secure() && app()->environment('production')) {
-        return redirect()->secure($request->getRequestUri());
-        // }
-        // return $next($request);
+        // Hanya aktifkan di production
+        if (app()->isProduction()) {
+            // Jika request belum secure, redirect ke HTTPS
+            if (!$request->secure()) {
+                return redirect()->secure($request->getRequestUri());
+            }
+        }
+
+        return $next($request);
     }
 }

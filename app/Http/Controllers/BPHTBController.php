@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BPHTB\DataAtrBpn;
 use App\Models\BPHTB\DatPerolehanHak;
-use App\Models\BPHTB\PPAT;
+use App\Models\BPHTB\Ppat;
 use App\Models\BPHTB\Sptpd;
 use App\Models\PBB\DatObjekPajak;
 use App\Models\PBB\DatOpBangunan;
@@ -19,13 +19,15 @@ use Illuminate\View\View;
 
 class BPHTBController extends Controller
 {
-	public function __construct(protected BphtbRepository $bphtb_repository) {}
+	public function __construct(
+		protected BphtbRepository $bphtb_repository,
+	) {}
 	public function ppat(Request $request): View
 	{
 		$perPage = $request->get('per_page', 25);
 		$search = $request->get('search', '');
 
-		$query = PPAT::query();
+		$query = Ppat::query();
 
 		if ($search) {
 			$query->where(function ($q) use ($search) {
