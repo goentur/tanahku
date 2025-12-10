@@ -42,6 +42,16 @@
 			padding: 8px 12px;
 			text-align: center;
 		}
+		.legend {
+			position: absolute;
+			bottom: 9px;
+			right: 9px;
+			width: 220px; /* Sesuaikan lebar sesuai kebutuhan */
+			z-index: 1000;
+			font-family: sans-serif;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+			border-radius: 4px;
+		}
 	</style>
 </head>
 
@@ -55,56 +65,13 @@
 			</div>
 			<ul class="nav nav-tabs">
 				<li class="nav-item">
-					<a class="nav-link active" data-bs-toggle="tab" href="#dataLayerTab">DATA LAYER</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" data-bs-toggle="tab" href="#informasiTab">INFORMASI</a>
+					<a class="nav-link active" data-bs-toggle="tab" href="#informasiTab">INFORMASI</a>
 				</li>
 			</ul>
 
 			<div class="card-body p-3">
 				<div class="tab-content">
-					<div class="tab-pane fade show active" id="dataLayerTab">
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #ff0000; height: 20px;"></div>
-									<div class="col-11">BELUM BAYAR</div>
-								</div>
-							</li>
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #39FF14; height: 20px;"></div>
-									<div class="col-11">WASDAL</div>
-								</div>
-							</li>
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #0000FF; height: 20px;"></div>
-									<div class="col-11">PEMERIKSAAN</div>
-								</div>
-							</li>
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #FFFF00; height: 20px;"></div>
-									<div class="col-11">KURANG BAYAR</div>
-								</div>
-							</li>
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #FF1493; height: 20px;"></div>
-									<div class="col-11">PROSES ATR/BPN</div>
-								</div>
-							</li>
-							<li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.1);">
-								<div class="row">
-									<div class="col-1" style="background-color: #00FFFF; height: 20px;"></div>
-									<div class="col-11">SELESAI ATR/BPN</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="tab-pane fade" id="informasiTab">
+					<div class="tab-pane fade show active" id="informasiTab">
 						<table>
 							<tr>
 								<td>Kecamatan</td>
@@ -127,7 +94,39 @@
 			</div>
 		</div>
 	</div>
-
+	<div class="legend">
+		<div class="card" style="background-color: rgba(255, 255, 255, 0.85); font-size: 0.85rem;">
+			<div class="card-body p-2">
+				<h6 class="mb-2">Legenda</h6>
+				<ul class="list-unstyled mb-0">
+					<li class="d-flex align-items-center mb-1">
+						<div style="width: 15px; height: 15px; background-color: #ff0000; margin-right: 8px;"></div>
+						<span>BELUM BAYAR</span>
+					</li>
+					<li class="d-flex align-items-center mb-1">
+						<div style="width: 15px; height: 15px; background-color: #39FF14; margin-right: 8px;"></div>
+						<span>WASDAL</span>
+					</li>
+					<li class="d-flex align-items-center mb-1">
+						<div style="width: 15px; height: 15px; background-color: #0000FF; margin-right: 8px;"></div>
+						<span>PEMERIKSAAN</span>
+					</li>
+					<li class="d-flex align-items-center mb-1">
+						<div style="width: 15px; height: 15px; background-color: #FFFF00; margin-right: 8px;"></div>
+						<span>KURANG BAYAR</span>
+					</li>
+					<li class="d-flex align-items-center mb-1">
+						<div style="width: 15px; height: 15px; background-color: #FF1493; margin-right: 8px;"></div>
+						<span>PROSES ATR/BPN</span>
+					</li>
+					<li class="d-flex align-items-center">
+						<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
+						<span>SELESAI ATR/BPN</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<!-- Bootstrap JS -->

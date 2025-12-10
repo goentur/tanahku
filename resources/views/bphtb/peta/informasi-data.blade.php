@@ -66,7 +66,7 @@
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['Nomor_Hak'] }}</td>
 					</tr>
-					<tr>
+					{{-- <tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">PEMILIK AKHIR</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['Pemilik_Ak'] }}</td>
@@ -75,7 +75,7 @@
 						<td style="vertical-align: top" class="fw-bold text-nowrap">SURAT UKUR</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['Surat_Ukur'] }}</td>
-					</tr>
+					</tr> --}}
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">TIPE HAK</td>
 						<td style="vertical-align: top" class="w-1">:</td>
