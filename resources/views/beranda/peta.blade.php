@@ -194,7 +194,7 @@
 				target: 'map',
 				layers: [googleSatelliteLayer, vectorLayer],
 				view: new ol.View({
-					center: ol.proj.fromLonLat([109.6753, -6.8885]),
+					center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
 					zoom: 16
 				})
 			});

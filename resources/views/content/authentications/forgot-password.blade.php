@@ -16,7 +16,7 @@
                     <!-- Logo -->
                     <div class="app-brand justify-content-center mb-6">
                         <a href="{{ route('login') }}" class="app-brand-link gap-2">
-                            <span class="app-brand-logo demo">@include('_partials.macros')</span>
+                            <span class="app-brand-logo demo"><img src="{{ asset('assets/img/logo.png') }}" alt="" class="img-fluid" height="50" width="50" srcset=""></span>
                             <span class="app-brand-text demo text-heading fw-bold">{{ config('variables.templateName') }}</span>
                         </a>
                     </div>

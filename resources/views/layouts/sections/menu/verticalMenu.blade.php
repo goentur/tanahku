@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
             <span class="app-brand-logo demo"><img src="{{ asset('assets/img/logo.png') }}" alt="" class="img-fluid" height="50" width="50" srcset=""></span>
             <span class="app-brand-text demo menu-text fw-bold ms-2">
                 <span style="font-size: 20px" class="m-0 p-0">Batik</span><br class="m-0 p-0">
-                Panahan
+                Tanahan
             </span>
         </a>
 

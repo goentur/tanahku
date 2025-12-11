@@ -44,9 +44,9 @@
 		}
 		.legend {
 			position: absolute;
-			bottom: 9px;
-			right: 9px;
-			width: 220px; /* Sesuaikan lebar sesuai kebutuhan */
+			bottom: 50px;
+			right: 30px;
+			width: auto; /* Sesuaikan lebar sesuai kebutuhan */
 			z-index: 1000;
 			font-family: sans-serif;
 			box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -101,27 +101,27 @@
 				<ul class="list-unstyled mb-0">
 					<li class="d-flex align-items-center mb-1">
 						<div style="width: 15px; height: 15px; background-color: #ff0000; margin-right: 8px;"></div>
-						<span>BELUM BAYAR</span>
+						<span>Belum Bayar</span>
 					</li>
 					<li class="d-flex align-items-center mb-1">
 						<div style="width: 15px; height: 15px; background-color: #39FF14; margin-right: 8px;"></div>
-						<span>WASDAL</span>
+						<span>Wasdal</span>
 					</li>
 					<li class="d-flex align-items-center mb-1">
 						<div style="width: 15px; height: 15px; background-color: #0000FF; margin-right: 8px;"></div>
-						<span>PEMERIKSAAN</span>
+						<span>Pemeriksaan</span>
 					</li>
 					<li class="d-flex align-items-center mb-1">
 						<div style="width: 15px; height: 15px; background-color: #FFFF00; margin-right: 8px;"></div>
-						<span>KURANG BAYAR</span>
+						<span>Kurang Bayar</span>
 					</li>
 					<li class="d-flex align-items-center mb-1">
 						<div style="width: 15px; height: 15px; background-color: #FF1493; margin-right: 8px;"></div>
-						<span>PROSES ATR/BPN</span>
+						<span>Proses ATR/BPN</span>
 					</li>
 					<li class="d-flex align-items-center">
 						<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
-						<span>SELESAI ATR/BPN</span>
+						<span>Selesai ATR/BPN</span>
 					</li>
 				</ul>
 			</div>
@@ -336,7 +336,7 @@
 				target: 'map',
 				layers: [googleSatelliteLayer, vectorLayer],
 				view: new ol.View({
-					center: ol.proj.fromLonLat([109.6753, -6.8885]),
+					center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
 					zoom: 16
 				})
 			});
