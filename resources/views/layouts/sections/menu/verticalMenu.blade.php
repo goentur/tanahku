@@ -6,8 +6,11 @@ use Illuminate\Support\Facades\Route;
     <!-- ! Hide app brand if navbar-full -->
     <div class="app-brand demo">
         <a href="{{route('dashboard')}}" class="app-brand-link">
-            <span class="app-brand-logo demo">@include('_partials.macros')</span>
-            <span class="app-brand-text demo menu-text fw-bold ms-2">{{config('variables.templateName')}}</span>
+            <span class="app-brand-logo demo"><img src="{{ asset('assets/img/logo.png') }}" alt="" class="img-fluid" height="50" width="50" srcset=""></span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">
+                <span style="font-size: 20px" class="m-0 p-0">Batik</span><br class="m-0 p-0">
+                Panahan
+            </span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
