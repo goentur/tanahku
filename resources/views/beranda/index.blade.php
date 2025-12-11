@@ -55,8 +55,8 @@ https://templatemo.com/tm-570-chain-app-dev
         <div class="col-12">
           <nav class="main-nav">
             <!-- ***** Logo Start ***** -->
-            <a href="index.html" class="logo">
-              <img src="{{ asset('front-end/assets/images/logo.png') }}" alt="Chain App Dev">
+            <a href="index.html" class="logo" style="width: 50px">
+              <img src="{{ asset('assets/img/logo.png') }}" alt="Chain App Dev">
             </a>
             <!-- ***** Logo End ***** -->
             <!-- ***** Menu Start ***** -->

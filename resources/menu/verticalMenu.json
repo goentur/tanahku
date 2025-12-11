@@ -28,6 +28,12 @@
       "slug": "bphtb.selesai"
     },
     {
+      "url": "bphtb/data-balikan",
+      "icon": "menu-icon icon-base bx bx-list-check",
+      "name": "DATA BALIKAN",
+      "slug": "bphtb.data-balikan"
+    },
+    {
       "url": "bphtb/ppat",
       "icon": "menu-icon icon-base bx bx-universal-access",
       "name": "PPAT",

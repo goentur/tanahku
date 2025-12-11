@@ -317,4 +317,19 @@ class BPHTBController extends Controller
 			return response()->json(['message' => 'Terjadi kesalahan saat memperbarui data.'], 500);
 		}
 	}
+
+	public function dataBalikan(Request $request): View
+	{
+		$perPage = $request->get('per_page', 25);
+		$search = $request->get('search', '');
+
+		$query = DataAtrBpn::query();
+
+		$datas = $query->orderBy('tanggal_akses', 'desc')->paginate((int) $perPage)->appends([
+			'search' => $search,
+			'per_page' => $perPage,
+		]);
+
+		return view('bphtb.data-balikan.data', compact('datas'));
+	}
 }
