@@ -3,7 +3,7 @@
 return [
   "creatorName" => "BPKAD Kota Pekalongan",
   "creatorUrl" => "https://bpkad.pekalongankota.go.id",
-  "templateName" => "TanahKu",
+  "templateName" => "Batik Tanahan",
   "templateSuffix" => "Kota Pekalongan",
   "templateVersion" => "1.0.0",
   "templateFree" => true,

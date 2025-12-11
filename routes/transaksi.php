@@ -32,5 +32,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('peta-integrasi', [PetaIntegrasiController::class, 'peta'])->name('peta-integrasi');
   Route::post('data-bphtb', [PetaIntegrasiController::class, 'dataBPHTB'])->name('beranda.data-bphtb');
   Route::post('data-informasi', [PetaIntegrasiController::class, 'dataInformasi'])->name('beranda.data-informasi');
-  Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');
 });
+Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');
