@@ -16,12 +16,98 @@ use App\Repositories\BphtbRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 
 class BPHTBController extends Controller
 {
 	public function __construct(
 		protected BphtbRepository $bphtb_repository,
 	) {}
+	public function dashboard(): View
+	{
+		$user = auth()->user()->id;
+		$konsep = Cache::remember($user . '-data-dashboard-konsep', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '0');
+			return $query->count();
+		});
+		$baru = Cache::remember($user . '-data-dashboard-baru', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '1');
+			return $query->count();
+		});
+		$koreksi = Cache::remember($user . '-data-dashboard-koreksi', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '9');
+			return $query->count();
+		});
+		$penelitian = Cache::remember($user . '-data-dashboard-penelitian', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '2');
+			return $query->count();
+		});
+		$verifikasi = Cache::remember($user . '-data-dashboard-verifikasi', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '3');
+			return $query->count();
+		});
+		$belumBayar = Cache::remember($user . '-data-dashboard-belumBayar', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '4');
+			return $query->count();
+		});
+		$wasdal = Cache::remember($user . '-data-dashboard-wasdal', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '5');
+			return $query->count();
+		});
+		$pemeriksaan = Cache::remember($user . '-data-dashboard-pemeriksaan', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '6');
+			return $query->count();
+		});
+		$kurangBayar = Cache::remember($user . '-data-dashboard-kurangBayar', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '7');
+			return $query->count();
+		});
+		$selesai = Cache::remember($user . '-data-dashboard-selesai', 3, function () {
+			$query = DatPerolehanHak::with('sptpd', 'skpdkb');
+			$this->bphtb_repository->posisiBerkas($query, '10');
+			return $query->count();
+		});
+		$prosesBPN = Cache::remember($user . '-data-dashboard-prosesBPN', 3, function () {
+			$query = DatPerolehanHak::with('sptpd')
+				->whereHas('sptpd', function ($q) {
+					$q->whereNotNull('tgl_akses_bpn')
+						->whereNull('tgl_selesai_bpn');
+				})
+				->where('tahun_perolehan', date('Y'));
+			return $query->count();
+		});
+		$selesaiBPN = Cache::remember($user . '-data-dashboard-selesaiBPN', 3, function () {
+			$query = DatPerolehanHak::with('sptpd')
+				->join('bphtb.sptpd', 'bphtb.dat_perolehan_hak.id', '=', 'bphtb.sptpd.dat_perolehan_hak_id')
+				->whereNotNull('bphtb.sptpd.tgl_selesai_bpn')
+				->where('bphtb.dat_perolehan_hak.tahun_perolehan', date('Y'))
+				->select('bphtb.dat_perolehan_hak.*');
+			return $query->count();
+		});
+		return view('bphtb.dashboard.dashboards', compact(
+			'konsep',
+			'baru',
+			'koreksi',
+			'penelitian',
+			'verifikasi',
+			'belumBayar',
+			'wasdal',
+			'pemeriksaan',
+			'kurangBayar',
+			'selesai',
+			'prosesBPN',
+			'selesaiBPN',
+		));
+	}
 	public function ppat(Request $request): View
 	{
 		$perPage = $request->get('per_page', 25);

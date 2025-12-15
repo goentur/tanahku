@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified'])->prefix('bphtb')->name('bphtb.')->group(
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
+  Route::get('/dashboard', [BPHTBController::class, 'dashboard'])->name('dashboard');
   Route::get('/proxy/geoserver', function (Request $request) {
     $url = 'http://192.168.75.15/geoserver/bpn/wms?' . http_build_query($request->all());
 

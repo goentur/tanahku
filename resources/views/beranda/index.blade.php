@@ -11,7 +11,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
-	<title>Chain App Dev - App Landing Page HTML5 Template</title>
+	<title>BATIK TANHAN</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="{{ asset('front-end/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -54,10 +54,11 @@ https://templatemo.com/tm-570-chain-app-dev
 				<div class="col-12">
 					<nav class="main-nav">
 						<!-- ***** Logo Start ***** -->
-						<a href="index.html" class="logo" style="width: 50px">
+						<a href="{{ url('/') }}" class="logo" style="width: 50px">
 							<img src="{{ asset('assets/img/logo.png') }}" alt="Chain App Dev">
 						</a>
 						<!-- ***** Logo End ***** -->
+						
 						<!-- ***** Menu Start ***** -->
 						<ul class="nav">
 							<li class="scroll-to-section"><a href="#beranda" class="active">BERANDA</a></li>
@@ -88,15 +89,15 @@ https://templatemo.com/tm-570-chain-app-dev
 							<div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
 								<div class="row">
 									<div class="col-lg-12">
-										<h2>Get The Latest App From App Stores</h2>
-										<p>Chain App Dev is an app landing page HTML5 template based on Bootstrap v5.1.3 CSS layout provided by TemplateMo, a great website to download free CSS templates.</p>
+										<h2>BATIK TANAHAN</h2>
+										<p>adalah sistem integrasi digital antara BPKAD dan BPN Kota Pekalongan, dirancang untuk menciptakan satu sumber data terpercaya bagi perpajakan tanah dan pendaftaran tanah.</p>
 									</div>
 									<div class="col-lg-12">
 										<div class="white-button first-button scroll-to-section">
-											<a href="#contact">Free Quote <i class="fab fa-apple"></i></a>
+											<a href="#tentang">Tentang</a>
 										</div>
 										<div class="white-button scroll-to-section">
-											<a href="#contact">Free Quote <i class="fab fa-google-play"></i></a>
+											<a href="#layanan">Layanan</a>
 										</div>
 									</div>
 								</div>
