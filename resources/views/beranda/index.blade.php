@@ -90,7 +90,7 @@ https://templatemo.com/tm-570-chain-app-dev
 								<div class="row">
 									<div class="col-lg-12">
 										<h2>BATIK TANAHAN</h2>
-										<p>adalah sistem integrasi digital antara BPKAD dan BPN Kota Pekalongan, dirancang untuk menciptakan satu sumber data terpercaya bagi perpajakan tanah dan pendaftaran tanah.</p>
+										<p> Singkatan dari "Bangga Berintegrasi Kepemerintahan dalam Pelayanan Pajak dan Pertanahan" adalah sistem integrasi digital antara BPKAD dan BPN Kota Pekalongan, dirancang untuk menciptakan satu sumber data terpercaya bagi perpajakan tanah dan pendaftaran tanah.</p>
 									</div>
 									<div class="col-lg-12">
 										<div class="white-button first-button scroll-to-section">
@@ -167,7 +167,7 @@ https://templatemo.com/tm-570-chain-app-dev
 					<div class="section-heading">
 						<h4>Tentang Apa yang Kami <em>Lakukan & Siapa</em> Kami</h4>
 						<img src="{{ asset('front-end/assets/images/heading-line-dec.png') }}" alt="">
-						<p>PSL-TS adalah sistem integrasi digital antara BPKAD dan BPN Kota Pekalongan, dirancang untuk menciptakan satu sumber data terpercaya bagi perpajakan tanah dan pendaftaran tanah. Dengan teknologi mutakhir dan sentuhan budaya lokal, kami mempercepat, menyederhanakan, dan membuat proses lebih transparan.</p>
+						<p>BATIK TANAHAN atau Bangga Berintegrasi Kepemerintahan dalam Pelayanan Pajak dan Pertanahan adalah sistem integrasi digital antara BPKAD dan BPN Kota Pekalongan, dirancang untuk menciptakan satu sumber data terpercaya bagi perpajakan tanah dan pendaftaran tanah. Dengan teknologi mutakhir dan sentuhan budaya lokal, kami mempercepat, menyederhanakan, dan membuat proses lebih transparan.</p>
 					</div>
 					<div class="row">
 						<div class="col-lg-6">
@@ -195,7 +195,7 @@ https://templatemo.com/tm-570-chain-app-dev
 							</div>
 						</div>
 						<div class="col-lg-12">
-							<p>Dengan PSL-TS, kami tidak hanya membangun sistem, tapi juga membangun kepercayaan — antara warga, pemerintah, dan data. Setiap titik di peta, setiap angka di laporan, adalah komitmen kami terhadap efisiensi, keadilan, dan kemajuan Kota Pekalongan.</p>
+							<p>Dengan BATIK TANAHAN, kami tidak hanya membangun sistem, tapi juga membangun kepercayaan — antara warga, pemerintah, dan data. Setiap titik di peta, setiap angka di laporan, adalah komitmen kami terhadap efisiensi, keadilan, dan kemajuan Kota Pekalongan.</p>
 						</div>
 					</div>
 				</div>

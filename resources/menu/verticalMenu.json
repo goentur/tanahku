@@ -40,6 +40,12 @@
       "slug": "bphtb.ppat"
     },
     {
+      "url": "sppt-elektronik",
+      "icon": "menu-icon icon-base bx bx-file",
+      "name": "SPPT ELEKTRONIK",
+      "slug": "sppt-elektronik"
+    },
+    {
       "url": "peta-integrasi",
       "icon": "menu-icon icon-base bx bx-map",
       "name": "PETA INTEGRASI",

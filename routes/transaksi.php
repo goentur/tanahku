@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BPHTBController;
 use App\Http\Controllers\PetaIntegrasiController;
+use App\Http\Controllers\SpptElektronikController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,9 @@ Route::middleware(['auth', 'verified'])->prefix('bphtb')->name('bphtb.')->group(
   Route::get('selesai', [BPHTBController::class, 'selesai'])->name('selesai');
   Route::get('data-balikan', [BPHTBController::class, 'dataBalikan'])->name('data-balikan');
   Route::post('singkronisasi', [BPHTBController::class, 'singkronisasi'])->name('singkronisasi');
+});
+Route::middleware(['auth', 'verified'])->group(function () {
+  Route::get('sppt-elektronik', [SpptElektronikController::class, 'index'])->name('sppt-elektronik');
 });
 
 

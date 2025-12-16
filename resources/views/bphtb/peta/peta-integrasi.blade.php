@@ -12,6 +12,8 @@
 
 	<!-- OpenLayers CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.0.0/ol.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 
 	<style>
 		body {
@@ -25,7 +27,6 @@
 			background-color: #f0f0f0;
 		}
 
-		/* Sidebar position */
 		.sidebar {
 			position: absolute;
 			top: 9px;
@@ -34,7 +35,6 @@
 			z-index: 1000;
 		}
 
-		/* Koordinat footer */
 		.coord-footer {
 			font-size: 0.85rem;
 			color: #666;
@@ -42,11 +42,12 @@
 			padding: 8px 12px;
 			text-align: center;
 		}
+
 		.legend {
 			position: absolute;
 			bottom: 50px;
 			right: 30px;
-			width: auto; /* Sesuaikan lebar sesuai kebutuhan */
+			width: auto;
 			z-index: 1000;
 			font-family: sans-serif;
 			box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -65,25 +66,36 @@
 			</div>
 			<ul class="nav nav-tabs">
 				<li class="nav-item">
-					<a class="nav-link active" data-bs-toggle="tab" href="#informasiTab">INFORMASI</a>
+					<a class="nav-link active" data-bs-toggle="tab" href="#layerTab">LAYER</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-bs-toggle="tab" href="#informasiTab">INFORMASI</a>
 				</li>
 			</ul>
 
 			<div class="card-body p-3">
 				<div class="tab-content">
-					<div class="tab-pane fade show active" id="informasiTab">
-						<table>
+					<div class="tab-pane fade show active" id="layerTab">
+						<table class="w-100">
 							<tr>
-								<td>Kecamatan</td>
-								<td class="w-1">:</td>
-								<td class="fw-bold">Pekalongan Timur</td>
+								<td style="width: 90%">GAMER</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_gamer',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 							<tr>
-								<td>Kelurahan</td>
-								<td class="w-1">:</td>
-								<td class="fw-bold">Gamer</td>
+								<td style="width: 90%">KALIBAROS</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kalibaros',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KLEGO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Klego',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">SETONO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Setono',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 						</table>
+					</div>
+					<div class="tab-pane fade" id="informasiTab">
 						<div id="informasidata">
 							<div class="alert alert-info mb-0">
 								Belum ada data yang dipilih.
@@ -94,6 +106,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="legend">
 		<div class="card" style="background-color: rgba(255, 255, 255, 0.85); font-size: 0.85rem;">
 			<div class="card-body p-2">
@@ -127,327 +140,285 @@
 			</div>
 		</div>
 	</div>
-	<!-- jQuery -->
+
+	<!-- Scripts -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- OpenLayers -->
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
 	<script>
-		$(document).ready(function() {
-			let dataBPHTB = [];
-			let selectedFeature = null; // Simpan fitur yang sedang dipilih
+	$(document).ready(function () {
+		let dataBPHTB = [];
+		let selectedFeature = null;
+		const baseLayers = {}; // Simpan layer per ID (misal 'bpn:Join_gamer')
+		const mapLayers = [];  // Simpan referensi untuk ditambahkan ke peta
 
-			// === Fungsi Style Default (dengan label dinamis) ===
-			function getDefaultStyle(feature, resolution) {
-				const d_nop = feature.get('d_nop');
-				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
-
-				let strokeColor = 'white';
-				let fillColor = 'rgba(255, 255, 255, 0.1)';
-
-				if (matchedItem && matchedItem.status) {
-					const status = String(matchedItem.status);
-					switch (status) {
-						case '4':
-							strokeColor = '#FF0000';
-							fillColor = 'rgba(255, 0, 0, 0.4)';
-							break;
-						case '5':
-							strokeColor = '#39FF14';
-							fillColor = 'rgba(57, 255, 20, 0.4)';
-							break;
-						case '6':
-							strokeColor = '#0000FF';
-							fillColor = 'rgba(0, 0, 255, 0.4)';
-							break;
-						case '7':
-							strokeColor = '#FFFF00';
-							fillColor = 'rgba(255, 255, 0, 0.4)';
-							break;
-						case '11':
-							strokeColor = '#FF1493';
-							fillColor = 'rgba(255, 20, 147, 0.4)';
-							break;
-						case '12':
-							strokeColor = '#00FFFF';
-							fillColor = 'rgba(0, 255, 255, 0.4)';
-							break;
-						default:
-							strokeColor = '#CCCCCC';
-							fillColor = 'rgba(204, 204, 204, 0.2)';
-							break;
-					}
+		// === Style functions (tetap sama) ===
+		function getDefaultStyle(feature, resolution) {
+			const d_nop = feature.get('d_nop');
+			const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
+			let strokeColor = 'white';
+			let fillColor = 'rgba(255, 255, 255, 0.1)';
+			if (matchedItem && matchedItem.status) {
+				const status = String(matchedItem.status);
+				switch (status) {
+					case '4': strokeColor = '#FF0000'; fillColor = 'rgba(255, 0, 0, 0.4)'; break;
+					case '5': strokeColor = '#39FF14'; fillColor = 'rgba(57, 255, 20, 0.4)'; break;
+					case '6': strokeColor = '#0000FF'; fillColor = 'rgba(0, 0, 255, 0.4)'; break;
+					case '7': strokeColor = '#FFFF00'; fillColor = 'rgba(255, 255, 0, 0.4)'; break;
+					case '11': strokeColor = '#FF1493'; fillColor = 'rgba(255, 20, 147, 0.4)'; break;
+					case '12': strokeColor = '#00FFFF'; fillColor = 'rgba(0, 255, 255, 0.4)'; break;
+					default: strokeColor = '#CCCCCC'; fillColor = 'rgba(204, 204, 204, 0.2)';
 				}
-
-				// --- Hitung luas untuk kontrol label ---
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry.getType() === 'Polygon') {
-					areaM2 = ol.sphere.getArea(geometry);
-				} else if (geometry.getType() === 'MultiPolygon') {
-					const polygons = geometry.getPolygons();
-					for (const poly of polygons) {
-						areaM2 += ol.sphere.getArea(poly);
-					}
-				}
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
-
-				const nop = feature.get('nop') || '';
-				const nib = feature.get('NIB') || '';
-				const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
-
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 1
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-					text: labelText ? new ol.style.Text({
-						text: labelText,
-						font: '12px Arial, sans-serif',
-						fill: new ol.style.Fill({
-							color: '#FFFFFF'
-						}),
-						stroke: new ol.style.Stroke({
-							color: '#000000',
-							width: 0.1
-						}),
-						overflow: true,
-						textAlign: 'center',
-						textBaseline: 'middle',
-						maxAngle: 0,
-						offsetY: -10
-					}) : undefined
-				});
 			}
-
-			// === Fungsi Style Saat Dipilih (highlight) ===
-			function getSelectedStyle(feature, resolution) {
-				const d_nop = feature.get('d_nop');
-				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
-
-				let strokeColor = '#EFBF04';
-				let fillColor = 'rgba(0, 0, 0, 0)';
-
-				if (matchedItem && matchedItem.status) {
-					const status = String(matchedItem.status);
-					switch (status) {
-						case '4':
-							strokeColor = '#FF0000';
-							fillColor = 'rgba(255, 0, 0, 0.8)';
-							break;
-						case '5':
-							strokeColor = '#00AA00';
-							fillColor = 'rgba(57, 255, 20, 0.8)';
-							break;
-						case '6':
-							strokeColor = '#0000AA';
-							fillColor = 'rgba(0, 0, 255, 0.8)';
-							break;
-						case '7':
-							strokeColor = '#AAAA00';
-							fillColor = 'rgba(255, 255, 0, 0.8)';
-							break;
-						case '11':
-							strokeColor = '#AA0077';
-							fillColor = 'rgba(255, 20, 147, 0.8)';
-							break;
-						case '12':
-							strokeColor = '#00AAAA';
-							fillColor = 'rgba(0, 255, 255, 0.8)';
-							break;
-						default:
-							strokeColor = '#FF00FF';
-							fillColor = 'rgba(255, 0, 255, 0.8)';
-							break;
-					}
+			const geometry = feature.getGeometry();
+			let areaM2 = 0;
+			if (geometry.getType() === 'Polygon') {
+				areaM2 = ol.sphere.getArea(geometry);
+			} else if (geometry.getType() === 'MultiPolygon') {
+				const polygons = geometry.getPolygons();
+				for (const poly of polygons) {
+					areaM2 += ol.sphere.getArea(poly);
 				}
-
-				// Label tetap muncul saat dipilih (opsional)
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry.getType() === 'Polygon') {
-					areaM2 = ol.sphere.getArea(geometry);
-				} else if (geometry.getType() === 'MultiPolygon') {
-					const polygons = geometry.getPolygons();
-					for (const poly of polygons) {
-						areaM2 += ol.sphere.getArea(poly);
-					}
-				}
-
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
-
-				const nop = feature.get('nop') || '';
-				const nib = feature.get('NIB') || '';
-				const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
-
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 3 // lebih tebal saat dipilih
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-					text: labelText ? new ol.style.Text({
-						text: labelText,
-						font: '12px Arial, sans-serif',
-						fill: new ol.style.Fill({
-							color: '#FFFFFF'
-						}),
-						stroke: new ol.style.Stroke({
-							color: '#000000',
-							width: 0.1
-						}),
-						overflow: true,
-						textAlign: 'center',
-						textBaseline: 'middle',
-						maxAngle: 0,
-						offsetY: -10
-					}) : undefined
-				});
 			}
-
-			const vectorSource = new ol.source.Vector();
-			const vectorLayer = new ol.layer.Vector({
-				source: vectorSource,
-				style: getDefaultStyle
+			const pixelPerMeter = 1 / resolution;
+			const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+			const MIN_AREA_PX2 = 10000;
+			const showLabel = areaPx2 >= MIN_AREA_PX2;
+			const nop = feature.get('nop') || '';
+			const nib = feature.get('NIB') || '';
+			const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
+			return new ol.style.Style({
+				stroke: new ol.style.Stroke({ color: strokeColor, width: 1 }),
+				fill: new ol.style.Fill({ color: fillColor }),
+				text: labelText ? new ol.style.Text({
+					text: labelText,
+					font: '12px Arial, sans-serif',
+					fill: new ol.style.Fill({ color: '#FFFFFF' }),
+					stroke: new ol.style.Stroke({ color: '#000000', width: 0.1 }),
+					overflow: true,
+					textAlign: 'center',
+					textBaseline: 'middle',
+					maxAngle: 0,
+					offsetY: -10
+				}) : undefined
 			});
+		}
 
-			// Google Satellite Layer
-			const googleSatelliteLayer = new ol.layer.Tile({
-				source: new ol.source.XYZ({
-					url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-					attributions: 'Map data ©2025 Google',
-					maxZoom: 19
-				})
-			});
-
-			const map = new ol.Map({
-				target: 'map',
-				layers: [googleSatelliteLayer, vectorLayer],
-				view: new ol.View({
-					center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
-					zoom: 16
-				})
-			});
-
-			// === Event Klik ===
-			map.on('click', function(evt) {
-				let clickedFeature = null;
-				map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-					clickedFeature = feature;
-				});
-
-				if (selectedFeature) {
-					selectedFeature.setStyle(null);
-					selectedFeature = null;
-				}
-
-				if (clickedFeature) {
-					selectedFeature = clickedFeature;
-					const datakirim = {
-						'LUASTERTUL' : clickedFeature.get('LUASTERTUL'),
-						'NIB' : clickedFeature.get('NIB'),
-						'Nomor_Hak' : clickedFeature.get('Nomor_Hak'),
-						'Pemilik_Ak' : clickedFeature.get('Pemilik_Ak'),
-						'Surat_Ukur' : clickedFeature.get('Surat_Ukur'),
-						'TIPEHAK' : clickedFeature.get('TIPEHAK'),
-						'TIPEHAK' : clickedFeature.get('TIPEHAK'),
-					};
-					const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === clickedFeature.get('d_nop'));
-					selectedFeature.setStyle(function(feature, resolution) {
-						return getSelectedStyle(feature, resolution);
-					});
-					$('a[href="#informasiTab"]').tab('show');
-					$('#informasidata').html(`
-						<div class="text-center py-3">
-							<div class="spinner-border text-primary" role="status">
-								<span class="visually-hidden">Loading...</span>
-							</div>
-							<p class="mt-2">Memuat informasi...</p>
-						</div>
-					`);
-					loadInformasiData(clickedFeature.get('d_nop'), datakirim, matchedItem?.id)
-				}
-			});
-
-			async function loadInformasiData(nop, datakirim, bphtb) {
-				$.ajax({
-					url: '{{ route("beranda.data-informasi") }}',
-					type: 'POST',
-					data: {
-						_token: $('meta[name="csrf-token"]').attr('content'),
-						nop: nop,
-						datakirim: datakirim,
-						bphtb: bphtb
-					},
-					dataType:'HTML',
-					success: function(htmlResponse) {
-						$('#informasidata').html(htmlResponse);
-					},
-					error: function(xhr, status, error) {
-						console.error('Error:', error);
-						$('#informasidata').html('<p class="text-danger">Gagal memuat informasi.</p>');
-					}
-				});
-			}
-
-			// === Muat Data ===
-			async function loadPetaData() {
-				try {
-					const response = await fetch('{{ route("beranda.data-peta") }}', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-						}
-					});
-					if (!response.ok) throw new Error('Gagal mengambil data peta');
-					const geojsonData = await response.json();
-					vectorSource.clear();
-					const features = new ol.format.GeoJSON().readFeatures(geojsonData, {
-						dataProjection: 'EPSG:4326',
-						featureProjection: 'EPSG:3857'
-					});
-					vectorSource.addFeatures(features);
-				} catch (err) {
-					console.error(err);
-					alert('Gagal memuat data peta.');
+		function getSelectedStyle(feature, resolution) {
+			const d_nop = feature.get('d_nop');
+			const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
+			let strokeColor = '#EFBF04';
+			let fillColor = 'rgba(0, 0, 0, 0)';
+			if (matchedItem && matchedItem.status) {
+				const status = String(matchedItem.status);
+				switch (status) {
+					case '4': strokeColor = '#FF0000'; fillColor = 'rgba(255, 0, 0, 0.8)'; break;
+					case '5': strokeColor = '#00AA00'; fillColor = 'rgba(57, 255, 20, 0.8)'; break;
+					case '6': strokeColor = '#0000AA'; fillColor = 'rgba(0, 0, 255, 0.8)'; break;
+					case '7': strokeColor = '#AAAA00'; fillColor = 'rgba(255, 255, 0, 0.8)'; break;
+					case '11': strokeColor = '#AA0077'; fillColor = 'rgba(255, 20, 147, 0.8)'; break;
+					case '12': strokeColor = '#00AAAA'; fillColor = 'rgba(0, 255, 255, 0.8)'; break;
+					default: strokeColor = '#FF00FF'; fillColor = 'rgba(255, 0, 255, 0.8)';
 				}
 			}
-
-			async function loadDataBphtb() {
-				try {
-					const response = await fetch('{{ route("beranda.data-bphtb") }}', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-						}
-					});
-					if (!response.ok) throw new Error('Gagal mengambil data BPHTB');
-					dataBPHTB = await response.json();
-					vectorLayer.changed();
-				} catch (err) {
-					console.error(err);
-					alert('Gagal memuat data BPHTB.');
+			const geometry = feature.getGeometry();
+			let areaM2 = 0;
+			if (geometry.getType() === 'Polygon') {
+				areaM2 = ol.sphere.getArea(geometry);
+			} else if (geometry.getType() === 'MultiPolygon') {
+				const polygons = geometry.getPolygons();
+				for (const poly of polygons) {
+					areaM2 += ol.sphere.getArea(poly);
 				}
 			}
+			const pixelPerMeter = 1 / resolution;
+			const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+			const MIN_AREA_PX2 = 10000;
+			const showLabel = areaPx2 >= MIN_AREA_PX2;
+			const nop = feature.get('nop') || '';
+			const nib = feature.get('NIB') || '';
+			const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
+			return new ol.style.Style({
+				stroke: new ol.style.Stroke({ color: strokeColor, width: 3 }),
+				fill: new ol.style.Fill({ color: fillColor }),
+				text: labelText ? new ol.style.Text({
+					text: labelText,
+					font: '12px Arial, sans-serif',
+					fill: new ol.style.Fill({ color: '#FFFFFF' }),
+					stroke: new ol.style.Stroke({ color: '#000000', width: 0.1 }),
+					overflow: true,
+					textAlign: 'center',
+					textBaseline: 'middle',
+					maxAngle: 0,
+					offsetY: -10
+				}) : undefined
+			});
+		}
 
-			loadPetaData();
-			loadDataBphtb();
+		// === Setup Peta ===
+		const googleSatelliteLayer = new ol.layer.Tile({
+			source: new ol.source.XYZ({
+				url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+				attributions: 'Map data ©2025 Google',
+				maxZoom: 19
+			})
 		});
-	</script>
+
+		const map = new ol.Map({
+			target: 'map',
+			layers: [googleSatelliteLayer],
+			view: new ol.View({
+				center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
+				zoom: 16
+			})
+		});
+
+		// === Klik peta (tetap sama) ===
+		map.on('click', function (evt) {
+			let clickedFeature = null;
+			map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+				clickedFeature = feature;
+			});
+
+			if (selectedFeature) {
+				selectedFeature.setStyle(null);
+				selectedFeature = null;
+			}
+
+			if (clickedFeature) {
+				selectedFeature = clickedFeature;
+				const datakirim = {
+					'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
+					'NIB': clickedFeature.get('NIB'),
+					'Nomor_Hak': clickedFeature.get('Nomor_Hak'),
+					'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
+					'Surat_Ukur': clickedFeature.get('Surat_Ukur'),
+					'TIPEHAK': clickedFeature.get('TIPEHAK')
+				};
+				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === clickedFeature.get('d_nop'));
+				selectedFeature.setStyle(function (feature, resolution) {
+					return getSelectedStyle(feature, resolution);
+				});
+				$('a[href="#informasiTab"]').tab('show');
+				$('#informasidata').html(`
+					<div class="text-center py-3">
+						<div class="spinner-border text-primary" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+						<p class="mt-2">Memuat informasi...</p>
+					</div>
+				`);
+				loadInformasiData(clickedFeature.get('d_nop'), datakirim, matchedItem?.id);
+			}
+		});
+
+		function loadInformasiData(nop, datakirim, bphtb) {
+			$.ajax({
+				url: '{{ route("beranda.data-informasi") }}',
+				type: 'POST',
+				 data : {
+					_token: $('meta[name="csrf-token"]').attr('content'),
+					nop: nop,
+					datakirim: datakirim,
+					bphtb: bphtb
+				},
+				success: function (htmlResponse) {
+					$('#informasidata').html(htmlResponse);
+					$('[data-fancybox]').fancybox({ buttons: ['zoom', 'close'], loop: true });
+				},
+				error: function (xhr, status, error) {
+					console.error('Error:', error);
+					$('#informasidata').html('<p class="text-danger">Gagal memuat informasi.</p>');
+				}
+			});
+		}
+
+		// ✅ Muat data BPHTB sekali
+		$.ajax({
+			url: '{{ route("beranda.data-bphtb") }}',
+			method: 'POST',
+			 data : { _token: $('meta[name="csrf-token"]').attr('content') },
+			success: function (response) {
+				dataBPHTB = response;
+			},
+			error: function () {
+				alert('Gagal memuat data BPHTB.');
+			}
+		});
+
+		// ✅ Toggle Layer: Show/Hide
+		window.toggleLayer = function (layerId, buttonElement) {
+			if (!baseLayers[layerId]) {
+				// Belum dimuat → load dulu
+				$.ajax({
+					url: '{{ route("beranda.data-peta") }}',
+					type: 'POST',
+					 data : {
+						_token: $('meta[name="csrf-token"]').attr('content'),
+						id: layerId
+					},
+					success: function (geojsonData) {
+						const source = new ol.source.Vector();
+						const layer = new ol.layer.Vector({
+							source: source,
+							style: getDefaultStyle
+						});
+						const features = new ol.format.GeoJSON().readFeatures(geojsonData, {
+							dataProjection: 'EPSG:4326',
+							featureProjection: 'EPSG:3857'
+						});
+						source.addFeatures(features);
+						map.addLayer(layer);
+						baseLayers[layerId] = { layer, button: buttonElement, visible: true };
+
+						// Ubah tombol ke "hide" (danger + eye-slash)
+						$(buttonElement)
+							.removeClass('btn-primary')
+							.addClass('btn-danger')
+							.find('i')
+							.removeClass('fa-eye')
+							.addClass('fa-eye-slash');
+					},
+					error: function (xhr, status, error) {
+						console.error('Gagal muat layer: ', error);
+						alert('Gagal memuat data peta.');
+					}
+				});
+			} else {
+				// Sudah dimuat → toggle visibility
+				const entry = baseLayers[layerId];
+				const isVisible = entry.layer.getVisible();
+				const newVisible = !isVisible;
+
+				entry.layer.setVisible(newVisible);
+				entry.visible = newVisible;
+
+				// Update tampilan tombol
+				const $btn = $(entry.button);
+				if (newVisible) {
+					// Sekarang visible → tampilkan sebagai "hide"
+					$btn.removeClass('btn-primary').addClass('btn-danger');
+					$btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+				} else {
+					// Sekarang hidden → tampilkan sebagai "show"
+					$btn.removeClass('btn-danger').addClass('btn-primary');
+					$btn.find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+				}
+			}
+		};
+
+		// ✅ Ganti fungsi lama dengan toggle
+		window.loadPetaData = function (layerId) {
+			// Cari tombol yang memanggil ini (dengan onclick)
+			// Karena kita tidak punya referensi langsung, kita pakai trick:
+			// Tambahkan `data-layer-id` di HTML (opsional), atau lewat event.
+			// Tapi lebih mudah: ubah HTML tombol sedikit.
+			console.warn("Gunakan toggleLayer() langsung di HTML.");
+		};
+	});
+</script>
 </body>
 
 </html>

@@ -46,7 +46,6 @@
                 <th>NAMA</th>
                 <th>ALAMAT</th>
                 <th class="w-1">TELP</th>
-                <th class="W-1 text-nowrap">AKTIF ?</th>
             </tr>
         </thead>
         <tbody class="table-border-bottom-0">
@@ -54,15 +53,8 @@
                 <tr>
                     <td class="text-center w-1">{{ $loop->iteration + ($ppats->currentPage() - 1) * $ppats->perPage() }}</td>
                     <td>{{ $ppat->nama ?? '-' }}</td>
-                    <td>{{ $ppat->alamat_lengkap ?? '-' }}</td>
+                    <td style="font-size: 12px">{{ $ppat->alamat_lengkap ?? '-' }}</td>
                     <td>{{ $ppat->telp ?? '-' }}</td>
-                    <td class="text-center">
-                        @if ($ppat->status_aktif)
-                            <span class="badge bg-label-success me-1">YA</span>
-                        @else
-                            <span class="badge bg-label-danger me-1">TIDAK</span>
-                        @endif
-                    </td>
                 </tr>
             @empty
                 <tr>

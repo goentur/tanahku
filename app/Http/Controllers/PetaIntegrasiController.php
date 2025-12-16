@@ -9,6 +9,7 @@ use App\Repositories\BphtbRepository;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class PetaIntegrasiController extends Controller
 {
@@ -30,7 +31,7 @@ class PetaIntegrasiController extends Controller
 
     public function dataPeta(Request $request)
     {
-        return $this->feature($request, 'bpn:Join_gamer');
+        return $this->feature($request, $request->id);
     }
 
     public function dataBPHTB()
@@ -65,7 +66,6 @@ class PetaIntegrasiController extends Controller
                 })->where([
                     'tahun_perolehan' => date('Y'),
                     'kd_kecamatan' => '020',
-                    'kd_kelurahan' => '013',
                 ]);
 
                 $data = $query->orderBy('id', 'desc')->get();
@@ -156,6 +156,16 @@ class PetaIntegrasiController extends Controller
         $nop5 = substr($nop, 10, 3);
         $nop6 = substr($nop, 13, 4);
         $nop7 = substr($nop, 17, 1);
+        $folder = 'storage/foto/' . $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
+        $files = Storage::disk('public')->files($folder);
+
+        $urls = [];
+        $allowedExtensions = ['jpg', 'jpeg', 'png'];
+        foreach ($files as $file) {
+            if (strpos(basename($file), $nop) === 0 && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $allowedExtensions)) {
+                $urls[] = Storage::url($file);
+            }
+        }
         $objekPajak = DatObjekPajak::with('datSubjekPajak')
             ->where('kd_propinsi', $nop1)
             ->where('kd_dati2', $nop2)
@@ -166,12 +176,10 @@ class PetaIntegrasiController extends Controller
             ->where('kd_jns_op', $nop7)
             ->first();
         if ($request->bphtb) {
-            $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)
-                ->orderBy('id')
-                ->get(); // opsional: urutkan lagi berdasarkan id
-            return view('beranda.informasi-data', compact('objekPajak', 'dataKirim', 'bphtb'));
+            $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)->orderBy('id')->get();
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'bphtb'));
         } else {
-            return view('beranda.informasi-data', compact('objekPajak', 'dataKirim'));
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls'));
         }
     }
 }

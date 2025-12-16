@@ -38,6 +38,17 @@
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $objekPajak->total_luas_bng }} m<sup>2</sup></td>
 					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">FOTO</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>
+              @forelse ($urls as $url)
+                <a href="{{ $url }}" class="btn btn-primary btn-sm" data-fancybox="gallery"><i class="fa-solid fa-image"></i></a>
+              @empty
+                  <span class="text-danger">FOTO TIDAK ADA</span>
+              @endforelse
+            </td>
+					</tr>
 				</table>
 			</div>
     </div>
@@ -54,22 +65,22 @@
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['LUASTERTUL'] }} m<sup>2</sup></td>
+						<td>{{ $dataKirim['LUASTERTUL'] ?? '-' }} m<sup>2</sup></td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['NIB'] }}</td>
+						<td>{{ $dataKirim['NIB'] ?? '-' }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NO HAK</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['Nomor_Hak'] }}</td>
+						<td>{{ $dataKirim['Nomor_Hak'] ?? '-' }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">TIPE HAK</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['TIPEHAK'] }}</td>
+						<td>{{ $dataKirim['TIPEHAK'] ?? '-' }}</td>
 					</tr>
 				</table>
       </div>
