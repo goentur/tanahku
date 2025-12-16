@@ -156,15 +156,49 @@ class PetaIntegrasiController extends Controller
         $nop5 = substr($nop, 10, 3);
         $nop6 = substr($nop, 13, 4);
         $nop7 = substr($nop, 17, 1);
-        $folder = 'storage/foto/' . $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
-        $files = Storage::disk('public')->files($folder);
+
+        $folder = $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
+
+        $files = Storage::disk('foto_nfs')->files($folder);
+
+        $largestNumber = -1;
+        $largestFile = null;
+        $allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+        foreach ($files as $file) {
+            $basename = basename($file);
+            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+            // Filter berdasarkan NOP dan ekstensi
+            if (strpos($basename, $nop) === 0 && in_array($extension, $allowedExtensions)) {
+
+                // Ekstrak angka di akhir nama file (sebelum .jpg)
+                // Contoh: 337501000700300090002.jpg → ambil "2"
+                $filenameWithoutExt = pathinfo($basename, PATHINFO_FILENAME); // → "337501000700300090002"
+
+                // Ambil 1-2 digit terakhir (asumsi nomor urut hanya 1 atau 2 digit)
+                $suffix = substr($filenameWithoutExt, -2); // ambil 2 digit terakhir
+
+                // Jika hanya 1 digit, ambil 1 digit terakhir
+                if (!ctype_digit($suffix)) {
+                    $suffix = substr($filenameWithoutExt, -1);
+                }
+
+                // Pastikan suffix adalah angka
+                if (ctype_digit($suffix)) {
+                    $number = (int)$suffix;
+
+                    if ($number > $largestNumber) {
+                        $largestNumber = $number;
+                        $largestFile = $file;
+                    }
+                }
+            }
+        }
 
         $urls = [];
-        $allowedExtensions = ['jpg', 'jpeg', 'png'];
-        foreach ($files as $file) {
-            if (strpos(basename($file), $nop) === 0 && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $allowedExtensions)) {
-                $urls[] = Storage::url($file);
-            }
+        if ($largestFile) {
+            $urls[] = '/storage/foto/' . $folder . '/' . basename($largestFile);
         }
         $objekPajak = DatObjekPajak::with('datSubjekPajak')
             ->where('kd_propinsi', $nop1)

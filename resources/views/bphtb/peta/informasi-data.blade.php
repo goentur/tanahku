@@ -43,7 +43,7 @@
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>
               @forelse ($urls as $url)
-                <a href="{{ $url }}" class="btn btn-primary btn-sm" data-fancybox="gallery"><i class="fa-solid fa-image"></i></a>
+                <a href="{{ $url }}" data-fancybox="gallery"><img src="{{ $url }}" class="img-fluid" width="50%" alt="" srcset=""></a>
               @empty
                   <span class="text-danger">FOTO TIDAK ADA</span>
               @endforelse
