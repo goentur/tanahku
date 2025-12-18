@@ -93,6 +93,18 @@
 								<td style="width: 90%">SETONO</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Setono',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
+							<tr>
+								<td style="width: 90%">NOYONTAANSARI</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Noyontaansari',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PONCOL</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Poncol',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KAUMAN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kauman',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
 						</table>
 					</div>
 					<div class="tab-pane fade" id="informasiTab">

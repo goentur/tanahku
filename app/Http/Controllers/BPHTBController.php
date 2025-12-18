@@ -236,25 +236,44 @@ class BPHTBController extends Controller
 				'ntpd' => $sptpd->kd_propinsi . '' . $sptpd->kd_dati2 . '' . $kodeNTPD
 			])->first();
 			if ($dataAtrBpn) {
-				$subjekData = [
-					'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
-					'nm_wp' => $sptpd->nama_wp_sptpd,
-					'jalan_wp' => $sptpd->alamat_wp_sptpd,
-					'blok_kav_no_wp' => null,
-					'rw_wp' => $sptpd->rw_wp_sptpd,
-					'rt_wp' => $sptpd->rt_wp_sptpd,
-					'kelurahan_wp' => $sptpd->kelurahan_wp_sptpd,
-					'kota_wp' => $sptpd->kota_wp_sptpd,
-					'kd_pos_wp' => $sptpd->kode_pos_wp_sptpd,
-					'telp_wp' => null,
-					'npwp' => null,
-					'status_pekerjaan_wp' => 5,
-				];
+				$nm_wp = substr($sptpd->nama_wp_sptpd, 0, 30);
+				$alamat_wp = substr($sptpd->alamat_wp_sptpd, 0, 30);
+				$kelurahan_wp = substr($sptpd->kelurahan_wp_sptpd, 0, 30);
+				$kota_wp = substr($sptpd->kota_wp_sptpd, 0, 30);
+				$kd_pos_wp = $sptpd->kode_pos_wp_sptpd ? substr($sptpd->kode_pos_wp_sptpd, 0, 5) : null;
+				$cekDataSubjekPajak = DatSubjekPajak::where('subjek_pajak_id', $sptpd->nid_wp_sptpd)->first();
+				if ($cekDataSubjekPajak) {
+					$cekDataSubjekPajak->update([
+						'nm_wp' => $nm_wp,
+						'jalan_wp' => $alamat_wp,
+						'blok_kav_no_wp' => null,
+						'rw_wp' => $sptpd->rw_wp_sptpd,
+						'rt_wp' => $sptpd->rt_wp_sptpd,
+						'kelurahan_wp' => $kelurahan_wp,
+						'kota_wp' => $kota_wp,
+						'kd_pos_wp' => $kd_pos_wp,
+						'telp_wp' => null,
+						'npwp' => '-',
+						'status_pekerjaan_wp' => 5,
+					]);
+				} else {
+					$subjekData = [
+						'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
+						'nm_wp' => $nm_wp,
+						'jalan_wp' => $alamat_wp,
+						'blok_kav_no_wp' => null,
+						'rw_wp' => $sptpd->rw_wp_sptpd,
+						'rt_wp' => $sptpd->rt_wp_sptpd,
+						'kelurahan_wp' => $kelurahan_wp,
+						'kota_wp' => $kota_wp,
+						'kd_pos_wp' => $kd_pos_wp,
+						'telp_wp' => null,
+						'npwp' => '-',
+						'status_pekerjaan_wp' => 5,
+					];
+					DatSubjekPajak::create($subjekData);
+				}
 
-				// $subjekPajak = DatSubjekPajak::updateOrCreate(
-				// 	['subjek_pajak_id' => $sptpd->nid_wp_sptpd],
-				// 	$subjekData
-				// );
 				// pendataan_lspop 
 
 				$pendataanLspop = PendataanLspop::where([
@@ -277,9 +296,9 @@ class BPHTBController extends Controller
 						$targetRecord = $pendataanLspop->first();
 
 						// Pastikan recordnya ada (sudah dicek di isNotEmpty, jadi aman)
-						// $targetRecord->update([
-						// 	'luas_bng' => $targetRecord->luas_bng + $selisih,
-						// ]);
+						$targetRecord->update([
+							'luas_bng' => $targetRecord->luas_bng + $selisih,
+						]);
 					}
 				}
 
@@ -294,22 +313,22 @@ class BPHTBController extends Controller
 					'kd_jns_op' => $sptpd->kd_jns_op,
 				])->first();
 				if ($pendataanSpop) {
-					// $pendataanSpop->update([
-					// 	'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
-					// 	'nm_wp' => $sptpd->nama_wp_sptpd,
-					// 	'jalan_wp' => $sptpd->alamat_wp_sptpd,
-					// 	'blok_kav_no_wp' => null,
-					// 	'rw_wp' => $sptpd->rw_wp_sptpd,
-					// 	'rt_wp' => $sptpd->rt_wp_sptpd,
-					// 	'kelurahan_wp' => $sptpd->kelurahan_wp_sptpd,
-					// 	'kota_wp' => $sptpd->kota_wp_sptpd,
-					// 	'kd_pos_wp' => $sptpd->kode_pos_wp_sptpd,
-					// 	'telp_wp' => null,
-					// 	'npwp' => null,
-					// 	'status_pekerjaan_wp' => 5,
-					// 	'total_luas_bumi' => $dataAtrBpn->luastanah_op,
-					// 	'total_luas_bng' => $pendataanSpop->total_luas_bng + $selisih,
-					// ]);
+					$pendataanSpop->update([
+						'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
+						'nm_wp' => $nm_wp,
+						'jalan_wp' => $alamat_wp,
+						'blok_kav_no_wp' => null,
+						'rw_wp' => $sptpd->rw_wp_sptpd,
+						'rt_wp' => $sptpd->rt_wp_sptpd,
+						'kelurahan_wp' => $kelurahan_wp,
+						'kota_wp' => $kota_wp,
+						'kd_pos_wp' => $kd_pos_wp,
+						'telp_wp' => null,
+						'npwp' => '-',
+						'status_pekerjaan_wp' => 5,
+						'total_luas_bumi' => $dataAtrBpn->luastanah_op,
+						'total_luas_bng' => $pendataanSpop->total_luas_bng + $selisih,
+					]);
 				}
 				$opBangunan = DatOpBangunan::where([
 					'kd_propinsi' => $sptpd->kd_propinsi,
@@ -331,9 +350,9 @@ class BPHTBController extends Controller
 						$targetRecord = $opBangunan->first();
 
 						// Pastikan recordnya ada (sudah dicek di isNotEmpty, jadi aman)
-						// $targetRecord->update([
-						// 	'luas_bng' => $targetRecord->luas_bng + $selisih,
-						// ]);
+						$targetRecord->update([
+							'luas_bng' => $targetRecord->luas_bng + $selisih,
+						]);
 					}
 				}
 
@@ -349,9 +368,9 @@ class BPHTBController extends Controller
 					'no_bumi' => 1,
 				])->first();
 				if ($opBumi) {
-					// $opBumi->update([
-					// 	'luas_bumi' => $dataAtrBpn->luastanah_op,
-					// ]);
+					$opBumi->update([
+						'luas_bumi' => $dataAtrBpn->luastanah_op,
+					]);
 				}
 
 				// Update DatObjekPajak
@@ -365,11 +384,11 @@ class BPHTBController extends Controller
 					'kd_jns_op' => $sptpd->kd_jns_op,
 				])->first();
 				if ($objekPajak) {
-					// $objekPajak->update([
-					// 	'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
-					// 	'total_luas_bumi' => $dataAtrBpn->luastanah_op,
-					// 	'total_luas_bng' => $objekPajak->total_luas_bng + $selisih,
-					// ]);
+					$objekPajak->update([
+						'subjek_pajak_id' => $sptpd->nid_wp_sptpd,
+						'total_luas_bumi' => $dataAtrBpn->luastanah_op,
+						'total_luas_bng' => $objekPajak->total_luas_bng + $selisih,
+					]);
 				}
 
 				// DB::statement(

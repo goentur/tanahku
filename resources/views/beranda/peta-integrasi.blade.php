@@ -137,9 +137,8 @@
 	<script>
 		$(document).ready(function() {
 			let dataBPHTB = [];
-			let selectedFeature = null; // Simpan fitur yang sedang dipilih
+			let selectedFeature = null;
 
-			// === Fungsi Style Default (dengan label dinamis) ===
 			function getDefaultStyle(feature, resolution) {
 				const d_nop = feature.get('d_nop');
 				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
@@ -181,7 +180,6 @@
 					}
 				}
 
-				// --- Hitung luas untuk kontrol label ---
 				const geometry = feature.getGeometry();
 				let areaM2 = 0;
 				if (geometry.getType() === 'Polygon') {
@@ -228,7 +226,6 @@
 				});
 			}
 
-			// === Fungsi Style Saat Dipilih (highlight) ===
 			function getSelectedStyle(feature, resolution) {
 				const d_nop = feature.get('d_nop');
 				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
@@ -270,7 +267,6 @@
 					}
 				}
 
-				// Label tetap muncul saat dipilih (opsional)
 				const geometry = feature.getGeometry();
 				let areaM2 = 0;
 				if (geometry.getType() === 'Polygon') {
@@ -294,7 +290,7 @@
 				return new ol.style.Style({
 					stroke: new ol.style.Stroke({
 						color: strokeColor,
-						width: 3 // lebih tebal saat dipilih
+						width: 3
 					}),
 					fill: new ol.style.Fill({
 						color: fillColor
@@ -324,7 +320,6 @@
 				style: getDefaultStyle
 			});
 
-			// Google Satellite Layer
 			const googleSatelliteLayer = new ol.layer.Tile({
 				source: new ol.source.XYZ({
 					url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
@@ -342,7 +337,6 @@
 				})
 			});
 
-			// === Event Klik ===
 			map.on('click', function(evt) {
 				let clickedFeature = null;
 				map.forEachFeatureAtPixel(evt.pixel, function(feature) {
@@ -403,7 +397,6 @@
 				});
 			}
 
-			// === Muat Data ===
 			async function loadPetaData() {
 				try {
 					const response = await fetch('{{ route("beranda.data-peta") }}', {

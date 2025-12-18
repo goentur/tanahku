@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BPHTB\DatPerolehanHak;
 use App\Models\BPHTB\DatPerolehanHakLog;
 use App\Models\PBB\DatObjekPajak;
+use App\Models\PBB\Sppt;
 use App\Repositories\BphtbRepository;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
@@ -209,11 +210,20 @@ class PetaIntegrasiController extends Controller
             ->where('no_urut', $nop6)
             ->where('kd_jns_op', $nop7)
             ->first();
+        $sppt = Sppt::with('pembayaranSppt')->where('kd_propinsi', $nop1)
+            ->where('kd_dati2', $nop2)
+            ->where('kd_kecamatan', $nop3)
+            ->where('kd_kelurahan', $nop4)
+            ->where('kd_blok', $nop5)
+            ->where('no_urut', $nop6)
+            ->where('kd_jns_op', $nop7)
+            ->where('thn_pajak_sppt', date('Y'))
+            ->first();
         if ($request->bphtb) {
             $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)->orderBy('id')->get();
-            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'bphtb'));
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt', 'bphtb'));
         } else {
-            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls'));
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt'));
         }
     }
 }

@@ -222,7 +222,7 @@ https://templatemo.com/tm-570-chain-app-dev
 				</div>
 				<div class="col-lg-3">
 					<div class="footer-widget">
-						<h4>Kantor Pertanahan Daerah</h4>
+						<h4>Kantor Pertanahan Kota Pekalongan</h4>
 						<p>Jl. Majapahit No.2 Kota Pekalongan</p>
 						<p><a href="javascript:void(0)">0815-6910-009</a></p>
 						<p><a href="javascript:void(0)">kot-pekalongan@atrbpn.go.id</a></p>
