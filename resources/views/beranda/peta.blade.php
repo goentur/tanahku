@@ -12,6 +12,7 @@
 	<!-- OpenLayers CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.0.0/ol.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 	<style>
 		body {
 			margin: 0;
@@ -75,6 +76,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 	<script>
 		// === GLOBAL SCOPE: semua variabel peta di sini ===
@@ -179,6 +181,7 @@
 							$('#sidebarInformation').show()
 							$('#sidebarInformationDetail').html(response.html)
 							tampilkanBidangDariGeometry(response.geometry, response.properties || {});
+							$('[data-fancybox]').fancybox({ buttons: ['zoom', 'close'], loop: true });
 						} else {
 							alert('Data tidak ditemukan di peta.');
 						}

@@ -91,10 +91,9 @@ class BerandaController extends Controller
                             break;
                         }
                     }
+
                     $folder = $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
-
                     $files = Storage::disk('foto_nfs')->files($folder);
-
                     $largestNumber = -1;
                     $largestFile = null;
                     $allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -104,7 +103,7 @@ class BerandaController extends Controller
                         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
                         // Filter berdasarkan NOP dan ekstensi
-                        if (strpos($basename, $nop) === 0 && in_array($extension, $allowedExtensions)) {
+                        if (strpos($basename, $hasil) === 0 && in_array($extension, $allowedExtensions)) {
 
                             // Ekstrak angka di akhir nama file (sebelum .jpg)
                             // Contoh: 337501000700300090002.jpg → ambil "2"
