@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Peta Pekalongan - OpenLayers</title>
+	<title>BATIK TANAHAN - Kota Pekalongan</title>
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
 
 	<!-- Bootstrap CSS -->
@@ -18,13 +17,11 @@
 			margin: 0;
 			padding: 0;
 		}
-
 		#map {
 			width: 100%;
 			height: 100vh;
 			background-color: #f0f0f0;
 		}
-
 		.sidebar {
 			position: absolute;
 			top: 9px;
@@ -33,26 +30,28 @@
 			width: auto;
 			z-index: 1000;
 		}
+		.sidebar-information {
+			position: absolute;
+			top: 9px;
+			left: 0;
+			width: 20%;
+			z-index: 1000;
+		}
 	</style>
 </head>
-
 <body>
 	<div id="map"></div>
 	<div class="sidebar">
 		<div class="card" style="background-color: rgba(255, 255, 255, 0.7);">
 			<div class="card-body">
-				<form class="row g-3 align-items-center" method="POST" action="javascript:void(0)">
-					<div class="col-auto" style="vertical-align: middle">
-						<b>NOP</b>
-					</div>
+				<form class="row g-3 align-items-center" method="POST" id="form-cari-data" action="javascript:void(0)">
+					<div class="col-auto"><b>NOP</b></div>
 					<div class="col-auto">
-						<input type="text" placeholder="Masukan NOP anda" class="form-control form-control-sm">
+						<input type="text" id="nop_cari" placeholder="Masukan NOP anda" class="form-control form-control-sm">
 					</div>
-					<div class="col-auto" style="vertical-align: middle">
-						<b>NIB</b>
-					</div>
+					<div class="col-auto"><b>NIB</b></div>
 					<div class="col-auto">
-						<input type="text" placeholder="Masukan NIB anda" class="form-control form-control-sm">
+						<input type="text" id="nib_cari" placeholder="Masukan NIB anda" class="form-control form-control-sm">
 					</div>
 					<div class="col-auto">
 						<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> CARI</button>
@@ -61,125 +60,75 @@
 			</div>
 		</div>
 	</div>
-	<!-- jQuery -->
+	<div class="sidebar-information" style="display: none" id="sidebarInformation">
+		<div class="card" style="background-color: rgba(255, 255, 255, 0.7);">
+			<div class="card-header">
+				<h3>INFORMASI DETAIL</h3>
+			</div>
+			<div class="card-body" id="sidebarInformationDetail">
+			</div>
+		</div>
+	</div>
+
+	<!-- Scripts -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- OpenLayers -->
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/js/all.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 	<script>
-		$(document).ready(function() {
-			let dataBPHTB = [];
-			let selectedFeature = null; // Simpan fitur yang sedang dipilih
+		// === GLOBAL SCOPE: semua variabel peta di sini ===
+		let map;
+		let vectorSource;
+		let vectorLayer;
+		let selectedFeature = null;
 
-			// === Fungsi Style Default (dengan label dinamis) ===
-			function getDefaultStyle(feature, resolution) {
-				const d_nop = feature.get('d_nop');
-				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
-
-				let strokeColor = 'white';
-				let fillColor = 'rgba(255, 255, 255, 0.1)';
-
-				if (matchedItem && matchedItem.status) {
-					const status = String(matchedItem.status);
-					switch (status) {
-						case '4':
-							strokeColor = '#FF0000';
-							fillColor = 'rgba(255, 0, 0, 0.4)';
-							break;
-						case '5':
-							strokeColor = '#39FF14';
-							fillColor = 'rgba(57, 255, 20, 0.4)';
-							break;
-						case '6':
-							strokeColor = '#0000FF';
-							fillColor = 'rgba(0, 0, 255, 0.4)';
-							break;
-						case '7':
-							strokeColor = '#FFFF00';
-							fillColor = 'rgba(255, 255, 0, 0.4)';
-							break;
-						case '11':
-							strokeColor = '#FF1493';
-							fillColor = 'rgba(255, 20, 147, 0.4)';
-							break;
-						case '12':
-							strokeColor = '#00FFFF';
-							fillColor = 'rgba(0, 255, 255, 0.4)';
-							break;
-						default:
-							strokeColor = '#CCCCCC';
-							fillColor = 'rgba(204, 204, 204, 0.2)';
-							break;
-					}
-				}
-
-				// --- Hitung luas untuk kontrol label ---
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry.getType() === 'Polygon') {
-					areaM2 = ol.sphere.getArea(geometry);
-				} else if (geometry.getType() === 'MultiPolygon') {
-					const polygons = geometry.getPolygons();
-					for (const poly of polygons) {
-						areaM2 += ol.sphere.getArea(poly);
-					}
-				}
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
-
-				const nop = feature.get('nop') || '';
-				const nib = feature.get('NIB') || '';
-				const labelText = showLabel && nop ? (nib ? `${nop}\n${nib}` : nop) : '';
-
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 1
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-				});
+		// Fungsi untuk menampilkan bidang dari geometry
+		function tampilkanBidangDariGeometry(geometry, properties = {}) {
+			if (selectedFeature) {
+				selectedFeature.setStyle(undefined); // kembali ke style default
 			}
 
-			// === Fungsi Style Saat Dipilih (highlight) ===
-			function getSelectedStyle(feature, resolution) {
-				const d_nop = feature.get('d_nop');
-				const matchedItem = dataBPHTB.find(item => item.noptanpaFormat === d_nop);
+			vectorSource.clear();
 
-				let strokeColor = '#EFBF04';
-				let fillColor = 'rgba(0, 0, 0, 0)';
+			const geojsonFeature = {
+				type: 'Feature',
+				geometry: geometry,
+				properties: properties
+			};
 
-				// Label tetap muncul saat dipilih (opsional)
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry.getType() === 'Polygon') {
-					areaM2 = ol.sphere.getArea(geometry);
-				} else if (geometry.getType() === 'MultiPolygon') {
-					const polygons = geometry.getPolygons();
-					for (const poly of polygons) {
-						areaM2 += ol.sphere.getArea(poly);
-					}
-				}
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 3 // lebih tebal saat dipilih
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-				});
-			}
+			const format = new ol.format.GeoJSON();
+			const feature = format.readFeature(geojsonFeature, {
+				dataProjection: 'EPSG:4326',
+				featureProjection: 'EPSG:3857'
+			});
 
-			const vectorSource = new ol.source.Vector();
-			const vectorLayer = new ol.layer.Vector({
+			vectorSource.addFeature(feature);
+
+			const extent = feature.getGeometry().getExtent();
+			map.getView().fit(extent, {
+				padding: [50, 50, 50, 50],
+				duration: 800,
+				maxZoom: 20
+			});
+
+			selectedFeature = feature;
+		}
+
+		$(document).ready(function () {
+			// Inisialisasi peta
+			vectorSource = new ol.source.Vector();
+			vectorLayer = new ol.layer.Vector({
 				source: vectorSource,
-				style: getDefaultStyle
+				style: new ol.style.Style({
+					stroke: new ol.style.Stroke({
+						color: '#FF8C00', // Orange
+						width: 3
+					}),
+					fill: new ol.style.Fill({
+						color: 'rgba(255, 140, 0, 0.1)'
+					})
+				})
 			});
 
 			const googleSatelliteLayer = new ol.layer.Tile({
@@ -190,41 +139,57 @@
 				})
 			});
 
-			const map = new ol.Map({
+			map = new ol.Map({
 				target: 'map',
 				layers: [googleSatelliteLayer, vectorLayer],
 				view: new ol.View({
-					center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
+					center: ol.proj.fromLonLat([109.6745035, -6.895942]),
 					zoom: 16
 				})
 			});
-			
-			async function loadPetaData() {
-				try {
-					const response = await fetch('{{ route("beranda.data-peta") }}', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-						}
-					});
-					if (!response.ok) throw new Error('Gagal mengambil data peta');
-					const geojsonData = await response.json();
-					vectorSource.clear();
-					const features = new ol.format.GeoJSON().readFeatures(geojsonData, {
-						dataProjection: 'EPSG:4326',
-						featureProjection: 'EPSG:3857'
-					});
-					vectorSource.addFeatures(features);
-				} catch (err) {
-					console.error(err);
-					alert('Gagal memuat data peta.');
+
+			// Mask input
+			$('#nop_cari').mask('00.00.000.000.000-0000.0');
+			$('#nib_cari').mask('00000000.00000');
+
+			// AJAX form submit
+			$('#form-cari-data').on('submit', function (e) {
+				e.preventDefault();
+
+				const nop = $('#nop_cari').val().trim();
+				const nib = $('#nib_cari').val().trim();
+
+				if (!nop && !nib) {
+					alert('Silakan masukkan NOP atau NIB.');
+					return;
 				}
-			}
-			
-			loadPetaData();
+
+				$.ajax({
+					url: '{{ route("beranda.cari-data-dan-peta") }}',
+					method: 'POST',
+					data: {
+						_token: $('meta[name="csrf-token"]').attr('content'),
+						nop: nop,
+						nib: nib
+					},
+					dataType: 'json',
+					success: function (response) {
+						if (response.success && response.geometry) {
+							$('#sidebarInformationDetail').html('')
+							$('#sidebarInformation').show()
+							$('#sidebarInformationDetail').html(response.html)
+							tampilkanBidangDariGeometry(response.geometry, response.properties || {});
+						} else {
+							alert('Data tidak ditemukan di peta.');
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error('AJAX Error:', error);
+						alert('Terjadi kesalahan saat mencari data.');
+					}
+				});
+			});
 		});
 	</script>
 </body>
-
 </html>

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BerandaController::class, 'index'])->name('beranda.index');
 Route::get('peta', [BerandaController::class, 'peta'])->name('beranda.peta');
+Route::post('cari-data-dan-peta', [BerandaController::class, 'cari'])->name('beranda.cari-data-dan-peta');
+Route::post('sppt-download', [BerandaController::class, 'sppt'])->name('beranda.sppt-download');
 // Route::get('/', function () {
 //     return Redirect('login');
 // });

@@ -53,7 +53,6 @@
                 <th>PAJAK</th>
                 <th>PPAT</th>
                 <th>TANGGAL SELESAI</th>
-                <th>AKSI</th>
             </tr>
         </thead>
         <tbody class="table-border-bottom-0">
@@ -101,19 +100,6 @@
                     </td>
                     <td class="text-nowrap w-1">
                         {{ \App\Support\Facades\Helper::formatTanggalIndo($data->sptpd->tgl_selesai_bpn) }}
-                    </td>
-                    <td class="w-1">
-                        @if ($data->sptpd->tgl_singkron == null)
-                            @if ($data->status_pecahan)
-                            <button type="button" class="btn btn-danger me-2" disabled>
-                                <span class="icon-base bx bx-sync me-1"></span>SYNC
-                            </button>
-                            @else
-                            <button type="button" onclick="singkronData({{ $data->id }})" class="btn btn-primary me-2">
-                                    <span class="icon-base bx bx-sync me-1"></span>SYNC
-                                </button>
-                            @endif
-                        @endif
                     </td>
                 </tr>
             @empty
