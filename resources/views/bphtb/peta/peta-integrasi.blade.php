@@ -129,6 +129,10 @@
 								<td style="width: 90%">TIRTO</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_tirto',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
+							<tr>
+								<td style="width: 90%">PRINGREJO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_pringrejo',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
 						</table>
 					</div>
 					<div class="tab-pane fade" id="informasiTab">

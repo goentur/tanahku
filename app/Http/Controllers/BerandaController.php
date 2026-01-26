@@ -90,6 +90,9 @@ class BerandaController extends Controller
                     if ($nop4 == '008' || $nop4 == '009') {
                         $dataPeta = $this->feature($request, 'bpn:Join_bendan_kergon');
                     }
+                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
+                        $dataPeta = $this->feature($request, 'bpn:Join_pringrejo');
+                    }
                 }
                 if (!empty($dataPeta['features']) && is_array($dataPeta['features'])) {
                     $hasil = str_replace(['.', '-'], '', $request->nop);

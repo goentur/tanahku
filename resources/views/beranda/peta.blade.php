@@ -67,7 +67,11 @@
 			<div class="card-header">
 				<h3>INFORMASI DETAIL</h3>
 			</div>
-			<div class="card-body" id="sidebarInformationDetail">
+			<div 
+				class="card-body" 
+				id="sidebarInformationDetail"
+				style="max-height: calc(100vh - 80px); overflow-y: auto;"
+			>
 			</div>
 		</div>
 	</div>
@@ -130,7 +134,7 @@
 						width: 3
 					}),
 					fill: new ol.style.Fill({
-						color: 'rgba(255, 140, 0, 0.1)'
+						color: 'rgba(255, 154, 6, 0.3)'
 					})
 				})
 			});
