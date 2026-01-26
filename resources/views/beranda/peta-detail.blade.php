@@ -109,7 +109,7 @@
               <td>{{ $index + 1 }}</td>
               <td>{{ $item?->thn_pajak_sppt }}</td>
               <td>{{ number_format($item?->pbb_yg_harus_dibayar_sppt ?? 0, 0, ',', '.') }}</td>
-              <td>{{ $item?->pembayaranSppt?->sum('jml_sppt_yg_dibayar') >= $item?->pbb_yg_harus_dibayar_sppt ? 'Sudah' : 'Belum' }}</td>
+              <td>{{ $item?->pembayaranSppt?->sum('jml_sppt_yg_dibayar') >= $item?->pbb_yg_harus_dibayar_sppt ? 'Lunas' : 'Belum Lunas' }}</td>
             </tr>
             @endforeach
           </tbody>

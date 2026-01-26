@@ -78,6 +78,9 @@
 					<div class="tab-pane fade show active" id="layerTab">
 						<table class="w-100">
 							<tr>
+								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN TIMUR</td>
+							</tr>
+							<tr>
 								<td style="width: 90%">GAMER</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_gamer',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
@@ -104,6 +107,27 @@
 							<tr>
 								<td style="width: 90%">KAUMAN</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kauman',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+						</table>
+						<table>	
+							<tr>
+								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN BARAT</td>
+							</tr>
+							<tr>
+								<td style="width: 90%">BENDAN KERGON</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_bendan_kergon',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">MEDONO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_medono',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PODOSUGIH</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_podosugih',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">TIRTO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_tirto',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 						</table>
 					</div>

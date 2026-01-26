@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.0.0/ol.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.17/dist/sweetalert2.min.css">
 	<style>
 		body {
 			margin: 0;
@@ -77,6 +78,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.17/dist/sweetalert2.all.min.js"></script>
 
 	<script>
 		// === GLOBAL SCOPE: semua variabel peta di sini ===
@@ -162,7 +164,11 @@
 				const nib = $('#nib_cari').val().trim();
 
 				if (!nop && !nib) {
-					alert('Silakan masukkan NOP atau NIB.');
+					Swal.fire({
+						title: "Maaf",
+						text: "Silahkan masukan NOP dan NIB!",
+						icon: "error"
+					});
 					return;
 				}
 
@@ -183,12 +189,19 @@
 							tampilkanBidangDariGeometry(response.geometry, response.properties || {});
 							$('[data-fancybox]').fancybox({ buttons: ['zoom', 'close'], loop: true });
 						} else {
-							alert('Data tidak ditemukan di peta.');
+							Swal.fire({
+								title: "Maaf",
+								text: "Data tidak ditemukan di peta.",
+								icon: "error"
+							});
 						}
 					},
 					error: function (xhr, status, error) {
-						console.error('AJAX Error:', error);
-						alert('Terjadi kesalahan saat mencari data.');
+						Swal.fire({
+							title: "Maaf",
+							text: "Terjadi kesalahan saat mencari data.",
+							icon: "error"
+						});
 					}
 				});
 			});
