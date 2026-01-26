@@ -78,11 +78,14 @@ class BerandaController extends Controller
                     }
                 }
                 if ($nop3 == '010') {
-                    if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_tirto');
+                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
+                        $dataPeta = $this->feature($request, 'bpn:Join_pringrejo');
                     }
                     if ($nop4 == '004') {
                         $dataPeta = $this->feature($request, 'bpn:Join_medono');
+                    }
+                    if ($nop4 == '005' || $nop4 == '006') {
+                        $dataPeta = $this->feature($request, 'bpn:Join_sapuro_kebulen');
                     }
                     if ($nop4 == '007') {
                         $dataPeta = $this->feature($request, 'bpn:Join_podosugih');
@@ -90,8 +93,8 @@ class BerandaController extends Controller
                     if ($nop4 == '008' || $nop4 == '009') {
                         $dataPeta = $this->feature($request, 'bpn:Join_bendan_kergon');
                     }
-                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_pringrejo');
+                    if ($nop4 == '010') {
+                        $dataPeta = $this->feature($request, 'bpn:Join_tirto');
                     }
                 }
                 if (!empty($dataPeta['features']) && is_array($dataPeta['features'])) {

@@ -76,17 +76,54 @@
 			<div class="card-body p-3">
 				<div class="tab-content">
 					<div class="tab-pane fade show active" id="layerTab">
-						<table class="w-100">
+						<table>	
+							<tr>
+								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN BARAT</td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PRINGREJO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_pringrejo',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">MEDONO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_medono',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">SAPURO KEBULEN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_sapuro_kebulen',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PODOSUGIH</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_podosugih',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">BENDAN KERGON</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_bendan_kergon',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">TIRTO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_tirto',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+						</table>
+						<table class="w-100 mt-3">
 							<tr>
 								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN TIMUR</td>
 							</tr>
 							<tr>
-								<td style="width: 90%">GAMER</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_gamer',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">NOYONTAANSARI</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Noyontaansari',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 							<tr>
 								<td style="width: 90%">KALIBAROS</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kalibaros',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KAUMAN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kauman',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PONCOL</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Poncol',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 							<tr>
 								<td style="width: 90%">KLEGO</td>
@@ -97,41 +134,8 @@
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Setono',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 							<tr>
-								<td style="width: 90%">NOYONTAANSARI</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Noyontaansari',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PONCOL</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Poncol',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KAUMAN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_Kauman',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-						</table>
-						<table>	
-							<tr>
-								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN BARAT</td>
-							</tr>
-							<tr>
-								<td style="width: 90%">BENDAN KERGON</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_bendan_kergon',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">MEDONO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_medono',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PODOSUGIH</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_podosugih',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">TIRTO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_tirto',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PRINGREJO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_pringrejo',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">GAMER</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:Join_gamer',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 						</table>
 					</div>
