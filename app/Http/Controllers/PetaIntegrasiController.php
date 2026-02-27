@@ -82,11 +82,7 @@ class PetaIntegrasiController extends Controller
                     'dat_perolehan_hak.kd_jns_op'
                 )->join('bphtb.sptpd', 'bphtb.dat_perolehan_hak.id', '=', 'bphtb.sptpd.dat_perolehan_hak_id')
                     ->whereNotNull('bphtb.sptpd.tgl_selesai_bpn')
-                    ->where([
-                        'dat_perolehan_hak.tahun_perolehan' => date('Y'),
-                        'dat_perolehan_hak.kd_kecamatan' => '020',
-                        'dat_perolehan_hak.kd_kelurahan' => '013',
-                    ])
+                    ->where('dat_perolehan_hak.tahun_perolehan', '>=', 2020)
                     ->orderByRaw('CASE WHEN bphtb.sptpd.tgl_singkron IS NULL THEN 0 ELSE 1 END')
                     ->orderBy('bphtb.sptpd.tgl_selesai_bpn', 'ASC')
                     ->get();
@@ -105,17 +101,12 @@ class PetaIntegrasiController extends Controller
 
                 $this->bphtb_repository->posisiBerkas($query, $status);
 
-                $data = $query->where([
-                    'tahun_perolehan' => date('Y'),
-                    'kd_kecamatan' => '020',
-                    'kd_kelurahan' => '013',
-                ])
+                $data = $query->where('dat_perolehan_hak.tahun_perolehan', '>=', 2020)
                     ->orderBy('id', 'desc')
                     ->get();
             }
 
             foreach ($data as $item) {
-                // Format NOP lengkap (pastikan ini unik dan konsisten)
                 $nop = $item->kd_propinsi .
                     $item->kd_dati2 .
                     $item->kd_kecamatan .
@@ -124,19 +115,16 @@ class PetaIntegrasiController extends Controller
                     $item->no_urut .
                     $item->kd_jns_op;
 
-                // Siapkan data
                 $item->noptanpaFormat = $nop;
                 $item->status = $status;
                 $item->makeHidden(['sptpd', 'skpdkb']);
 
-                // Jika NOP belum ada, atau status baru LEBIH TINGGI, ganti
                 if (!isset($uniqueData[$nop]) || $statusPriority[$status] > $statusPriority[$uniqueData[$nop]->status]) {
                     $uniqueData[$nop] = $item;
                 }
             }
         }
 
-        // Ambil nilai akhir sebagai koleksi
         $result = collect(array_values($uniqueData));
 
         return response()->json($result);
