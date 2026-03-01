@@ -26,6 +26,11 @@ class Sptpd extends Model
         return $this->hasOne(Skpdkb::class, 'sptpd_id');
     }
 
+    public function datPerolehanHak()
+    {
+        return $this->belongsTo(DatPerolehanHak::class);
+    }
+
     public function refJph()
     {
         return $this->belongsTo(RefJph::class, 'ref_jph_id');

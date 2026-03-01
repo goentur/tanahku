@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BPHTB\DatPerolehanHak;
 use App\Models\BPHTB\DatPerolehanHakLog;
+use App\Models\BPHTB\Sptpd;
 use App\Models\PBB\DatObjekPajak;
 use App\Models\PBB\Sppt;
 use App\Repositories\BphtbRepository;
@@ -37,104 +38,29 @@ class PetaIntegrasiController extends Controller
 
     public function dataBPHTB()
     {
-        $allowedStatuses = ['4', '5', '6', '7', '11', '12'];
-        $statusPriority = [
-            '4'  => 1,
-            '5'  => 2,
-            '6'  => 3,
-            '7'  => 4,
-            '11' => 5,
-            '12' => 6,
-        ];
-
-        // Gunakan map: kunci = NOP lengkap, nilai = data dengan status tertinggi
-        $uniqueData = [];
-
-        foreach ($allowedStatuses as $status) {
-            if ($status == '11') {
-                $query = DatPerolehanHak::select(
-                    'id',
-                    'kd_propinsi',
-                    'kd_dati2',
-                    'kd_kecamatan',
-                    'kd_kelurahan',
-                    'kd_blok',
-                    'no_urut',
-                    'kd_jns_op'
-                )->whereHas('sptpd', function ($q) {
-                    $q->whereNotNull('tgl_akses_bpn')
-                        ->whereNull('tgl_selesai_bpn');
-                })->where([
-                    'tahun_perolehan' => date('Y'),
-                    'kd_kecamatan' => '020',
-                ]);
-
-                $data = $query->orderBy('id', 'desc')->get();
-            } elseif ($status == '12') {
-                $data = DatPerolehanHak::select(
-                    'dat_perolehan_hak.id',
-                    'dat_perolehan_hak.kd_propinsi',
-                    'dat_perolehan_hak.kd_dati2',
-                    'dat_perolehan_hak.kd_kecamatan',
-                    'dat_perolehan_hak.kd_kelurahan',
-                    'dat_perolehan_hak.kd_blok',
-                    'dat_perolehan_hak.no_urut',
-                    'dat_perolehan_hak.kd_jns_op'
-                )->join('bphtb.sptpd', 'bphtb.dat_perolehan_hak.id', '=', 'bphtb.sptpd.dat_perolehan_hak_id')
-                    ->whereNotNull('bphtb.sptpd.tgl_selesai_bpn')
-                    ->where('dat_perolehan_hak.tahun_perolehan', '>=', 2020)
-                    ->orderByRaw('CASE WHEN bphtb.sptpd.tgl_singkron IS NULL THEN 0 ELSE 1 END')
-                    ->orderBy('bphtb.sptpd.tgl_selesai_bpn', 'ASC')
-                    ->get();
-            } else {
-                $query = DatPerolehanHak::with('sptpd', 'skpdkb')
-                    ->select(
-                        'id',
-                        'kd_propinsi',
-                        'kd_dati2',
-                        'kd_kecamatan',
-                        'kd_kelurahan',
-                        'kd_blok',
-                        'no_urut',
-                        'kd_jns_op'
-                    );
-
-                $this->bphtb_repository->posisiBerkas($query, $status);
-
-                $data = $query->where('dat_perolehan_hak.tahun_perolehan', '>=', 2020)
-                    ->orderBy('id', 'desc')
-                    ->get();
-            }
-
-            foreach ($data as $item) {
-                $nop = $item->kd_propinsi .
+        $query = Sptpd::select('kd_propinsi', 'kd_dati2', 'kd_kecamatan', 'kd_kelurahan', 'kd_blok', 'no_urut', 'kd_jns_op')
+            ->where('tahun_sptpd', '>=', 2020)
+            ->where('status_pembayaran_sptpd', '=', 1)
+            ->groupBy('kd_propinsi', 'kd_dati2', 'kd_kecamatan', 'kd_kelurahan', 'kd_blok', 'no_urut', 'kd_jns_op')
+            ->get()->map(function ($item) {
+                $item->nopGabungan =
+                    $item->kd_propinsi .
                     $item->kd_dati2 .
                     $item->kd_kecamatan .
                     $item->kd_kelurahan .
                     $item->kd_blok .
                     $item->no_urut .
                     $item->kd_jns_op;
-
-                $item->noptanpaFormat = $nop;
-                $item->status = $status;
-                $item->makeHidden(['sptpd', 'skpdkb']);
-
-                if (!isset($uniqueData[$nop]) || $statusPriority[$status] > $statusPriority[$uniqueData[$nop]->status]) {
-                    $uniqueData[$nop] = $item;
-                }
-            }
-        }
-
-        $result = collect(array_values($uniqueData));
-
-        return response()->json($result);
+                return $item;
+            });
+        return response()->json($query);
     }
     public function dataInformasi(Request $request): View
     {
         $request->validate([
             'nop' => 'required|numeric|digits:18',
             'datakirim' => 'required|array',
-            'bphtb' => 'nullable|numeric',
+            'bphtb' => 'required|string|in:ada,tidak',
         ]);
         $dataKirim = $request->datakirim;
         $nop = $request->nop;
@@ -198,7 +124,8 @@ class PetaIntegrasiController extends Controller
             ->where('no_urut', $nop6)
             ->where('kd_jns_op', $nop7)
             ->first();
-        $sppt = Sppt::with('pembayaranSppt')->where('kd_propinsi', $nop1)
+        $sppt = Sppt::with('pembayaranSppt')
+            ->where('kd_propinsi', $nop1)
             ->where('kd_dati2', $nop2)
             ->where('kd_kecamatan', $nop3)
             ->where('kd_kelurahan', $nop4)
@@ -207,8 +134,18 @@ class PetaIntegrasiController extends Controller
             ->where('kd_jns_op', $nop7)
             ->where('thn_pajak_sppt', date('Y'))
             ->first();
-        if ($request->bphtb) {
-            $bphtb = DatPerolehanHakLog::where('dat_perolehan_hak_id', $request->bphtb)->orderBy('id')->get();
+        if ($request->bphtb == 'ada') {
+            $bphtb = Sptpd::select('*')->with('datPerolehanHak')
+                ->where('kd_propinsi', $nop1)
+                ->where('kd_dati2', $nop2)
+                ->where('kd_kecamatan', $nop3)
+                ->where('kd_kelurahan', $nop4)
+                ->where('kd_blok', $nop5)
+                ->where('no_urut', $nop6)
+                ->where('kd_jns_op', $nop7)
+                ->where('tahun_sptpd', '>=', 2020)
+                ->where('status_pembayaran_sptpd', '=', 1)
+                ->orderBy('id')->get();
             return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt', 'bphtb'));
         } else {
             return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt'));
