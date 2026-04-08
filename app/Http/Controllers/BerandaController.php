@@ -120,11 +120,12 @@ class BerandaController extends Controller
                         ) {
                             $dataTerpilih = $feature;
                             break;
-                        } else {
-                            return response()->json([
-                                'success' => true,
-                            ]);
                         }
+                    }
+                    if (empty($dataTerpilih['properties'])) {
+                        return response()->json([
+                            'success' => false,
+                        ]);
                     }
 
                     $folder = $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
