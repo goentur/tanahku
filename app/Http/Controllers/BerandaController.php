@@ -57,44 +57,55 @@ class BerandaController extends Controller
                 ->where('kd_jns_op', $nop7)
                 ->first();
             if ($objekPajak) {
-                if ($nop3 == '020') {
-                    if ($nop4 == '013') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_gamer');
-                    }
-                    if ($nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_Kalibaros');
-                    }
-                    if ($nop4 == '011') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_Klego');
-                    }
-                    if ($nop4 == '001' || $nop4 == '005') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_Noyontaansari');
-                    }
-                    if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_Poncol');
-                    }
-                    if ($nop4 == '006' || $nop4 == '007' || $nop4 == '008' || $nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_Kauman');
-                    }
-                }
                 if ($nop3 == '010') {
                     if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_pringrejo');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010091');
                     }
                     if ($nop4 == '004') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_medono');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010092');
                     }
                     if ($nop4 == '005' || $nop4 == '006') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_sapuro_kebulen');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010093');
                     }
                     if ($nop4 == '007') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_podosugih');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010094');
                     }
                     if ($nop4 == '008' || $nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_bendan_kergon');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010095');
                     }
                     if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:Join_tirto');
+                        $dataPeta = $this->feature($request, 'bpn:pbt_010096');
+                    }
+                }
+                if ($nop3 == '020') {
+                    if ($nop4 == '001' || $nop4 == '005') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020091');
+                    }
+                    if ($nop4 == '002' || $nop4 == '003') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020092');
+                    }
+                    if ($nop4 == '004' || $nop4 == '012') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020093');
+                    }
+                    if ($nop4 == '006' || $nop4 == '007' || $nop4 == '008' || $nop4 == '009') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020094');
+                    }
+                    if ($nop4 == '010') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020095');
+                    }
+                    if ($nop4 == '011') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020096');
+                    }
+                    if ($nop4 == '013') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_020097');
+                    }
+                }
+                if ($nop3 == '030') {
+                    if ($nop4 == '001' || $nop4 == '002') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030091');
+                    }
+                    if ($nop4 == '008' || $nop4 == '009') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030095');
                     }
                 }
                 if (!empty($dataPeta['features']) && is_array($dataPeta['features'])) {
@@ -109,6 +120,10 @@ class BerandaController extends Controller
                         ) {
                             $dataTerpilih = $feature;
                             break;
+                        } else {
+                            return response()->json([
+                                'success' => true,
+                            ]);
                         }
                     }
 

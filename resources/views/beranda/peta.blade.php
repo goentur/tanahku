@@ -158,7 +158,7 @@
 
 			// Mask input
 			$('#nop_cari').mask('00.00.000.000.000-0000.0');
-			$('#nib_cari').mask('00000000.00000');
+			$('#nib_cari').mask('000000000.00000');
 
 			// AJAX form submit
 			$('#form-cari-data').on('submit', function (e) {
