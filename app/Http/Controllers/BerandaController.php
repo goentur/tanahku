@@ -104,8 +104,43 @@ class BerandaController extends Controller
                     if ($nop4 == '001' || $nop4 == '002') {
                         $dataPeta = $this->feature($request, 'bpn:pbt_030091');
                     }
+                    if ($nop4 == '003' || $nop4 == '004') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030092');
+                    }
+                    if ($nop4 == '005') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030093');
+                    }
+                    if ($nop4 == '006' || $nop4 == '007') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030094');
+                    }
                     if ($nop4 == '008' || $nop4 == '009') {
                         $dataPeta = $this->feature($request, 'bpn:pbt_030095');
+                    }
+                    if ($nop4 == '010' || $nop4 == '011') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_030096');
+                    }
+                }
+                if ($nop3 == '040') {
+                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040091');
+                    }
+                    if ($nop4 == '004') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040092');
+                    }
+                    if ($nop4 == '005') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040093');
+                    }
+                    if ($nop4 == '006') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040094');
+                    }
+                    if ($nop4 == '007' || $nop4 == '008') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040095');
+                    }
+                    if ($nop4 == '009') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040096');
+                    }
+                    if ($nop4 == '010') {
+                        $dataPeta = $this->feature($request, 'bpn:pbt_040097');
                     }
                 }
                 if (!empty($dataPeta['features']) && is_array($dataPeta['features'])) {

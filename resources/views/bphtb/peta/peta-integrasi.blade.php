@@ -180,8 +180,57 @@
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030091',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 							<tr>
-								<td style="width: 90%">SOKODUWET</td>
+								<td style="width: 90%">BUARAN KRADENAN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030092',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">JENGGOT</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030093',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KURIPAN KERTOHARJO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030094',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">SOKO DUWET</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030095',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KURIPAN YOSOREJO</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030096',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+						</table>
+						<table class="w-100 mt-3">
+							<tr>
+								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN UTARA</td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PADUKUHAN KRATON</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040091',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">BANDENGAN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040092',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KANDANG PANJANG</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040093',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PANJANG WETAN</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040094',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">KRAPYAK</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040095',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">DEGAYU</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040096',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
+							<tr>
+								<td style="width: 90%">PANJANG BARU</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040097',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
 						</table>
 					</div>
