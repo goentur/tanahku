@@ -44,6 +44,12 @@
       "icon": "menu-icon icon-base bx bx-map",
       "name": "PETA INTEGRASI",
       "slug": "peta-integrasi"
+    },
+    {
+      "url": "verifikasi-peta-integrasi",
+      "icon": "menu-icon icon-base bx bx-map",
+      "name": "VERIFIKASI PETA INTEGRASI",
+      "slug": "verifikasi-peta-integrasi"
     }
   ]
 }

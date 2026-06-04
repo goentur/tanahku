@@ -7,36 +7,47 @@
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
       <div class="accordion-body">
+				{{-- <button class="btn btn-primary btn-sm btn-edit-pbb" 
+                type="button" 
+                data-bs-toggle="modal" 
+                data-bs-target="#exampleModal"
+                data-kirim='@json($dataKirim)'>
+            <i class="fa fa-pencil"></i> UBAH DATA
+        </button> --}}
 				<table style="font-size: 12px">
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NOP</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->nop }}</td>
+						<td>{{ $objekPajak?->nop }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LOKASI</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->alamatLengkap }}</td>
+						<td>{{ $objekPajak?->alamatLengkap }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">WAJIB PAJAK</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->datSubjekPajak->nm_wp }}</td>
+						<td>
+							{{ $objekPajak?->datSubjekPajak->nm_wp }}
+							<br>
+							{{ $objekPajak ? $dataKirim['Pemilik_Ak'] : null }}
+						</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">ALAMAT</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->datSubjekPajak->alamatLengkap }}</td>
+						<td>{{ $objekPajak?->datSubjekPajak->alamatLengkap }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">TANAH</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->total_luas_bumi }} m<sup>2</sup></td>
+						<td>{{ $objekPajak?->total_luas_bumi }} m<sup>2</sup></td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">BANGUNAN</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak->total_luas_bng }} m<sup>2</sup></td>
+						<td>{{ $objekPajak?->total_luas_bng }} m<sup>2</sup></td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">PAJAK</td>

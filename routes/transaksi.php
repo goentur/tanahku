@@ -3,6 +3,7 @@
 use App\Http\Controllers\BPHTBController;
 use App\Http\Controllers\PetaIntegrasiController;
 use App\Http\Controllers\SpptElektronikController;
+use App\Http\Controllers\VerifikasiPetaIntegrasiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -38,5 +39,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('peta-integrasi', [PetaIntegrasiController::class, 'peta'])->name('peta-integrasi');
   Route::post('data-bphtb', [PetaIntegrasiController::class, 'dataBPHTB'])->name('beranda.data-bphtb');
   Route::post('data-informasi', [PetaIntegrasiController::class, 'dataInformasi'])->name('beranda.data-informasi');
+  Route::post('perubahan-data', [PetaIntegrasiController::class, 'updateDataNOP'])->name('beranda.perubahan-data');
+  Route::middleware(['auth', 'verified', 'role:SUPER-ADMIN'])->prefix('verifikasi-peta-integrasi')->name('verifikasi-peta-integrasi.')->group(function () {
+    Route::get('/', [VerifikasiPetaIntegrasiController::class, 'index'])->name('index');
+    Route::post('data-peta', [VerifikasiPetaIntegrasiController::class, 'dataPeta'])->name('data-peta');
+    Route::post('data-sudah-verifikasi', [VerifikasiPetaIntegrasiController::class, 'dataSudahVerifikasi'])->name('data-sudah-verifikasi');
+    Route::post('informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'informasiPertanahan'])->name('informasi-pertanahan');
+    Route::post('simpan-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'simpanInformasiPertanahan'])->name('simpan-informasi-pertanahan');
+    Route::post('verifikasi-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'verifikasiInformasiPertanahan'])->name('verifikasi-informasi-pertanahan');
+  });
+  Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');
 });
-Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');

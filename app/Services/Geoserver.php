@@ -100,7 +100,7 @@ class Geoserver
         return $this->get(array_merge($default, $request));
     }
 
-    public function transaction($data, array $request, bool $asResponse = false)
+    public function transaction($data, bool $asResponse = false)
     {
         $default = [
             'service' => 'wfs',
