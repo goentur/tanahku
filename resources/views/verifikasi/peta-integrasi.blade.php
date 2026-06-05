@@ -248,6 +248,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		$(document).ready(function() {
@@ -257,6 +258,7 @@
 			let dataPersilTerpilih = null;
 			const mapLayers = [];
 
+			$('#modal_nop').mask('00.00.000.000.000-0000.0');
 			function getDefaultStyle(feature, resolution) {
 				const futureNIB = feature.get('NIB');
 				const futureKODEWILAYA = feature.get('KODEWILAYA');
@@ -934,6 +936,7 @@
 			});
 
 			$('#exampleModal').on('shown.bs.modal', function() {
+				$('#modal_nop').trigger('input');
 				$('#modal_nop').trigger('focus');
 			});
 
@@ -962,12 +965,9 @@
 								timer: 3000,
 								showConfirmButton: true
 							});
-
 							$('#exampleModal').modal('hide'); // Tutup modal
-							
 							if (activeLayerId) {
 								await refreshDataVerifikasi(activeLayerId);
-							
 								if (baseLayers[activeLayerId]) {
 									baseLayers[activeLayerId].layer.getSource().changed(); 
 								}

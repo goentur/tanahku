@@ -114,7 +114,7 @@ class VerifikasiPetaIntegrasiController extends Controller
         $request->validate([
             'modal_kode_wilayah'  => 'required|numeric|min_digits:8',
             'modal_nib'           => 'required|numeric|min_digits:5',
-            'modal_nop'           => 'required|numeric|digits:18',
+            'modal_nop'           => 'required|string',
             'modal_pemilik_awal'  => 'nullable|string',
             'modal_pemilik_akhir' => 'nullable|string',
             'modal_luas'          => 'required|numeric',
@@ -137,7 +137,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 ]);
                 $message = 'Informasi pertanahan berhasil diperbarui.';
             } else {
-                $nop = $request->modal_nop;
+                $nop = str_replace('.', '', str_replace('-', '', $request->modal_nop));
                 $nop1 = substr($nop, 0, 2);
                 $nop2 = substr($nop, 2, 2);
                 $nop3 = substr($nop, 4, 3);
@@ -149,7 +149,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
                     'nib'                => $request->modal_nib,
-                    'nop'                => $request->modal_nop,
+                    'nop'                => $nop,
                     'kd_propinsi'        => $nop1,
                     'kd_dati2'           => $nop2,
                     'kd_kecamatan'       => $nop3,
@@ -184,7 +184,7 @@ class VerifikasiPetaIntegrasiController extends Controller
         $request->validate([
             'kode_wilayah'  => 'required|numeric|min_digits:8',
             'nib'           => 'required|numeric|min_digits:5',
-            'nop'           => 'required|numeric|digits:18',
+            'nop'           => 'required|string',
         ]);
 
         try {
@@ -192,7 +192,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             $updatedRows = DatAtrbpn::where([
                 'kode_wilayah' => $request->kode_wilayah,
                 'nib'          => $request->nib,
-                'nop'          => $request->nop,
+                'nop'          => str_replace('.', '', str_replace('-', '', $request->nop)),
             ])->update([
                 'status' => 'TERVERIFIKASI',
             ]);
