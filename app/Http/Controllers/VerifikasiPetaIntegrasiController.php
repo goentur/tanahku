@@ -121,31 +121,37 @@ class VerifikasiPetaIntegrasiController extends Controller
             'modal_tipe_hak'      => 'required|string',
             'modal_no_hak'        => 'nullable|string',
         ]);
-
         try {
             $cekDatAtrBpn = DatAtrbpn::where([
                 'kode_wilayah' => $request->modal_kode_wilayah,
                 'nib'          => $request->modal_nib,
-                'nop'          => $request->modal_nop,
             ])->first();
 
+            $nop = str_replace('.', '', str_replace('-', '', $request->modal_nop));
+            $nop1 = substr($nop, 0, 2);
+            $nop2 = substr($nop, 2, 2);
+            $nop3 = substr($nop, 4, 3);
+            $nop4 = substr($nop, 7, 3);
+            $nop5 = substr($nop, 10, 3);
+            $nop6 = substr($nop, 13, 4);
+            $nop7 = substr($nop, 17, 1);
+
             if ($cekDatAtrBpn) {
-                $cekDatAtrBpn->update([
-                    'luas'               => $request->modal_luas,
-                    'jenis_hak'          => $request->modal_tipe_hak,
-                    'nomor_hak'          => $request->modal_no_hak,
+                DatAtrbpn::where([
+                    'kode_wilayah' => $request->modal_kode_wilayah,
+                    'nib'          => $request->modal_nib,
+                ])->update([
+                    'nop'                => $nop,
+                    'kd_propinsi'        => $nop1,
+                    'kd_dati2'           => $nop2,
+                    'kd_kecamatan'       => $nop3,
+                    'kd_kelurahan'       => $nop4,
+                    'kd_blok'            => $nop5,
+                    'no_urut'            => $nop6,
+                    'kd_jns_op'          => $nop7,
                 ]);
                 $message = 'Informasi pertanahan berhasil diperbarui.';
             } else {
-                $nop = str_replace('.', '', str_replace('-', '', $request->modal_nop));
-                $nop1 = substr($nop, 0, 2);
-                $nop2 = substr($nop, 2, 2);
-                $nop3 = substr($nop, 4, 3);
-                $nop4 = substr($nop, 7, 3);
-                $nop5 = substr($nop, 10, 3);
-                $nop6 = substr($nop, 13, 4);
-                $nop7 = substr($nop, 17, 1);
-
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
                     'nib'                => $request->modal_nib,
