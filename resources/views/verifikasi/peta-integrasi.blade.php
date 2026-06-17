@@ -170,17 +170,26 @@
 			<div class="card-body p-2">
 				<h6 class="mb-2">Legenda</h6>
 				<ul class="list-unstyled mb-0">
-					<li class="d-flex align-items-center mb-1">
-						<div style="width: 15px; height: 15px; background-color: #FFFFFF; margin-right: 8px;"></div>
-						<span>BIDANG BIASA</span>
+					<li class="d-flex align-items-center justify-content-between mb-1">
+						<div class="d-flex align-items-center">
+							<div style="width: 15px; height: 15px; background-color: #FFFFFF; margin-right: 8px;"></div>
+							<span>BIDANG BIASA</span>
+						</div>
+						<span class="badge bg-secondary ms-2" id="count-biasa">0</span>
 					</li>
-					<li class="d-flex align-items-center">
-						<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
-						<span>BIDANG DATA AWAL</span>
+					<li class="d-flex align-items-center justify-content-between mb-1">
+						<div class="d-flex align-items-center">
+							<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
+							<span>BIDANG DATA AWAL</span>
+						</div>
+						<span class="badge bg-info text-dark ms-2" id="count-data-awal">0</span>
 					</li>
-					<li class="d-flex align-items-center">
-						<div style="width: 15px; height: 15px; background-color: #15ff00; margin-right: 8px;"></div>
-						<span>BIDANG TERVERIFIKASI</span>
+					<li class="d-flex align-items-center justify-content-between">
+						<div class="d-flex align-items-center">
+							<div style="width: 15px; height: 15px; background-color: #15ff00; margin-right: 8px;"></div>
+							<span>BIDANG TERVERIFIKASI</span>
+						</div>
+						<span class="badge bg-success ms-2" id="count-terverifikasi">0</span>
 					</li>
 				</ul>
 			</div>
@@ -252,433 +261,483 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		$(document).ready(function() {
-			let datSudahVerifikasi = [];
-			let selectedFeature = null;
-			const baseLayers = {};
-			let dataPersilTerpilih = null;
-			const mapLayers = [];
+      let datSudahVerifikasi = {}; // Struktur sekarang: { 'layerId1': [data], 'layerId2': [data] }
+      let selectedFeature = null;
+      const baseLayers = {};
+      let dataPersilTerpilih = null;
+      const mapLayers = [];
 
-			$('#modal_nop').mask('00.00.000.000.000-0000.0');
-			function getDefaultStyle(feature, resolution) {
-				const futureNIB = feature.get('NIB');
-				const futureKODEWILAYA = feature.get('KODEWILAYA');
-				const matchedItem = datSudahVerifikasi.find(item =>
-					String(item.kode_wilayah) === String(futureKODEWILAYA) && String(item.nib) === String(futureNIB)
-				);
-				let strokeColor = 'white';
-				let fillColor = 'rgba(255, 255, 255, 0.1)';
-				let nop = '';
-				if (matchedItem) {
-					if (matchedItem.status == 'DATA AWAL') {
-						strokeColor = '#00FFFF';
-						fillColor = 'rgba(0, 255, 255, 0.4)';
-					} else if(matchedItem.status == 'TERVERIFIKASI') {
-						strokeColor = '#15ff00';
-						fillColor = 'rgba(21, 255, 0, 0.4)';
-					}
-					nop = matchedItem.nop || '';
-				}
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry) {
-					if (geometry.getType() === 'Polygon') {
-						areaM2 = ol.sphere.getArea(geometry);
-					} else if (geometry.getType() === 'MultiPolygon') {
-						const polygons = geometry.getPolygons();
-						for (const poly of polygons) {
-							areaM2 += ol.sphere.getArea(poly);
-						}
-					}
-				}
+      $('#modal_nop').mask('00.00.000.000.000-0000.0');
 
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
+      // =========================================================================
+      // HELPER FUNGSIONAL: Mencari item terverifikasi di dalam struktur Object Key-Value
+      // =========================================================================
+      function findMatchedItem(futureKODEWILAYA, futureNIB) {
+        let matched = null;
+        // Looping setiap layerId yang ada di dalam object datSudahVerifikasi
+        Object.keys(datSudahVerifikasi).forEach(layerId => {
+          const arrayData = datSudahVerifikasi[layerId];
+          if (Array.isArray(arrayData)) {
+            const found = arrayData.find(item => 
+              String(item.kode_wilayah) === String(futureKODEWILAYA) && String(item.nib) === String(futureNIB)
+            );
+            if (found) {
+              matched = found; // Jika ketemu, simpan ke variabel
+            }
+          }
+        });
+        return matched;
+      }
 
-				// --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
-				const nib = feature.get('NIB') || '';
-				let labelText = showLabel ? `${nib}` : null;
+      function getDefaultStyle(feature, resolution) {
+        const futureNIB = feature.get('NIB');
+        const futureKODEWILAYA = feature.get('KODEWILAYA');
+        
+        // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
+        const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
-				// PERBAIKAN 3: Hanya jalankan slice jika variabel 'nop' memiliki isi (tidak kosong/null)
-				if (nop) {
-					const last8 = nop.slice(-8);
-					const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
-					// Jika showLabel bernilai true, susun teks "NOP\nNIB"
-					if (showLabel) {
-						labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
-					}
-				}
+        let strokeColor = 'white';
+        let fillColor = 'rgba(255, 255, 255, 0.1)';
+        let nop = '';
+        if (matchedItem) {
+          if (matchedItem.status == 'DATA AWAL') {
+            strokeColor = '#00FFFF';
+            fillColor = 'rgba(0, 255, 255, 0.4)';
+          } else if(matchedItem.status == 'TERVERIFIKASI') {
+            strokeColor = '#15ff00';
+            fillColor = 'rgba(21, 255, 0, 0.4)';
+          }
+          nop = matchedItem.nop || '';
+        }
+        const geometry = feature.getGeometry();
+        let areaM2 = 0;
+        if (geometry) {
+          if (geometry.getType() === 'Polygon') {
+            areaM2 = ol.sphere.getArea(geometry);
+          } else if (geometry.getType() === 'MultiPolygon') {
+            const polygons = geometry.getPolygons();
+            for (const poly of polygons) {
+              areaM2 += ol.sphere.getArea(poly);
+            }
+          }
+        }
 
-				// --- RETURN STYLE KE OPENLAYERS ---
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 3
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-					text: labelText ? new ol.style.Text({
-						text: labelText,
-						font: 'bold 13px Arial, sans-serif',
-						fill: new ol.style.Fill({
-							color: '#FFFFFF'
-						}),
-						stroke: new ol.style.Stroke({
-							color: '#000000',
-							width: 2
-						}),
-						overflow: true,
-						textAlign: 'center',
-						textBaseline: 'middle',
-						maxAngle: 0,
-						offsetY: -10
-					}) : undefined
-				});
-			}
+        const pixelPerMeter = 1 / resolution;
+        const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+        const MIN_AREA_PX2 = 10000;
+        const showLabel = areaPx2 >= MIN_AREA_PX2;
+
+        // --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
+        const nib = feature.get('NIB') || '';
+        let labelText = showLabel ? `${nib}` : null;
+
+        if (nop) {
+          const last8 = nop.slice(-8);
+          const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
+          if (showLabel) {
+            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+          }
+        }
+
+        // --- RETURN STYLE KE OPENLAYERS ---
+        return new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: strokeColor,
+            width: 3
+          }),
+          fill: new ol.style.Fill({
+            color: fillColor
+          }),
+          text: labelText ? new ol.style.Text({
+            text: labelText,
+            font: 'bold 13px Arial, sans-serif',
+            fill: new ol.style.Fill({
+              color: '#FFFFFF'
+            }),
+            stroke: new ol.style.Stroke({
+              color: '#000000',
+              width: 2
+            }),
+            overflow: true,
+            textAlign: 'center',
+            textBaseline: 'middle',
+            maxAngle: 0,
+            offsetY: -10
+          }) : undefined
+        });
+      }
 
 
-			function getSelectedStyle(feature, resolution) {
-				const futureNIB = feature.get('NIB');
-				const futureKODEWILAYA = feature.get('KODEWILAYA');
-				const matchedItem = datSudahVerifikasi.find(item =>
-					String(item.kode_wilayah) === String(futureKODEWILAYA) && String(item.nib) === String(futureNIB)
-				);
+      function getSelectedStyle(feature, resolution) {
+        const futureNIB = feature.get('NIB');
+        const futureKODEWILAYA = feature.get('KODEWILAYA');
+        
+        // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
+        const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
-				let strokeColor = '#EFBF04';
-				let fillColor = 'rgba(0, 0, 0, 0)';
-				let nop = '';
-				if (matchedItem) {
-					nop = matchedItem.nop || '';
-				}
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry) {
-					if (geometry.getType() === 'Polygon') {
-						areaM2 = ol.sphere.getArea(geometry);
-					} else if (geometry.getType() === 'MultiPolygon') {
-						const polygons = geometry.getPolygons();
-						for (const poly of polygons) {
-							areaM2 += ol.sphere.getArea(poly);
-						}
-					}
-				}
+        let strokeColor = '#EFBF04';
+        let fillColor = 'rgba(0, 0, 0, 0)';
+        let nop = '';
+        if (matchedItem) {
+          nop = matchedItem.nop || '';
+        }
+        const geometry = feature.getGeometry();
+        let areaM2 = 0;
+        if (geometry) {
+          if (geometry.getType() === 'Polygon') {
+            areaM2 = ol.sphere.getArea(geometry);
+          } else if (geometry.getType() === 'MultiPolygon') {
+            const polygons = geometry.getPolygons();
+            for (const poly of polygons) {
+              areaM2 += ol.sphere.getArea(poly);
+            }
+          }
+        }
 
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
+        const pixelPerMeter = 1 / resolution;
+        const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+        const MIN_AREA_PX2 = 10000;
+        const showLabel = areaPx2 >= MIN_AREA_PX2;
 
-				// --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
-				const nib = feature.get('NIB') || '';
-				let labelText = showLabel ? `${nib}` : null;
+        // --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
+        const nib = feature.get('NIB') || '';
+        let labelText = showLabel ? `${nib}` : null;
 
-				// PERBAIKAN 3: Hanya jalankan slice jika variabel 'nop' memiliki isi (tidak kosong/null)
-				if (nop) {
-					const last8 = nop.slice(-8);
-					const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
-					// Jika showLabel bernilai true, susun teks "NOP\nNIB"
-					if (showLabel) {
-						labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
-					}
-				}
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 3
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-					text: labelText ? new ol.style.Text({
-						text: labelText,
-						font: 'bold 13px Arial, sans-serif',
-						fill: new ol.style.Fill({
-							color: '#FFFFFF'
-						}),
-						stroke: new ol.style.Stroke({
-							color: '#000000',
-							width: 2
-						}),
-						overflow: true,
-						textAlign: 'center',
-						textBaseline: 'middle',
-						maxAngle: 0,
-						offsetY: -10
-					}) : undefined
-				});
-			}
+        if (nop) {
+          const last8 = nop.slice(-8);
+          const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
+          if (showLabel) {
+            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+          }
+        }
+        return new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: strokeColor,
+            width: 3
+          }),
+          fill: new ol.style.Fill({
+            color: fillColor
+          }),
+          text: labelText ? new ol.style.Text({
+            text: labelText,
+            font: 'bold 13px Arial, sans-serif',
+            fill: new ol.style.Fill({
+              color: '#FFFFFF'
+            }),
+            stroke: new ol.style.Stroke({
+              color: '#000000',
+              width: 2
+            }),
+            overflow: true,
+            textAlign: 'center',
+            textBaseline: 'middle',
+            maxAngle: 0,
+            offsetY: -10
+          }) : undefined
+        });
+      }
 
-			// Style untuk highlight hasil pencarian (BORDER GOLD)
-			function getSearchHighlightStyle(feature, resolution) {
-				const futureNIB = feature.get('NIB');
-				const futureKODEWILAYA = feature.get('KODEWILAYA');
-				const matchedItem = datSudahVerifikasi.find(item =>
-					String(item.kode_wilayah) === String(futureKODEWILAYA) && String(item.nib) === String(futureNIB)
-				);
+      // Style untuk highlight hasil pencarian (BORDER GOLD)
+      function getSearchHighlightStyle(feature, resolution) {
+        const futureNIB = feature.get('NIB');
+        const futureKODEWILAYA = feature.get('KODEWILAYA');
+        
+        // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
+        const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
-				let strokeColor = '#FFD700';
-				let fillColor = 'rgba(255, 215, 0, 0.5)';
-				let nop = '';
-				if (matchedItem) {
-					nop = matchedItem.nop || '';
-				}
-				const geometry = feature.getGeometry();
-				let areaM2 = 0;
-				if (geometry) {
-					if (geometry.getType() === 'Polygon') {
-						areaM2 = ol.sphere.getArea(geometry);
-					} else if (geometry.getType() === 'MultiPolygon') {
-						const polygons = geometry.getPolygons();
-						for (const poly of polygons) {
-							areaM2 += ol.sphere.getArea(poly);
-						}
-					}
-				}
+        let strokeColor = '#FFD700';
+        let fillColor = 'rgba(255, 215, 0, 0.5)';
+        let nop = '';
+        if (matchedItem) {
+          nop = matchedItem.nop || '';
+        }
+        const geometry = feature.getGeometry();
+        let areaM2 = 0;
+        if (geometry) {
+          if (geometry.getType() === 'Polygon') {
+            areaM2 = ol.sphere.getArea(geometry);
+          } else if (geometry.getType() === 'MultiPolygon') {
+            const polygons = geometry.getPolygons();
+            for (const poly of polygons) {
+              areaM2 += ol.sphere.getArea(poly);
+            }
+          }
+        }
 
-				const pixelPerMeter = 1 / resolution;
-				const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
-				const MIN_AREA_PX2 = 10000;
-				const showLabel = areaPx2 >= MIN_AREA_PX2;
+        const pixelPerMeter = 1 / resolution;
+        const areaPx2 = areaM2 * (pixelPerMeter * pixelPerMeter);
+        const MIN_AREA_PX2 = 10000;
+        const showLabel = areaPx2 >= MIN_AREA_PX2;
 
-				// --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
-				const nib = feature.get('NIB') || '';
-				let labelText = showLabel ? `${nib}` : null;
+        // --- PROSES POTONG & FORMAT TEXT LABELLING NOP ---
+        const nib = feature.get('NIB') || '';
+        let labelText = showLabel ? `${nib}` : null;
 
-				// PERBAIKAN 3: Hanya jalankan slice jika variabel 'nop' memiliki isi (tidak kosong/null)
-				if (nop) {
-					const last8 = nop.slice(-8);
-					const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
-					// Jika showLabel bernilai true, susun teks "NOP\nNIB"
-					if (showLabel) {
-						labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
-					}
-				}
-				return new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: strokeColor,
-						width: 4 // Border lebih tebal untuk highlight
-					}),
-					fill: new ol.style.Fill({
-						color: fillColor
-					}),
-					text: labelText ? new ol.style.Text({
-						text: labelText,
-						font: 'bold 14px Arial, sans-serif',
-						fill: new ol.style.Fill({
-							color: '#FFFFFF'
-						}),
-						stroke: new ol.style.Stroke({
-							color: '#000000',
-							width: 3
-						}),
-						overflow: true,
-						textAlign: 'center',
-						textBaseline: 'middle',
-						maxAngle: 0,
-						offsetY: -10
-					}) : undefined
-				});
-			}
+        if (nop) {
+          const last8 = nop.slice(-8);
+          const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
+          if (showLabel) {
+            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+          }
+        }
+        return new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: strokeColor,
+            width: 4
+          }),
+          fill: new ol.style.Fill({
+            color: fillColor
+          }),
+          text: labelText ? new ol.style.Text({
+            text: labelText,
+            font: 'bold 14px Arial, sans-serif',
+            fill: new ol.style.Fill({
+              color: '#FFFFFF'
+            }),
+            stroke: new ol.style.Stroke({
+              color: '#000000',
+              width: 3
+            }),
+            overflow: true,
+            textAlign: 'center',
+            textBaseline: 'middle',
+            maxAngle: 0,
+            offsetY: -10
+          }) : undefined
+        });
+      }
 
-			// === Setup Peta ===
-			const googleSatelliteLayer = new ol.layer.Tile({
-				source: new ol.source.XYZ({
-					url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-					attributions: 'Map data ©2025 Google',
-					maxZoom: 19
-				})
-			});
+      // === Setup Peta ===
+      const googleSatelliteLayer = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+          url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+          attributions: 'Map data ©2025 Google',
+          maxZoom: 19
+        })
+      });
 
-			const map = new ol.Map({
-				target: 'map',
-				layers: [googleSatelliteLayer],
-				view: new ol.View({
-					center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
-					zoom: 16
-				})
-			});
+      const map = new ol.Map({
+        target: 'map',
+        layers: [googleSatelliteLayer],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([109.6987027, -6.8871928]),
+          zoom: 16
+        })
+      });
 
-			map.on('click', function(evt) {
-				let clickedFeature = null;
-				map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-					clickedFeature = feature;
-				});
+      map.on('click', function(evt) {
+        let clickedFeature = null;
+        map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+          clickedFeature = feature;
+        });
 
-				if (selectedFeature) {
-					selectedFeature.setStyle(null);
-					selectedFeature = null;
-				}
-				if (clickedFeature) {
-					selectedFeature = clickedFeature;
-					const futureNIB = clickedFeature.get('NIB');
-					const futureKODEWILAYA = clickedFeature.get('KODEWILAYA');
-					const matchedItem = datSudahVerifikasi.find(item =>
-						String(item.kode_wilayah) === String(futureKODEWILAYA) && String(item.nib) === String(futureNIB)
-					);
-					selectedFeature.setStyle(function(feature, resolution) {
-						return getSelectedStyle(feature, resolution);
-					});
-					let nop = '';
-					let status = 'belum';
-					if (matchedItem) {
-						nop = matchedItem.nop || '';
-						status = (matchedItem.status == 'TERVERIFIKASI') ? 'final' : 'belum';
-					}
-					const datakirim = {
-						'KODEWILAYA': clickedFeature.get('KODEWILAYA'),
-						'NIB': clickedFeature.get('NIB'),
-						'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
-						'Nomor_Hak': clickedFeature.get('Nomor_Hak'),
-						'TIPEHAK': clickedFeature.get('TIPEHAK'),
-						'Pemilik_Pe': clickedFeature.get('Pemilik_Pe'),
-						'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
-						'nop': nop,
-						'status': status,
-					};
-					dataPersilTerpilih = datakirim;
-					$('a[href="#informasiTab"]').tab('show');
-					$('#informasidata').html(`<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat informasi...</p></div>`);
-					loadInformasiData(datakirim, nop);
-				}
-			});
+        if (selectedFeature) {
+          selectedFeature.setStyle(null);
+          selectedFeature = null;
+        }
+        if (clickedFeature) {
+          selectedFeature = clickedFeature;
+          const futureNIB = clickedFeature.get('NIB');
+          const futureKODEWILAYA = clickedFeature.get('KODEWILAYA');
+          
+          // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
+          const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
-			function loadInformasiData(datakirim, nop) {
-				$.ajax({
-					url: '{{ route("verifikasi-peta-integrasi.informasi-pertanahan") }}',
-					type: 'POST',
-					data: {
-						_token: $('meta[name="csrf-token"]').attr('content'),
-						datakirim: datakirim,
-						nop: nop
-					},
-					success: function(htmlResponse) {
-						$('#informasidata').html(htmlResponse);
-						$('[data-fancybox]').fancybox({
-							buttons: ['zoom', 'close'],
-							loop: true
-						});
-					},
-					error: function(xhr, status, error) {
-						$('#informasidata').html('<p class="text-danger">Gagal memuat informasi.</p>');
-					}
-				});
-			}
-			async function refreshDataVerifikasi(layerId) {
-				try {
-					// Tembak ulang route data verifikasi untuk memperbarui variabel global
-					datSudahVerifikasi = await $.ajax({
-						url: '{{ route("verifikasi-peta-integrasi.data-sudah-verifikasi") }}',
-						method: 'POST',
-						data: {
-							_token: $('meta[name="csrf-token"]').attr('content'),
-							'wilayah': layerId
-						}
-					});
-					console.log('Data verifikasi untuk layer ' + layerId + ' berhasil diperbarui secara realtime.');
-				} catch (error) {
-					console.error("Gagal memperbarui data verifikasi:", error);
-				}
-			}
-			window.toggleLayer = async function(layerId, buttonElement) {
-				if (!baseLayers[layerId]) {
+          selectedFeature.setStyle(function(feature, resolution) {
+            return getSelectedStyle(feature, resolution);
+          });
+          let nop = '';
+          let status = 'belum';
+          if (matchedItem) {
+            nop = matchedItem.nop || '';
+            status = (matchedItem.status == 'TERVERIFIKASI') ? 'final' : 'belum';
+          }
+          const datakirim = {
+            'KODEWILAYA': clickedFeature.get('KODEWILAYA'),
+            'NIB': clickedFeature.get('NIB'),
+            'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
+            'Nomor_Hak': clickedFeature.get('Nomor_Hak'),
+            'TIPEHAK': clickedFeature.get('TIPEHAK'),
+            'Pemilik_Pe': clickedFeature.get('Pemilik_Pe'),
+            'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
+            'nop': nop,
+            'status': status,
+          };
+          dataPersilTerpilih = datakirim;
+          $('a[href="#informasiTab"]').tab('show');
+          $('#informasidata').html(`<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat informasi...</p></div>`);
+          loadInformasiData(datakirim, nop);
+        }
+      });
 
-					const $btn = $(buttonElement);
-					$btn.prop('disabled', true);
+      function loadInformasiData(datakirim, nop) {
+        $.ajax({
+          url: '{{ route("verifikasi-peta-integrasi.informasi-pertanahan") }}',
+          type: 'POST',
+          data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            datakirim: datakirim,
+            nop: nop
+          },
+          success: function(htmlResponse) {
+            $('#informasidata').html(htmlResponse);
+            $('[data-fancybox]').fancybox({
+              buttons: ['zoom', 'close'],
+              loop: true
+            });
+          },
+          error: function(xhr, status, error) {
+            $('#informasidata').html('<p class="text-danger">Gagal memuat informasi.</p>');
+          }
+        });
+      }
 
-					try {
-						datSudahVerifikasi = await $.ajax({
-							url: '{{ route("verifikasi-peta-integrasi.data-sudah-verifikasi") }}',
-							method: 'POST',
-							data: {
-								_token: $('meta[name="csrf-token"]').attr('content'),
-								'wilayah': layerId
-							}
-						});
-						const geojsonData = await $.ajax({
-							url: '{{ route("verifikasi-peta-integrasi.data-peta") }}',
-							type: 'POST',
-							data: {
-								_token: $('meta[name="csrf-token"]').attr('content'),
-								id: layerId
-							}
-						});
-						const source = new ol.source.Vector();
-						const layer = new ol.layer.Vector({
-							source: source,
-							style: getDefaultStyle
-						});
+      async function refreshDataVerifikasi(layerId) {
+        try {
+          datSudahVerifikasi[layerId] = await $.ajax({
+            url: '{{ route("verifikasi-peta-integrasi.data-sudah-verifikasi") }}',
+            method: 'POST',
+            data: {
+              _token: $('meta[name="csrf-token"]').attr('content'),
+              'wilayah': layerId
+            }
+          });
+          console.log('Data verifikasi untuk layer ' + layerId + ' berhasil disimpan di state object.');
+          updateLegendCounters();
+        } catch (error) {
+          console.error("Gagal memperbarui data verifikasi:", error);
+        }
+      }
 
-						const format = new ol.format.GeoJSON();
-						const features = format.readFeatures(geojsonData, {
-							dataProjection: 'EPSG:4326',
-							featureProjection: 'EPSG:3857'
-						});
+      window.toggleLayer = async function(layerId, buttonElement) {
+        if (!baseLayers[layerId]) {
+          const $btn = $(buttonElement);
+          $btn.prop('disabled', true);
 
-						source.addFeatures(features);
-						map.addLayer(layer);
+          try {
+            await refreshDataVerifikasi(layerId);
 
-						// Simpan state layer
-						baseLayers[layerId] = {
-							layer,
-							button: buttonElement,
-							visible: true
-						};
+            const geojsonData = await $.ajax({
+              url: '{{ route("verifikasi-peta-integrasi.data-peta") }}',
+              type: 'POST',
+              data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                id: layerId
+              }
+            });
+            const source = new ol.source.Vector();
+            const layer = new ol.layer.Vector({
+              source: source,
+              style: getDefaultStyle
+            });
 
-						// Animasi Fit / Zoom Peta
-						setTimeout(function() {
-							const extent = source.getExtent();
-							if (extent && extent[0] !== Infinity) {
-								map.getView().fit(extent, {
-									padding: [50, 50, 50, 50],
-									duration: 1000,
-									maxZoom: 18
-								});
-							} else if (features.length === 1) {
-								const geom = features[0].getGeometry();
-								if (geom) {
-									const coord = geom.getType() === 'Point' ? geom.getCoordinates() : geom.getExtent();
-									map.getView().setCenter(coord);
-									map.getView().setZoom(16);
-								}
-							}
-						}, 100);
+            const format = new ol.format.GeoJSON();
+            const features = format.readFeatures(geojsonData, {
+              dataProjection: 'EPSG:4326',
+              featureProjection: 'EPSG:3857'
+            });
 
-						// Ubah UI Tombol menjadi aktif (Mata Terbuka/Tutup)
-						$btn.removeClass('btn-primary').addClass('btn-danger')
-							.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+            source.addFeatures(features);
+            map.addLayer(layer);
 
-					} catch (error) {
-						// Blok ini akan menangkap JIKA salah satu atau kedua AJAX di atas mengalami error (500, 404, dll)
-						console.error("Gagal memproses layer:", error);
-						Swal.fire("Error", "Terjadi kesalahan sistem saat memuat data dan Peta.", "error");
+            baseLayers[layerId] = {
+              layer,
+              button: buttonElement,
+              visible: true
+            };
+            
+            updateLegendCounters();
 
-					} finally {
-						// Code di dalam finally akan SELALU dijalankan, baik sukses maupun error
-						// Mengaktifkan kembali tombol yang di-disable tadi
-						$btn.prop('disabled', false);
-					}
+            setTimeout(function() {
+              const extent = source.getExtent();
+              if (extent && extent[0] !== Infinity) {
+                map.getView().fit(extent, {
+                  padding: [50, 50, 50, 50],
+                  duration: 1000,
+                  maxZoom: 18
+                });
+              } else if (features.length === 1) {
+                const geom = features[0].getGeometry();
+                if (geom) {
+                  const coord = geom.getType() === 'Point' ? geom.getCoordinates() : geom.getExtent();
+                  map.getView().setCenter(coord);
+                  map.getView().setZoom(16);
+                }
+              }
+            }, 100);
 
-				} else {
-					// 2. Jika layer SUDAH pernah dimuat, tinggal toggle visibility saja (Tanpa AJAX)
-					const entry = baseLayers[layerId];
-					const isVisible = entry.layer.getVisible();
-					const newVisible = !isVisible;
+            $btn.removeClass('btn-primary').addClass('btn-danger')
+              .find('i').removeClass('fa-eye').addClass('fa-eye-slash');
 
-					entry.layer.setVisible(newVisible);
-					entry.visible = newVisible;
+          } catch (error) {
+            console.error("Gagal memproses layer:", error);
+            Swal.fire("Error", "Terjadi kesalahan sistem saat memuat data dan Peta.", "error");
+          } finally {
+            $btn.prop('disabled', false);
+          }
 
-					const $btn = $(entry.button);
-					if (newVisible) {
-						$btn.removeClass('btn-primary').addClass('btn-danger');
-						$btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-					} else {
-						$btn.removeClass('btn-danger').addClass('btn-primary');
-						$btn.find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-					}
-				}
-			};
+        } else {
+          const entry = baseLayers[layerId];
+          const isVisible = entry.layer.getVisible();
+          const newVisible = !isVisible;
+
+          entry.layer.setVisible(newVisible);
+          entry.visible = newVisible;
+
+          updateLegendCounters();
+
+          const $btn = $(entry.button);
+          if (newVisible) {
+            $btn.removeClass('btn-primary').addClass('btn-danger');
+            $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+          } else {
+            $btn.removeClass('btn-danger').addClass('btn-primary');
+            $btn.find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+          }
+        }
+      };
+
+      // === FUNGSI HITUNG TOTAL BIDANG DINAMIS PER JENIS ===
+      function updateLegendCounters() {
+        let totalBiasa = 0;
+        let totalDataAwal = 0;
+        let totalTerverifikasi = 0;
+
+        Object.keys(baseLayers).forEach(layerId => {
+          const entry = baseLayers[layerId];
+          
+          if (entry && entry.layer && entry.layer.getVisible()) {
+            const source = entry.layer.getSource();
+            if (source) {
+              const features = source.getFeatures();
+              
+              features.forEach(feature => {
+                const futureNIB = feature.get('NIB');
+                const futureKODEWILAYA = feature.get('KODEWILAYA');
+                
+                // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
+                const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
+
+                if (matchedItem) {
+                  if (matchedItem.status === 'DATA AWAL') {
+                    totalDataAwal++;
+                  } else if (matchedItem.status === 'TERVERIFIKASI') {
+                    totalTerverifikasi++;
+                  } else {
+                    totalBiasa++;
+                  }
+                } else {
+                  totalBiasa++;
+                }
+              });
+            }
+          }
+        });
+
+        $('#count-biasa').text(totalBiasa);
+        $('#count-data-awal').text(totalDataAwal);
+        $('#count-terverifikasi').text(totalTerverifikasi);
+      }
 
 			// === FITUR PENCARIAN BERDASARKAN FIELD ===
 			let searchResults = [];
