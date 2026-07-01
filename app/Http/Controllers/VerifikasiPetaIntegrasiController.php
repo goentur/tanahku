@@ -52,6 +52,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'nop' => 'nullable|string',
         ]);
         $objekPajak = null;
+        $sudahVerifikasi = false;
         $dataKirim = $request->datakirim;
         $urls = [];
         if ($request->nop) {
@@ -106,8 +107,27 @@ class VerifikasiPetaIntegrasiController extends Controller
                     $urls[] = '/storage/foto/' . $folder . '/' . basename($largestFile);
                 }
             }
+            $datAtrBpn = DatAtrbpn::where('kode_wilayah', $dataKirim['KODEWILAYA'])
+                ->where('nib', $dataKirim['NIB'])
+                ->where('kd_propinsi', $nop1)
+                ->where('kd_dati2', $nop2)
+                ->where('kd_kecamatan', $nop3)
+                ->where('kd_kelurahan', $nop4)
+                ->where('kd_blok', $nop5)
+                ->where('no_urut', $nop6)
+                ->where('kd_jns_op', $nop7)
+                ->whereNull('lokasi')
+                ->whereNull('nama_sesuai')
+                ->whereNull('luas_sesuai')
+                ->whereNull('bangunan_sesuai')
+                ->whereNull('nop_gabungan')
+                ->whereNull('nop_pecah')
+                ->first();
+            if ($datAtrBpn) {
+                $sudahVerifikasi = true;
+            }
         }
-        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls'));
+        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi'));
     }
     public function simpanInformasiPertanahan(Request $request)
     {
@@ -188,22 +208,32 @@ class VerifikasiPetaIntegrasiController extends Controller
     {
         // Validasi data kiriman frontend
         $request->validate([
-            'kode_wilayah'  => 'required|numeric|min_digits:8',
-            'nib'           => 'required|numeric|min_digits:5',
-            'nop'           => 'required|string',
+            'kode_wilayah' => 'required|numeric|min_digits:8',
+            'nib' => 'required|numeric|min_digits:5',
+            'nop' => 'required|string',
+            'lokasi' => 'required|string|in:Y,T',
+            'nama_sesuai' => 'required|string|in:Y,T',
+            'luas_tanah' => 'required|string|in:Y,T',
+            'bangunan_sesuai' => 'required|string|in:Y,T',
+            'nop_gabungan' => 'required|string|in:Y,T',
+            'nop_pecahan' => 'required|string|in:Y,T',
         ]);
 
         try {
-            // Cari data berdasarkan kode_wilayah dan NIB
             $updatedRows = DatAtrbpn::where([
                 'kode_wilayah' => $request->kode_wilayah,
                 'nib'          => $request->nib,
                 'nop'          => str_replace('.', '', str_replace('-', '', $request->nop)),
             ])->update([
                 'status' => 'TERVERIFIKASI',
+                'lokasi' => $request->lokasi,
+                'nama_sesuai' => $request->nama_sesuai,
+                'luas_sesuai' => $request->luas_tanah,
+                'bangunan_sesuai' => $request->bangunan_sesuai,
+                'nop_gabungan' => $request->nop_gabungan,
+                'nop_pecah' => $request->nop_pecahan
             ]);
 
-            // Jika baris yang terupdate adalah 0, berarti data tidak ditemukan
             if ($updatedRows === 0) {
                 return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan.'], 404);
             }

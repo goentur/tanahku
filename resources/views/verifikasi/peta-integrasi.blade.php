@@ -375,12 +375,13 @@
         // PERUBAHAN SOLUSI 2: Menggunakan fungsi helper pencarian object
         const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
-        let strokeColor = '#EFBF04';
-        let fillColor = 'rgba(0, 0, 0, 0)';
+        let strokeColor = '#FFD700';
+        let fillColor = 'rgba(255, 215, 0, 0.2)';
         let nop = '';
         if (matchedItem) {
           nop = matchedItem.nop || '';
         }
+
         const geometry = feature.getGeometry();
         let areaM2 = 0;
         if (geometry) {
@@ -602,7 +603,6 @@
               'wilayah': layerId
             }
           });
-          console.log('Data verifikasi untuk layer ' + layerId + ' berhasil disimpan di state object.');
           updateLegendCounters();
         } catch (error) {
           console.error("Gagal memperbarui data verifikasi:", error);
@@ -1093,14 +1093,20 @@
 					if (result.isConfirmed) {
 						const btnSubmit = $(this);
 						btnSubmit.prop('disabled', true).text('Memproses...');
+						// 1. Ambil data dari form verifikasi yang di-load via AJAX
+						const formData = $('#formVerifikasi').serialize();
+
+						// 2. Gabungkan data form dengan data tambahan yang sudah ada
+						const dataKirim = $.param({
+							'kode_wilayah': dataPersilTerpilih.KODEWILAYA,
+							'nib': dataPersilTerpilih.NIB,
+							'nop': dataPersilTerpilih.nop
+						})+ '&' + formData;
+
 						$.ajax({
 							url: '{{ route("verifikasi-peta-integrasi.verifikasi-informasi-pertanahan") }}',
 							type: 'POST',
-							data: {
-								'kode_wilayah': dataPersilTerpilih.KODEWILAYA,
-								'nib': dataPersilTerpilih.NIB,
-								'nop': dataPersilTerpilih.nop,
-							},
+							data: dataKirim,
 							headers: {
 								'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
 								'Accept': 'application/json'
