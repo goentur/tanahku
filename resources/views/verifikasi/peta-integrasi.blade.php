@@ -211,7 +211,7 @@
 								<div class="mb-3">
 									<label for="modal_kode_wilayah" class="form-label">KODE WILAYAH</label>
 									<input required type="text" placeholder="Masukan Kode Wilayah" name="modal_kode_wilayah" class="form-control" id="modal_kode_wilayah">
-									<input type="text" name="modal_id_peta_bidang" class="form-control" id="modal_id_peta_bidang">
+									<input type="hidden" name="modal_id_peta_bidang" class="form-control" id="modal_id_peta_bidang">
 								</div>
 								<div class="mb-3">
 									<label for="modal_nib" class="form-label">NIB</label>

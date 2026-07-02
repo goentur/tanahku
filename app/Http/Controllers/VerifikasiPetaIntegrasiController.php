@@ -173,7 +173,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                     'no_urut'      => $nop6,
                     'kd_jns_op'    => $nop7,
                 ]);
-                $message = 'Informasi pertanahan berjaya diperbarui di database lokal.';
+                $message = 'Informasi pertanahan berhasil diperbarui.';
             } else {
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
@@ -194,7 +194,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                     'jenis_hak'          => $request->modal_tipe_hak,
                     'nomor_hak'          => $request->modal_no_hak,
                 ]);
-                $message = 'Informasi pertanahan baru berjaya disimpan di database lokal.';
+                $message = 'Informasi pertanahan berhasil disimpan.';
             }
             $layer = 'bpn:' . $request->modal_kode_wilayah;
             $modal_id_peta_bidang = explode('.', $request->modal_id_peta_bidang);
@@ -227,7 +227,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             }
             $resBody = $responseGeoServer->body();
             if (str_contains($resBody, 'ExceptionReport')) {
-                throw new \Exception('Ralat GeoServer: ' . strip_tags($resBody));
+                throw new \Exception('Error GeoServer: ' . strip_tags($resBody));
             }
             DB::commit();
 
