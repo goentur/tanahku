@@ -7,6 +7,8 @@ use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
@@ -132,21 +134,18 @@ class VerifikasiPetaIntegrasiController extends Controller
     public function simpanInformasiPertanahan(Request $request)
     {
         $request->validate([
-            'modal_kode_wilayah'  => 'required|numeric|min_digits:8',
-            'modal_nib'           => 'required|numeric|min_digits:5',
-            'modal_nop'           => 'required|string',
-            'modal_pemilik_awal'  => 'nullable|string',
+            'modal_id_peta_bidang' => 'required',
+            'modal_kode_wilayah' => 'required|numeric|min_digits:8',
+            'modal_nib' => 'required|numeric|min_digits:5',
+            'modal_nop' => 'required|string',
+            'modal_pemilik_awal' => 'nullable|string',
             'modal_pemilik_akhir' => 'nullable|string',
-            'modal_luas'          => 'required|numeric',
-            'modal_tipe_hak'      => 'required|string',
-            'modal_no_hak'        => 'nullable|string',
+            'modal_luas' => 'required|numeric',
+            'modal_tipe_hak' => 'required|string',
+            'modal_no_hak' => 'nullable|string',
         ]);
+        DB::beginTransaction();
         try {
-            $cekDatAtrBpn = DatAtrbpn::where([
-                'kode_wilayah' => $request->modal_kode_wilayah,
-                'nib'          => $request->modal_nib,
-            ])->first();
-
             $nop = str_replace('.', '', str_replace('-', '', $request->modal_nop));
             $nop1 = substr($nop, 0, 2);
             $nop2 = substr($nop, 2, 2);
@@ -155,22 +154,26 @@ class VerifikasiPetaIntegrasiController extends Controller
             $nop5 = substr($nop, 10, 3);
             $nop6 = substr($nop, 13, 4);
             $nop7 = substr($nop, 17, 1);
+            $cekDatAtrBpn = DatAtrbpn::where([
+                'kode_wilayah' => $request->modal_kode_wilayah,
+                'nib'          => $request->modal_nib,
+            ])->first();
 
             if ($cekDatAtrBpn) {
                 DatAtrbpn::where([
                     'kode_wilayah' => $request->modal_kode_wilayah,
                     'nib'          => $request->modal_nib,
                 ])->update([
-                    'nop'                => $nop,
-                    'kd_propinsi'        => $nop1,
-                    'kd_dati2'           => $nop2,
-                    'kd_kecamatan'       => $nop3,
-                    'kd_kelurahan'       => $nop4,
-                    'kd_blok'            => $nop5,
-                    'no_urut'            => $nop6,
-                    'kd_jns_op'          => $nop7,
+                    'nop'          => $nop,
+                    'kd_propinsi'  => $nop1,
+                    'kd_dati2'     => $nop2,
+                    'kd_kecamatan' => $nop3,
+                    'kd_kelurahan' => $nop4,
+                    'kd_blok'      => $nop5,
+                    'no_urut'      => $nop6,
+                    'kd_jns_op'    => $nop7,
                 ]);
-                $message = 'Informasi pertanahan berhasil diperbarui.';
+                $message = 'Informasi pertanahan berjaya diperbarui di database lokal.';
             } else {
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
@@ -191,16 +194,52 @@ class VerifikasiPetaIntegrasiController extends Controller
                     'jenis_hak'          => $request->modal_tipe_hak,
                     'nomor_hak'          => $request->modal_no_hak,
                 ]);
-                $message = 'Informasi pertanahan baru berhasil disimpan.';
+                $message = 'Informasi pertanahan baru berjaya disimpan di database lokal.';
             }
+            $layer = 'bpn:' . $request->modal_kode_wilayah;
+            $modal_id_peta_bidang = explode('.', $request->modal_id_peta_bidang);
+            $idGeoServer = $modal_id_peta_bidang[1];
+
+            $xmlPayload = '<?xml version="1.0" encoding="UTF-8"?>
+                <wfs:Transaction service="WFS" version="1.1.0"
+                xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:ogc="http://www.opengis.net/ogc"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+                <wfs:Update typeName="' . $layer . '">
+                    <wfs:Property>
+                    <wfs:Name>d_nop</wfs:Name>
+                    <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
+                    </wfs:Property>
+                    <ogc:Filter>
+                    <ogc:FeatureId fid="' . $idGeoServer . '"/>
+                    </ogc:Filter>
+                </wfs:Update>
+                </wfs:Transaction>';
+
+            $urlGeoServer = 'http://192.168.75.15:8080/geoserver/wfs';
+            $responseGeoServer = Http::timeout(15)
+                ->withBasicAuth('admin', 'geoserver')
+                ->withBody($xmlPayload, 'text/xml')
+                ->post($urlGeoServer);
+            if ($responseGeoServer->failed()) {
+                throw new \Exception('Gagal menyambung ke GeoServer atau sambungan terputus.');
+            }
+            $resBody = $responseGeoServer->body();
+            if (str_contains($resBody, 'ExceptionReport')) {
+                throw new \Exception('Ralat GeoServer: ' . strip_tags($resBody));
+            }
+            DB::commit();
+
             return response()->json([
                 'status'  => 'success',
                 'message' => $message
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Gagal menyimpan data: ' . $e->getMessage()
+                'message' => 'Gagal menyimpan data (Proses Dibatalkan): ' . $e->getMessage()
             ], 500);
         }
     }

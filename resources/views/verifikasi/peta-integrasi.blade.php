@@ -211,6 +211,7 @@
 								<div class="mb-3">
 									<label for="modal_kode_wilayah" class="form-label">KODE WILAYAH</label>
 									<input required type="text" placeholder="Masukan Kode Wilayah" name="modal_kode_wilayah" class="form-control" id="modal_kode_wilayah">
+									<input type="text" name="modal_id_peta_bidang" class="form-control" id="modal_id_peta_bidang">
 								</div>
 								<div class="mb-3">
 									<label for="modal_nib" class="form-label">NIB</label>
@@ -554,6 +555,7 @@
             status = (matchedItem.status == 'TERVERIFIKASI') ? 'final' : 'belum';
           }
           const datakirim = {
+            'ID_PETA_BIDANG': clickedFeature.getId(),
             'KODEWILAYA': clickedFeature.get('KODEWILAYA'),
             'NIB': clickedFeature.get('NIB'),
             'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
@@ -564,6 +566,7 @@
             'nop': nop,
             'status': status,
           };
+					console.log(clickedFeature)
           dataPersilTerpilih = datakirim;
           $('a[href="#informasiTab"]').tab('show');
           $('#informasidata').html(`<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat informasi...</p></div>`);
@@ -984,6 +987,7 @@
 					return;
 				}
 				const dataKirim = dataPersilTerpilih;
+				$('#modal_id_peta_bidang').val(dataKirim.ID_PETA_BIDANG);
 				$('#modal_kode_wilayah').val(dataKirim.KODEWILAYA);
 				$('#modal_nib').val(dataKirim.NIB);
 				$('#modal_nop').val(dataKirim.nop);
