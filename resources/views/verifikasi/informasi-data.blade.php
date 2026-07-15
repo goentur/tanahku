@@ -186,6 +186,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="align-middle">LUAS BANGUANAN</td>
+							<td colspan="2">
+									<input class="form-control form-control-sm" type="text" name="luas_bangunan" id="luas_bangunan" value="{{ $objekPajak?->total_luas_bng }}">
+							</td>
+						</tr>
+						<tr>
 							<td>NOP GABUNGAN</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="nop_gabungan_ya" class="w-100 m-0 p-0" style="cursor: pointer;">

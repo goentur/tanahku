@@ -254,6 +254,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'nama_sesuai' => 'required|string|in:Y,T',
             'luas_tanah' => 'required|string|in:Y,T',
             'bangunan_sesuai' => 'required|string|in:Y,T',
+            'luas_bangunan' => 'required|numeric',
             'nop_gabungan' => 'required|string|in:Y,T',
             'nop_pecahan' => 'required|string|in:Y,T',
         ]);
@@ -269,6 +270,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'nama_sesuai' => $request->nama_sesuai,
                 'luas_sesuai' => $request->luas_tanah,
                 'bangunan_sesuai' => $request->bangunan_sesuai,
+                'luas_bangunan' => $request->luas_bangunan,
                 'nop_gabungan' => $request->nop_gabungan,
                 'nop_pecah' => $request->nop_pecahan
             ]);
