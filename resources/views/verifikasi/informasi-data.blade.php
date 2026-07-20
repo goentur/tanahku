@@ -186,7 +186,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="align-middle">LUAS BANGUANAN</td>
+							<td class="align-middle">LUAS BANGUNAN</td>
 							<td colspan="2">
 									<input class="form-control form-control-sm" type="text" name="luas_bangunan" id="luas_bangunan" value="{{ $objekPajak?->total_luas_bng }}">
 							</td>
