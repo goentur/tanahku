@@ -205,7 +205,14 @@ class VerifikasiPetaIntegrasiController extends Controller
                 ]);
                 $message = 'Informasi pertanahan berhasil disimpan.';
             }
-            $layer = 'bpn:' . $request->modal_kode_wilayah;
+
+            $kelurahan = Kelurahan::where('kd_wilayah', $request->modal_kode_wilayah)->first();
+            if ($kelurahan && !empty($kelurahan->header_id)) {
+                $kelurahanHeader = Kelurahan::find($kelurahan->header_id);
+                $layer = 'bpn:' . $kelurahanHeader->kd_wilayah;
+            } else {
+                $layer = 'bpn:' . $request->modal_kode_wilayah;
+            }
             $modal_id_peta_bidang = explode('.', $request->modal_id_peta_bidang);
             $idGeoServer = $modal_id_peta_bidang[1];
 
