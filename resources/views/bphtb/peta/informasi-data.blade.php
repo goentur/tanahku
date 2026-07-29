@@ -50,11 +50,6 @@
 						<td>{{ $objekPajak?->total_luas_bng }} m<sup>2</sup></td>
 					</tr>
 					<tr>
-						<td style="vertical-align: top" class="fw-bold text-nowrap">PAJAK</td>
-						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ \App\Support\Facades\Helper::ribuan($sppt?->pbb_terhutang_sppt) }} {{ $sppt?->pembayaranSppt?->sum('jml_sppt_yg_dibayar') >= $sppt?->pbb_terhutang_sppt ? 'Sudah Bayar' : 'Belum Bayar' }}</td>
-					</tr>
-					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">FOTO</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>

@@ -65,7 +65,6 @@ class PetaIntegrasiController extends Controller
         ]);
         $dataKirim = $request->datakirim;
         $urls = [];
-        $sppt = null;
         $objekPajak = null;
         if ($request->nop) {
             $nop = $request->nop;
@@ -132,16 +131,6 @@ class PetaIntegrasiController extends Controller
                 if ($largestFile) {
                     $urls[] = '/storage/foto/' . $folder . '/' . basename($largestFile);
                 }
-                $sppt = Sppt::with('pembayaranSppt')
-                    ->where('kd_propinsi', $nop1)
-                    ->where('kd_dati2', $nop2)
-                    ->where('kd_kecamatan', $nop3)
-                    ->where('kd_kelurahan', $nop4)
-                    ->where('kd_blok', $nop5)
-                    ->where('no_urut', $nop6)
-                    ->where('kd_jns_op', $nop7)
-                    ->where('thn_pajak_sppt', date('Y'))
-                    ->first();
             }
         }
         if ($request->bphtb == 'ada') {
@@ -156,9 +145,9 @@ class PetaIntegrasiController extends Controller
                 ->where('tahun_sptpd', '>=', 2020)
                 ->where('status_pembayaran_sptpd', '=', 1)
                 ->orderBy('id')->get();
-            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt', 'bphtb'));
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'bphtb'));
         } else {
-            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sppt'));
+            return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls'));
         }
     }
 
