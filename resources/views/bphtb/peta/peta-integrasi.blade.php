@@ -137,6 +137,10 @@
 								<td style="width: 90%">TIRTO</td>
 								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010096',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
+							<tr>
+								<td style="width: 90%">PASIR KRATON KRAMAT</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010097',this)"><i class="fa fa-eye"></i></button></td>
+							</tr>
 						</table>
 						<table class="w-100 mt-3">
 							<tr>

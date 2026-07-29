@@ -119,7 +119,7 @@
         </tr>
         @foreach ($bphtb as $item)
         <tr>
-          <td>{{ $item->datPerolehanHak->tahun_perolehan }}.{{ $item->datPerolehanHak->bundel_perolehan }}{{ $item->datPerolehanHak->no_urut_perolehan }}</td>
+          <td>{{ $item->datPerolehanHak->tahun_perolehan }}.{{ $item->datPerolehanHak->bundel_perolehan }}.{{ $item->datPerolehanHak->no_urut_perolehan }}</td>
           <td>{{ number_format($item->njop_pbb) }}</td>
           <td>{{ number_format($item->nilai_perolehan) }}</td>
           <td>{{ number_format($item->luas_bumi) }}</td>

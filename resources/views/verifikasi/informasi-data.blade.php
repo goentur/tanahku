@@ -67,6 +67,33 @@
 			</div>
 		</div>
 	</div>
+	@if (@$bphtb)
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+        RIWAYAT BPHTB
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+      <table style="font-size: 12px" class="table table-bordered table-sm">
+        <tr>
+          <th>Nomor</th>
+          <th>NJOP</th>
+          <th>NiPer</th>
+          <th>Tanah</th>
+        </tr>
+        @foreach ($bphtb as $item)
+        <tr>
+          <td>{{ $item->datPerolehanHak->tahun_perolehan }}.{{ $item->datPerolehanHak->bundel_perolehan }}.{{ $item->datPerolehanHak->no_urut_perolehan }}</td>
+          <td>{{ number_format($item->njop_pbb) }}</td>
+          <td>{{ number_format($item->nilai_perolehan) }}</td>
+          <td>{{ number_format($item->luas_bumi) }}</td>
+        </tr>
+        @endforeach
+      </table>
+    </div>
+  </div>
+	@endif
 	<div class="accordion-item">
 		<h2 class="accordion-header">
 			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">

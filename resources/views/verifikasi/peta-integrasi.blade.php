@@ -267,6 +267,7 @@
       const baseLayers = {};
       let dataPersilTerpilih = null;
       const mapLayers = [];
+			let dataBPHTB = [];
 
       $('#modal_nop').mask('00.00.000.000.000-0000.0');
 
@@ -336,7 +337,12 @@
           const last8 = nop.slice(-8);
           const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
           if (showLabel) {
-            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
+						if (matchedItem) {
+							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+						} else {
+							labelText = nib ? `${nopPotong}\n${nib}` : '';
+						}
           }
         }
 
@@ -409,7 +415,12 @@
           const last8 = nop.slice(-8);
           const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
           if (showLabel) {
-            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
+						if (matchedItem) {
+							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+						} else {
+							labelText = nib ? `${nopPotong}\n${nib}` : '';
+						}
           }
         }
         return new ol.style.Style({
@@ -479,7 +490,12 @@
           const last8 = nop.slice(-8);
           const nopPotong = last8.length === 8 ? `${last8.slice(0, 3)}-${last8.slice(3, 7)}.${last8.slice(7)}` : last8;
           if (showLabel) {
-            labelText = nib ? `${nopPotong}\n${nib}` : nopPotong;
+						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
+						if (matchedItem) {
+							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+						} else {
+							labelText = nib ? `${nopPotong}\n${nib}` : '';
+						}
           }
         }
         return new ol.style.Style({
@@ -554,6 +570,7 @@
             nop = matchedItem.nop || '';
             status = (matchedItem.status == 'TERVERIFIKASI') ? 'final' : 'belum';
           }
+					const bphtbMatch = dataBPHTB.find(item => item.nopGabungan === nop);
           const datakirim = {
             'ID_PETA_BIDANG': clickedFeature.getId(),
             'KODEWILAYA': clickedFeature.get('KODEWILAYA'),
@@ -564,9 +581,9 @@
             'Pemilik_Pe': clickedFeature.get('Pemilik_Pe'),
             'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
             'nop': nop,
+            'bphtb': bphtbMatch ? 'YA' : 'NO',
             'status': status,
           };
-					console.log(clickedFeature)
           dataPersilTerpilih = datakirim;
           $('a[href="#informasiTab"]').tab('show');
           $('#informasidata').html(`<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat informasi...</p></div>`);
@@ -611,6 +628,20 @@
           console.error("Gagal memperbarui data verifikasi:", error);
         }
       }
+
+			$.ajax({
+				url: '{{ route("beranda.data-bphtb") }}',
+				method: 'POST',
+				data: {
+					_token: $('meta[name="csrf-token"]').attr('content')
+				},
+				success: function(response) {
+					dataBPHTB = response;
+				},
+				error: function() {
+					alert('Gagal memuat data BPHTB.');
+				}
+			});
 
       window.toggleLayer = async function(layerId, buttonElement) {
         if (!baseLayers[layerId]) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BPHTB\Sptpd;
 use App\Models\DatAtrbpn;
 use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
@@ -66,6 +67,7 @@ class VerifikasiPetaIntegrasiController extends Controller
         $sudahVerifikasi = false;
         $dataKirim = $request->datakirim;
         $urls = [];
+        $bphtb = [];
         if ($request->nop) {
             $nop = $request->nop;
             $nop1 = substr($nop, 0, 2);
@@ -118,6 +120,19 @@ class VerifikasiPetaIntegrasiController extends Controller
                     $urls[] = '/storage/foto/' . $folder . '/' . basename($largestFile);
                 }
             }
+            if ($dataKirim['bphtb'] === 'YA') {
+                $bphtb = Sptpd::select('*')->with('datPerolehanHak')
+                    ->where('kd_propinsi', $nop1)
+                    ->where('kd_dati2', $nop2)
+                    ->where('kd_kecamatan', $nop3)
+                    ->where('kd_kelurahan', $nop4)
+                    ->where('kd_blok', $nop5)
+                    ->where('no_urut', $nop6)
+                    ->where('kd_jns_op', $nop7)
+                    ->where('tahun_sptpd', '>=', 2020)
+                    ->where('status_pembayaran_sptpd', '=', 1)
+                    ->orderBy('id')->get();
+            }
             $datAtrBpn = DatAtrbpn::where('kode_wilayah', $dataKirim['KODEWILAYA'])
                 ->where('nib', $dataKirim['NIB'])
                 ->where('kd_propinsi', $nop1)
@@ -138,7 +153,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 $sudahVerifikasi = true;
             }
         }
-        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi'));
+        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi', 'bphtb'));
     }
     public function simpanInformasiPertanahan(Request $request)
     {
@@ -216,27 +231,27 @@ class VerifikasiPetaIntegrasiController extends Controller
             $modal_id_peta_bidang = explode('.', $request->modal_id_peta_bidang);
             $idGeoServer = $modal_id_peta_bidang[1];
 
-            $xmlPayload = '<?xml version="1.0" encoding="UTF-8"?>
+            $xmlUtama = '<?xml version="1.0" encoding="UTF-8"?>
                 <wfs:Transaction service="WFS" version="1.1.0"
-                xmlns:wfs="http://www.opengis.net/wfs"
-                xmlns:ogc="http://www.opengis.net/ogc"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-                <wfs:Update typeName="' . $layer . '">
-                    <wfs:Property>
-                    <wfs:Name>d_nop</wfs:Name>
-                    <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
-                    </wfs:Property>
-                    <ogc:Filter>
-                    <ogc:FeatureId fid="' . $idGeoServer . '"/>
-                    </ogc:Filter>
-                </wfs:Update>
+                    xmlns:wfs="http://www.opengis.net/wfs"
+                    xmlns:ogc="http://www.opengis.net/ogc"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+                    <wfs:Update typeName="' . $layer . '">
+                        <wfs:Property>
+                            <wfs:Name>d_nop</wfs:Name>
+                            <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
+                        </wfs:Property>
+                        <ogc:Filter>
+                            <ogc:FeatureId fid="' . $idGeoServer . '"/>
+                        </ogc:Filter>
+                    </wfs:Update>
                 </wfs:Transaction>';
 
             $urlGeoServer = 'http://192.168.75.15:8080/geoserver/wfs';
             $responseGeoServer = Http::timeout(15)
                 ->withBasicAuth('admin', 'geoserver')
-                ->withBody($xmlPayload, 'text/xml')
+                ->withBody($xmlUtama, 'text/xml')
                 ->post($urlGeoServer);
             if ($responseGeoServer->failed()) {
                 throw new \Exception('Gagal menyambung ke GeoServer atau sambungan terputus.');
@@ -261,7 +276,6 @@ class VerifikasiPetaIntegrasiController extends Controller
     }
     public function verifikasiInformasiPertanahan(Request $request)
     {
-        // Validasi data kiriman frontend
         $request->validate([
             'kode_wilayah' => 'required|numeric|min_digits:8',
             'nib' => 'required|numeric|min_digits:5',
@@ -275,11 +289,13 @@ class VerifikasiPetaIntegrasiController extends Controller
             'nop_pecahan' => 'required|string|in:Y,T',
         ]);
 
+        DB::beginTransaction();
         try {
+            $nop = str_replace('.', '', str_replace('-', '', $request->nop));
             $updatedRows = DatAtrbpn::where([
                 'kode_wilayah' => $request->kode_wilayah,
                 'nib'          => $request->nib,
-                'nop'          => str_replace('.', '', str_replace('-', '', $request->nop)),
+                'nop'          => $nop,
             ])->update([
                 'status' => 'TERVERIFIKASI',
                 'lokasi' => $request->lokasi,
@@ -294,12 +310,13 @@ class VerifikasiPetaIntegrasiController extends Controller
             if ($updatedRows === 0) {
                 return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan.'], 404);
             }
-
+            DB::commit();
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Informasi pertanahan berhasil diverifikasi.'
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Gagal menyimpan data: ' . $e->getMessage()
