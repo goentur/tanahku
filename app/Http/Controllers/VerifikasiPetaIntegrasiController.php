@@ -6,6 +6,8 @@ use App\Models\BPHTB\Sptpd;
 use App\Models\DatAtrbpn;
 use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
+use App\Models\PBB\PembayaranSppt;
+use App\Models\PBB\Sppt;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +70,11 @@ class VerifikasiPetaIntegrasiController extends Controller
         $dataKirim = $request->datakirim;
         $urls = [];
         $bphtb = [];
+        $sppt = [
+            'total' => 0,
+            'tunggakan' => 0,
+            'bayar' => 0,
+        ];
         if ($request->nop) {
             $nop = $request->nop;
             $nop1 = substr($nop, 0, 2);
@@ -88,6 +95,27 @@ class VerifikasiPetaIntegrasiController extends Controller
                 ->where('kd_jns_op', $nop7)
                 ->first();
 
+            $dataSppt = Sppt::with('pembayaranSppt')
+                ->where([
+                    'kd_propinsi'  => $nop1,
+                    'kd_dati2'     => $nop2,
+                    'kd_kecamatan' => $nop3,
+                    'kd_kelurahan' => $nop4,
+                    'kd_blok'      => $nop5,
+                    'no_urut'      => $nop6,
+                    'kd_jns_op'    => $nop7,
+                ])
+                ->whereIn('status_pembayaran_sppt', [0, 1])
+                ->where('thn_pajak_sppt', '>=', 2008)
+                ->get();
+
+            $totalBayar = $dataSppt->flatMap->pembayaranSppt->sum('jml_sppt_yg_dibayar') - $dataSppt->flatMap->pembayaranSppt->sum('denda_sppt');
+
+            $sppt = [
+                'total'     => $dataSppt->count(),
+                'tunggakan' => $dataSppt->sum('pbb_yg_harus_dibayar_sppt'),
+                'bayar'     => $totalBayar,
+            ];
             if ($objekPajak) {
 
                 $folder = $nop1 . $nop2 . '/' . $nop3 . $nop4 . '/' . $nop5;
@@ -142,18 +170,12 @@ class VerifikasiPetaIntegrasiController extends Controller
                 ->where('kd_blok', $nop5)
                 ->where('no_urut', $nop6)
                 ->where('kd_jns_op', $nop7)
-                ->whereNull('lokasi')
-                ->whereNull('nama_sesuai')
-                ->whereNull('luas_sesuai')
-                ->whereNull('bangunan_sesuai')
-                ->whereNull('nop_gabungan')
-                ->whereNull('nop_pecah')
                 ->first();
-            if ($datAtrBpn) {
+            if (empty($datAtrBpn->lokasi) && empty($datAtrBpn->nama_sesuai) && empty($datAtrBpn->luas_sesuai) && empty($datAtrBpn->bangunan_sesuai) && empty($datAtrBpn->nop_gabungan) && empty($datAtrBpn->nop_pecah)) {
                 $sudahVerifikasi = true;
             }
         }
-        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi', 'bphtb'));
+        return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi', 'bphtb', 'sppt', 'datAtrBpn'));
     }
     public function simpanInformasiPertanahan(Request $request)
     {

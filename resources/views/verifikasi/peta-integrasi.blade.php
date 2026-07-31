@@ -179,8 +179,15 @@
 					</li>
 					<li class="d-flex align-items-center justify-content-between mb-1">
 						<div class="d-flex align-items-center">
+							<div style="width: 15px; height: 15px; background-color: #AF46FF; margin-right: 8px;"></div>
+							<span>BIDANG DATA REBOISASI</span>
+						</div>
+						<span style="background-color: #AF46FF" class="badge text-dark ms-2" id="count-data-reboisasi">0</span>
+					</li>
+					<li class="d-flex align-items-center justify-content-between mb-1">
+						<div class="d-flex align-items-center">
 							<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
-							<span>BIDANG DATA AWAL</span>
+							<span>BIDANG DATA BALIKAN ATR/BPN</span>
 						</div>
 						<span class="badge bg-info text-dark ms-2" id="count-data-awal">0</span>
 					</li>
@@ -302,14 +309,23 @@
         let fillColor = 'rgba(255, 255, 255, 0.1)';
         let nop = '';
         if (matchedItem) {
-          if (matchedItem.status == 'DATA AWAL') {
-            strokeColor = '#00FFFF';
-            fillColor = 'rgba(0, 255, 255, 0.4)';
-          } else if(matchedItem.status == 'TERVERIFIKASI') {
-            strokeColor = '#15ff00';
-            fillColor = 'rgba(21, 255, 0, 0.4)';
-          }
+					const { status, sumber_data } = matchedItem;
+					if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('REBOISASI')) {
+						strokeColor = '#AF46FF';
+						fillColor = 'rgba(175, 70, 255, 0.4)';
+					} else if (status === 'DATA AWAL') {
+						strokeColor = '#00FFFF';
+						fillColor = 'rgba(0, 255, 255, 0.4)';
+					} else if (status === 'TERVERIFIKASI') {
+						strokeColor = '#15ff00';
+						fillColor = 'rgba(21, 255, 0, 0.4)';
+					}
           nop = matchedItem.nop || '';
+					
+					const matchedItemBPHTB = dataBPHTB.find(item => item.nopGabungan === nop);
+					if (matchedItemBPHTB) {
+						strokeColor = '#ff0000';
+					}
         }
         const geometry = feature.getGeometry();
         let areaM2 = 0;
@@ -339,7 +355,7 @@
           if (showLabel) {
 						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
 						if (matchedItem) {
-							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+							labelText = nib ? `${nopPotong}\n${nib}\n${'⭐'}` : '';
 						} else {
 							labelText = nib ? `${nopPotong}\n${nib}` : '';
 						}
@@ -417,7 +433,7 @@
           if (showLabel) {
 						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
 						if (matchedItem) {
-							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+							labelText = nib ? `${nopPotong}\n${nib}\n${'⭐'}` : '';
 						} else {
 							labelText = nib ? `${nopPotong}\n${nib}` : '';
 						}
@@ -492,7 +508,7 @@
           if (showLabel) {
 						const matchedItem = dataBPHTB.find(item => item.nopGabungan === nop);
 						if (matchedItem) {
-							labelText = nib ? `${nopPotong}\n${nib}\n${'BPHTB'}` : '';
+							labelText = nib ? `${nopPotong}\n${nib}\n${'⭐'}` : '';
 						} else {
 							labelText = nib ? `${nopPotong}\n${nib}` : '';
 						}
@@ -734,6 +750,7 @@
       // === FUNGSI HITUNG TOTAL BIDANG DINAMIS PER JENIS ===
       function updateLegendCounters() {
         let totalBiasa = 0;
+        let totalReboisasi = 0;
         let totalDataAwal = 0;
         let totalTerverifikasi = 0;
 
@@ -753,13 +770,16 @@
                 const matchedItem = findMatchedItem(futureKODEWILAYA, futureNIB);
 
                 if (matchedItem) {
-                  if (matchedItem.status === 'DATA AWAL') {
-                    totalDataAwal++;
-                  } else if (matchedItem.status === 'TERVERIFIKASI') {
-                    totalTerverifikasi++;
-                  } else {
-                    totalBiasa++;
-                  }
+									const { status, sumber_data } = matchedItem;
+									if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data === 'REBOISASI') {
+										totalReboisasi++;
+									} else if (status === 'DATA AWAL') {
+										totalDataAwal++;
+									} else if (status === 'TERVERIFIKASI') {
+										totalTerverifikasi++;
+									}else{
+										totalBiasa++;
+									}
                 } else {
                   totalBiasa++;
                 }
@@ -769,6 +789,7 @@
         });
 
         $('#count-biasa').text(totalBiasa);
+        $('#count-data-reboisasi').text(totalReboisasi);
         $('#count-data-awal').text(totalDataAwal);
         $('#count-terverifikasi').text(totalTerverifikasi);
       }
