@@ -19,6 +19,15 @@ class DatObjekPajak extends Model
         return $this->belongsTo(DatSubjekPajak::class, 'subjek_pajak_id', 'subjek_pajak_id');
     }
 
+    public function refKelurahan()
+    {
+        return $this->belongsTo(
+            RefKelurahan::class,
+            ['kd_propinsi', 'kd_dati2', 'kd_kecamatan', 'kd_kelurahan',],
+            ['kd_propinsi', 'kd_dati2', 'kd_kecamatan', 'kd_kelurahan',]
+        );
+    }
+
     public function nop(): Attribute
     {
         return Attribute::get(fn() => value(

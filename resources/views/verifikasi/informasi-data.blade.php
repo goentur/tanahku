@@ -28,7 +28,7 @@
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LOKASI</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $objekPajak?->alamatLengkap }}</td>
+						<td>{{ $objekPajak?->alamatLengkap }}, {{ $objekPajak?->refKelurahan->nm_kelurahan }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">WAJIB PAJAK</td>

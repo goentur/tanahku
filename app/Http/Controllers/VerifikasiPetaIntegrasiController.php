@@ -70,6 +70,7 @@ class VerifikasiPetaIntegrasiController extends Controller
         $dataKirim = $request->datakirim;
         $urls = [];
         $bphtb = [];
+        $datAtrBpn = [];
         $sppt = [
             'total' => 0,
             'tunggakan' => 0,
@@ -85,7 +86,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             $nop6 = substr($nop, 13, 4);
             $nop7 = substr($nop, 17, 1);
 
-            $objekPajak = DatObjekPajak::with('datSubjekPajak')
+            $objekPajak = DatObjekPajak::with('datSubjekPajak', 'refKelurahan')
                 ->where('kd_propinsi', $nop1)
                 ->where('kd_dati2', $nop2)
                 ->where('kd_kecamatan', $nop3)
@@ -175,6 +176,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 $sudahVerifikasi = true;
             }
         }
+
         return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi', 'bphtb', 'sppt', 'datAtrBpn'));
     }
     public function simpanInformasiPertanahan(Request $request)
