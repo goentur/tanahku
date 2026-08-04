@@ -109,133 +109,49 @@
 			<div class="card-body p-3">
 				<div class="tab-content">
 					<div class="tab-pane fade show active" id="layerTab">
-						<table>	
+						<table>
 							<tr>
 								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN BARAT</td>
 							</tr>
+							@foreach ($barat as $item)
 							<tr>
-								<td style="width: 90%">PRINGREJO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010091',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">{{ $item->nama }}</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:{{ $item->kd_wilayah }}',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
-							<tr>
-								<td style="width: 90%">MEDONO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010092',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">SAPURO KEBULEN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010093',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PODOSUGIH</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010094',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">BENDAN KERGON</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010095',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">TIRTO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010096',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PASIR KRATON KRAMAT</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_010097',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
+							@endforeach
 						</table>
 						<table class="w-100 mt-3">
 							<tr>
 								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN TIMUR</td>
 							</tr>
+							@foreach ($timur as $item)
 							<tr>
-								<td style="width: 90%">NOYONTAANSARI</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020091',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">{{ $item->nama }}</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:{{ $item->kd_wilayah }}',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
-							<tr>
-								<td style="width: 90%">KALIBAROS</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020092',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">SETONO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020093',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KAUMAN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020094',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PONCOL</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020095',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KLEGO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020096',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">GAMER</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_020097',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
+							@endforeach
 						</table>
 						<table class="w-100 mt-3">
 							<tr>
 								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN SELATAN</td>
 							</tr>
+							@foreach ($selatan as $item)
 							<tr>
-								<td style="width: 90%">BANYURIP</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030091',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">{{ $item->nama }}</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:{{ $item->kd_wilayah }}',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
-							<tr>
-								<td style="width: 90%">BUARAN KRADENAN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030092',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">JENGGOT</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030093',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KURIPAN KERTOHARJO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030094',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">SOKO DUWET</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030095',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KURIPAN YOSOREJO</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_030096',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
+							@endforeach
 						</table>
 						<table class="w-100 mt-3">
 							<tr>
 								<td style="width: 100%" colspan="2" class="fw-bold">PEKALONGAN UTARA</td>
 							</tr>
+							@foreach ($utara as $item)
 							<tr>
-								<td style="width: 90%">PADUKUHAN KRATON</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040091',this)"><i class="fa fa-eye"></i></button></td>
+								<td style="width: 90%">{{ $item->nama }}</td>
+								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:{{ $item->kd_wilayah }}',this)"><i class="fa fa-eye"></i></button></td>
 							</tr>
-							<tr>
-								<td style="width: 90%">BANDENGAN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040092',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KANDANG PANJANG</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040093',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PANJANG WETAN</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040094',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">KRAPYAK</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040095',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">DEGAYU</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040096',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
-							<tr>
-								<td style="width: 90%">PANJANG BARU</td>
-								<td class="w-1"><button class="btn btn-primary btn-sm" onclick="toggleLayer('bpn:pbt_040097',this)"><i class="fa fa-eye"></i></button></td>
-							</tr>
+							@endforeach
 						</table>
 					</div>
 					<div class="tab-pane fade" id="informasiTab">
@@ -267,35 +183,6 @@
 		</div>
 	</div>
 	
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-99" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form id="formModalPerubahanData" method="post">
-					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="exampleModalLabel">Form Perubahan Data</h1>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="mb-3">
-							<label for="modal_nib" class="form-label">NIB</label>
-							<input type="hidden" name="modal_layer" class="form-control" id="modal_layer">
-							<input type="hidden" name="modal_id" class="form-control" id="modal_id">
-							<input required type="text" placeholder="Masukan NIB" name="modal_nib" class="form-control" id="modal_nib">
-						</div>
-						<div class="mb-3">
-							<label for="modal_nop" class="form-label">NOP</label>
-							<input required type="text" placeholder="Masukan NOP" name="modal_nop" class="form-control" id="modal_nop">
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-						<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
@@ -307,53 +194,6 @@
 			let selectedFeature = null;
 			const baseLayers = {};
 			const mapLayers = [];
-
-			// $('#modal_nop').mask('00.00.000.000.000.0000.0');
-			// === FITUR SIMPAN PERUBAHAN DATA (AJAX LARAVEL) ===
-      $('#formModalPerubahanData').on('submit', function (e) {
-				// Mencegah form melakukan reload halaman secara default
-				e.preventDefault();
-				
-				// Ambil data dari form
-				const formData = new FormData(this);
-
-				// Kirim menggunakan jQuery AJAX ke route Laravel
-				$.ajax({
-						url: '{{ route("beranda.perubahan-data") }}',
-						type: 'POST',
-						data: formData,
-						processData: false, // WAJIB jika menggunakan FormData
-						contentType: false, // WAJIB jika menggunakan FormData
-						headers: {
-								// Mengambil token CSRF langsung dari meta tag Laravel
-								'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-								'Accept': 'application/json'
-						},
-						success: function (data) {
-								if (data.status === 'success') {
-										alert('Data sukses diperbarui di GeoServer!');
-										
-										// Tambahkan kode untuk me-refresh layer peta Anda di sini (Leaflet/OpenLayers)
-										
-										// Tutup modal jika pakai bootstrap
-										$('#namaModalAnda').modal('hide'); 
-								} else {
-										alert('Gagal: ' + data.message);
-								}
-						},
-						error: function (xhr, status, error) {
-								console.error('Error:', error);
-								
-								// Cek jika ada pesan error dari response JSON Laravel
-								const response = xhr.responseJSON;
-								if (response && response.message) {
-										alert('Terjadi kesalahan: ' + response.message);
-								} else {
-										alert('Terjadi kesalahan sistem.');
-								}
-						}
-				});
-		});
 
 			function getDefaultStyle(feature, resolution) {
 				const d_nop = feature.get('d_nop');
@@ -941,20 +781,6 @@
 				$('#searchNav').addClass('d-none');
 				searchResults = [];
 			});
-
-
-			$(document).on('click', '.btn-edit-pbb', function() {
-        // Ambil data dari data-attribute
-        const dataKirim = $(this).data('kirim');        
-        // Set ke input modal
-        $('#modal_layer').val(dataKirim.layer || '');
-        $('#modal_id').val(dataKirim.id || '');
-        $('#modal_nib').val(dataKirim.NIB || '');
-        $('#modal_nop').val(dataKirim.d_nop || '').trigger('change');
-        
-        // Buka modal
-        // $('#exampleModal').modal('show');
-    });
 		});
 	</script>
 </body>

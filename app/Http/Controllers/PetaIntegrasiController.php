@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BPHTB\DatPerolehanHak;
 use App\Models\BPHTB\DatPerolehanHakLog;
 use App\Models\BPHTB\Sptpd;
+use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
 use App\Models\PBB\Sppt;
 use App\Repositories\BphtbRepository;
@@ -22,7 +23,11 @@ class PetaIntegrasiController extends Controller
     ) {}
     public function peta(): View
     {
-        return view('bphtb.peta.peta-integrasi');
+        $barat = Kelurahan::where('kd_kecamatan', '010')->whereNull('header_id')->orderBy('id')->get();
+        $timur = Kelurahan::where('kd_kecamatan', '020')->whereNull('header_id')->orderBy('id')->get();
+        $selatan = Kelurahan::where('kd_kecamatan', '030')->whereNull('header_id')->orderBy('id')->get();
+        $utara = Kelurahan::where('kd_kecamatan', '040')->whereNull('header_id')->orderBy('id')->get();
+        return view('bphtb.peta.peta-integrasi', compact('barat', 'timur', 'selatan', 'utara'));
     }
 
     public function feature(Request $request, string $layer)
@@ -148,67 +153,6 @@ class PetaIntegrasiController extends Controller
             return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'bphtb'));
         } else {
             return view('bphtb.peta.informasi-data', compact('objekPajak', 'dataKirim', 'urls'));
-        }
-    }
-
-    public function updateDataNOP(Request $request)
-    {
-        $request->validate([
-            'modal_id'    => 'required',
-            'modal_layer' => 'required',
-            'modal_nib'   => 'required|string|max:50',
-            'modal_nop'   => 'required|string|max:50',
-        ]);
-
-        $layer = $request->modal_layer;
-        $id    = $request->modal_id;
-        $nop   = $request->modal_nop;
-        $xmlPayload = '<?xml version="1.0" encoding="UTF-8"?>
-        <wfs:Transaction service="WFS" version="1.1.0"
-          xmlns:wfs="http://www.opengis.net/wfs"
-          xmlns:ogc="http://www.opengis.net/ogc"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-          
-          <wfs:Update typeName="bpn:' . $layer . '">
-            <wfs:Property>
-              <wfs:Name>d_nop</wfs:Name>
-              <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
-            </wfs:Property>
-            <ogc:Filter>
-              <ogc:FeatureId fid="' . $id . '"/>
-            </ogc:Filter>
-          </wfs:Update>
-        </wfs:Transaction>';
-
-        try {
-            // 3. Tembak ke API GeoServer WFS dengan Basic Auth
-            $urlGeoServer = 'http://192.168.75.15:8080/geoserver/wfs'; // Sesuaikan URL GeoServer Anda
-
-            $response = Http::withBasicAuth('admin', 'geoserver') // Sesuaikan username & password GeoServer
-                ->withBody($xmlPayload, 'text/xml')
-                ->post($urlGeoServer);
-
-            // 4. Cek respon dari GeoServer
-            if ($response->failed()) {
-                return response()->json(['status' => 'error', 'message' => 'Gagal terhubung ke GeoServer.'], 500);
-            }
-
-            $resBody = $response->body();
-
-            // Cek apakah ada element <wfs:Exception> di dalam return XML dari GeoServer
-            if (str_contains($resBody, 'ExceptionReport')) {
-                return response()->json(['status' => 'error', 'message' => 'GeoServer Error: ' . strip_tags($resBody)], 400);
-            }
-
-
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Properti d_nop berhasil diupdate via WFS-T.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 }

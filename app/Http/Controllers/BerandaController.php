@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
 use App\Models\PBB\Sppt;
 use App\Services\Geoserver;
@@ -57,91 +58,12 @@ class BerandaController extends Controller
                 ->where('kd_jns_op', $nop7)
                 ->first();
             if ($objekPajak) {
-                if ($nop3 == '010') {
-                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010091');
-                    }
-                    if ($nop4 == '004') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010092');
-                    }
-                    if ($nop4 == '005' || $nop4 == '006') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010093');
-                    }
-                    if ($nop4 == '007') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010094');
-                    }
-                    if ($nop4 == '008' || $nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010095');
-                    }
-                    if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_010096');
-                    }
-                }
-                if ($nop3 == '020') {
-                    if ($nop4 == '001' || $nop4 == '005') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020091');
-                    }
-                    if ($nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020092');
-                    }
-                    if ($nop4 == '004' || $nop4 == '012') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020093');
-                    }
-                    if ($nop4 == '006' || $nop4 == '007' || $nop4 == '008' || $nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020094');
-                    }
-                    if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020095');
-                    }
-                    if ($nop4 == '011') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020096');
-                    }
-                    if ($nop4 == '013') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_020097');
-                    }
-                }
-                if ($nop3 == '030') {
-                    if ($nop4 == '001' || $nop4 == '002') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030091');
-                    }
-                    if ($nop4 == '003' || $nop4 == '004') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030092');
-                    }
-                    if ($nop4 == '005') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030093');
-                    }
-                    if ($nop4 == '006' || $nop4 == '007') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030094');
-                    }
-                    if ($nop4 == '008' || $nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030095');
-                    }
-                    if ($nop4 == '010' || $nop4 == '011') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_030096');
-                    }
-                }
-                if ($nop3 == '040') {
-                    if ($nop4 == '001' || $nop4 == '002' || $nop4 == '003') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040091');
-                    }
-                    if ($nop4 == '004') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040092');
-                    }
-                    if ($nop4 == '005') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040093');
-                    }
-                    if ($nop4 == '006') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040094');
-                    }
-                    if ($nop4 == '007' || $nop4 == '008') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040095');
-                    }
-                    if ($nop4 == '009') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040096');
-                    }
-                    if ($nop4 == '010') {
-                        $dataPeta = $this->feature($request, 'bpn:pbt_040097');
-                    }
+                $kelurahan = Kelurahan::where('kd_kecamatan', $nop3)->where('kd_kelurahan', $nop4)->first();
+                if (empty($kelurahan->header_id)) {
+                    $dataPeta = $this->feature($request, 'bpn:' . $kelurahan->kd_wilayah);
+                } else {
+                    $kelurahanHeader = Kelurahan::where('id', $kelurahan->header_id)->first();
+                    $dataPeta = $this->feature($request, 'bpn:' . $kelurahanHeader->kd_wilayah);
                 }
                 if (!empty($dataPeta['features']) && is_array($dataPeta['features'])) {
                     $hasil = str_replace(['.', '-'], '', $request->nop);

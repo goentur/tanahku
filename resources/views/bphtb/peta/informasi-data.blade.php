@@ -7,13 +7,6 @@
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
       <div class="accordion-body">
-				{{-- <button class="btn btn-primary btn-sm btn-edit-pbb" 
-                type="button" 
-                data-bs-toggle="modal" 
-                data-bs-target="#exampleModal"
-                data-kirim='@json($dataKirim)'>
-            <i class="fa fa-pencil"></i> UBAH DATA
-        </button> --}}
 				<table style="font-size: 12px">
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NOP</td>

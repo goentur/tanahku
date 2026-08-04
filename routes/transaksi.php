@@ -39,7 +39,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('peta-integrasi', [PetaIntegrasiController::class, 'peta'])->name('peta-integrasi');
   Route::post('data-bphtb', [PetaIntegrasiController::class, 'dataBPHTB'])->name('beranda.data-bphtb');
   Route::post('data-informasi', [PetaIntegrasiController::class, 'dataInformasi'])->name('beranda.data-informasi');
-  Route::post('perubahan-data', [PetaIntegrasiController::class, 'updateDataNOP'])->name('beranda.perubahan-data');
   Route::middleware(['auth', 'verified', 'role:SUPER-ADMIN'])->prefix('verifikasi-peta-integrasi')->name('verifikasi-peta-integrasi.')->group(function () {
     Route::get('/', [VerifikasiPetaIntegrasiController::class, 'index'])->name('index');
     Route::post('data-peta', [VerifikasiPetaIntegrasiController::class, 'dataPeta'])->name('data-peta');
