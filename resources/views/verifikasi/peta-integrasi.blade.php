@@ -771,7 +771,7 @@
 
                 if (matchedItem) {
 									const { status, sumber_data } = matchedItem;
-									if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data === 'VALIDASI') {
+									if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('VALIDASI')) {
 										totalValidasi++;
 									} else if (status === 'DATA AWAL') {
 										totalDataAwal++;
