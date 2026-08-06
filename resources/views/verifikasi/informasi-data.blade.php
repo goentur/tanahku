@@ -10,6 +10,11 @@
 	</button>
 </div>
 @endif
+@empty(!$datAtrBpn)
+	<div class="alert alert-info mb-2" style="font-size: 13px" role="alert">
+		<b>SUMBER DATA</b> : {{ $datAtrBpn->sumber_data }}
+	</div>
+@endempty
 <div class="accordion" id="accordionPanelsStayOpenExample">
 	<div class="accordion-item">
 		<h2 class="accordion-header">

@@ -180,9 +180,9 @@
 					<li class="d-flex align-items-center justify-content-between mb-1">
 						<div class="d-flex align-items-center">
 							<div style="width: 15px; height: 15px; background-color: #AF46FF; margin-right: 8px;"></div>
-							<span>BIDANG DATA REBOISASI</span>
+							<span>BIDANG DATA VALIDASI</span>
 						</div>
-						<span style="background-color: #AF46FF" class="badge text-dark ms-2" id="count-data-reboisasi">0</span>
+						<span style="background-color: #AF46FF" class="badge text-dark ms-2" id="count-data-validasi">0</span>
 					</li>
 					<li class="d-flex align-items-center justify-content-between mb-1">
 						<div class="d-flex align-items-center">
@@ -310,7 +310,7 @@
         let nop = '';
         if (matchedItem) {
 					const { status, sumber_data } = matchedItem;
-					if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('REBOISASI')) {
+					if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('VALIDASI')) {
 						strokeColor = '#AF46FF';
 						fillColor = 'rgba(175, 70, 255, 0.4)';
 					} else if (status === 'DATA AWAL') {
@@ -750,7 +750,7 @@
       // === FUNGSI HITUNG TOTAL BIDANG DINAMIS PER JENIS ===
       function updateLegendCounters() {
         let totalBiasa = 0;
-        let totalReboisasi = 0;
+        let totalValidasi = 0;
         let totalDataAwal = 0;
         let totalTerverifikasi = 0;
 
@@ -771,8 +771,8 @@
 
                 if (matchedItem) {
 									const { status, sumber_data } = matchedItem;
-									if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data === 'REBOISASI') {
-										totalReboisasi++;
+									if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data === 'VALIDASI') {
+										totalValidasi++;
 									} else if (status === 'DATA AWAL') {
 										totalDataAwal++;
 									} else if (status === 'TERVERIFIKASI') {
@@ -789,7 +789,7 @@
         });
 
         $('#count-biasa').text(totalBiasa);
-        $('#count-data-reboisasi').text(totalReboisasi);
+        $('#count-data-validasi').text(totalValidasi);
         $('#count-data-awal').text(totalDataAwal);
         $('#count-terverifikasi').text(totalTerverifikasi);
       }
