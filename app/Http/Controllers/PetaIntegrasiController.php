@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BPHTB\DatPerolehanHak;
 use App\Models\BPHTB\DatPerolehanHakLog;
 use App\Models\BPHTB\Sptpd;
+use App\Models\DatAtrbpn;
 use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
 use App\Models\PBB\Sppt;
@@ -42,6 +43,26 @@ class PetaIntegrasiController extends Controller
         return $this->feature($request, $request->id);
     }
 
+    public function dataVerifikasPetaBidangTanah(Request $request)
+    {
+        $request->validate([
+            'layer' => 'required|string',
+        ]);
+        $wilayah = explode(':', $request->layer);
+        $kodeWilayah = $wilayah[1] ?? null;
+        $kelurahan = Kelurahan::where('kd_wilayah', $kodeWilayah)->first();
+        if ($kelurahan) {
+            if (is_null($kelurahan->kd_kelurahan)) {
+                $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
+                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop')->whereIn('kode_wilayah', $subKelurahan)->where('status', 'TERVERIFIKASI')->get();
+            } else {
+                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop')->where('kode_wilayah', $kodeWilayah)->where('status', 'TERVERIFIKASI')->get();
+            }
+            return response()->json($datAtrBpn);
+        } else {
+            return response()->json();
+        }
+    }
     public function dataBPHTB()
     {
         $query = Sptpd::select('kd_propinsi', 'kd_dati2', 'kd_kecamatan', 'kd_kelurahan', 'kd_blok', 'no_urut', 'kd_jns_op')
@@ -64,15 +85,13 @@ class PetaIntegrasiController extends Controller
     public function dataInformasi(Request $request): View
     {
         $request->validate([
-            'nop' => 'nullable|numeric|digits:18',
             'datakirim' => 'required|array',
-            'bphtb' => 'nullable|string|in:ada,tidak',
         ]);
         $dataKirim = $request->datakirim;
         $urls = [];
         $objekPajak = null;
-        if ($request->nop) {
-            $nop = $request->nop;
+        if ($dataKirim['d_nop']) {
+            $nop = $dataKirim['d_nop'];
             $nop1 = substr($nop, 0, 2);
             $nop2 = substr($nop, 2, 2);
             $nop3 = substr($nop, 4, 3);

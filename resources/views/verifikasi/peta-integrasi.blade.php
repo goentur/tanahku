@@ -603,18 +603,17 @@
           dataPersilTerpilih = datakirim;
           $('a[href="#informasiTab"]').tab('show');
           $('#informasidata').html(`<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Memuat informasi...</p></div>`);
-          loadInformasiData(datakirim, nop);
+          loadInformasiData(datakirim);
         }
       });
 
-      function loadInformasiData(datakirim, nop) {
+      function loadInformasiData(datakirim) {
         $.ajax({
           url: '{{ route("verifikasi-peta-integrasi.informasi-pertanahan") }}',
           type: 'POST',
           data: {
             _token: $('meta[name="csrf-token"]').attr('content'),
-            datakirim: datakirim,
-            nop: nop
+            datakirim: datakirim
           },
           success: function(htmlResponse) {
             $('#informasidata').html(htmlResponse);
@@ -1086,7 +1085,7 @@
 								if (baseLayers[activeLayerId]) {
 									baseLayers[activeLayerId].layer.getSource().changed(); 
 								}
-								loadInformasiData(dataPersilTerpilih, dataPersilTerpilih.nop);
+								loadInformasiData(dataPersilTerpilih);
 							}
 						} else {
 							Swal.fire({
@@ -1176,7 +1175,7 @@
 										if (baseLayers[activeLayerId]) {
 											baseLayers[activeLayerId].layer.getSource().changed(); 
 										}
-										loadInformasiData(dataPersilTerpilih, dataPersilTerpilih.nop);
+										loadInformasiData(dataPersilTerpilih);
 									}
 								} else {
 									Swal.fire("Gagal", data.message, "error");

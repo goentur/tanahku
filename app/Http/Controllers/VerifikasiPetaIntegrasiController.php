@@ -63,7 +63,6 @@ class VerifikasiPetaIntegrasiController extends Controller
     {
         $request->validate([
             'datakirim' => 'required|array',
-            'nop' => 'nullable|string',
         ]);
         $objekPajak = null;
         $sudahVerifikasi = false;
@@ -76,8 +75,10 @@ class VerifikasiPetaIntegrasiController extends Controller
             'tunggakan' => 0,
             'bayar' => 0,
         ];
-        if ($request->nop) {
-            $nop = $request->nop;
+        $datAtrBpn = DatAtrbpn::where('kode_wilayah', $dataKirim['KODEWILAYA'])
+            ->where('nib', $dataKirim['NIB'])->first();
+        if ($datAtrBpn && $datAtrBpn->nop) {
+            $nop = $datAtrBpn->nop;
             $nop1 = substr($nop, 0, 2);
             $nop2 = substr($nop, 2, 2);
             $nop3 = substr($nop, 4, 3);
@@ -162,16 +163,6 @@ class VerifikasiPetaIntegrasiController extends Controller
                     ->where('status_pembayaran_sptpd', '=', 1)
                     ->orderBy('id')->get();
             }
-            $datAtrBpn = DatAtrbpn::where('kode_wilayah', $dataKirim['KODEWILAYA'])
-                ->where('nib', $dataKirim['NIB'])
-                ->where('kd_propinsi', $nop1)
-                ->where('kd_dati2', $nop2)
-                ->where('kd_kecamatan', $nop3)
-                ->where('kd_kelurahan', $nop4)
-                ->where('kd_blok', $nop5)
-                ->where('no_urut', $nop6)
-                ->where('kd_jns_op', $nop7)
-                ->first();
             if (empty($datAtrBpn->lokasi) && empty($datAtrBpn->nama_sesuai) && empty($datAtrBpn->luas_sesuai) && empty($datAtrBpn->bangunan_sesuai) && empty($datAtrBpn->nop_gabungan) && empty($datAtrBpn->nop_pecah)) {
                 $sudahVerifikasi = true;
             }

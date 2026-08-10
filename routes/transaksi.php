@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     }
   })->name('proxy.geoserver');
   Route::get('peta-integrasi', [PetaIntegrasiController::class, 'peta'])->name('peta-integrasi');
+  Route::post('data-verifikasi-bidang-tanah', [PetaIntegrasiController::class, 'dataVerifikasPetaBidangTanah'])->name('beranda.data-verifikasi-bidang-tanah');
   Route::post('data-bphtb', [PetaIntegrasiController::class, 'dataBPHTB'])->name('beranda.data-bphtb');
   Route::post('data-informasi', [PetaIntegrasiController::class, 'dataInformasi'])->name('beranda.data-informasi');
   Route::middleware(['auth', 'verified', 'role:SUPER-ADMIN'])->prefix('verifikasi-peta-integrasi')->name('verifikasi-peta-integrasi.')->group(function () {

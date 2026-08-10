@@ -67,14 +67,19 @@
       <div class="accordion-body">
         <table style="font-size: 12px">
 					<tr>
-						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">KODE WILAYAH</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['LUASTERTUL'] ?? '-' }} m<sup>2</sup></td>
+						<td>{{ $dataKirim['KODEWILAYA'] ?? '-' }}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['NIB'] ?? '-' }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['LUASTERTUL'] ?? '-' }} m<sup>2</sup></td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NO HAK</td>
