@@ -221,7 +221,6 @@
         const matchedItem = findMatchedDataVerifikasiBidangTanah(layer, wilayah, nib);
         let nop = '';
 				if (matchedItem) {
-					console.log(matchedItem)
 					if (matchedItem.status == 'TERVERIFIKASI') {
 						strokeColor = '#00FFFF';
 						fillColor = 'rgba(0, 255, 255, 0.4)';
