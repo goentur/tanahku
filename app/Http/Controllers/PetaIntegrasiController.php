@@ -54,9 +54,9 @@ class PetaIntegrasiController extends Controller
         if ($kelurahan) {
             if (is_null($kelurahan->kd_kelurahan)) {
                 $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
-                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop')->whereIn('kode_wilayah', $subKelurahan)->where('status', 'TERVERIFIKASI')->get();
+                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'status')->whereIn('kode_wilayah', $subKelurahan)->get();
             } else {
-                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop')->where('kode_wilayah', $kodeWilayah)->where('status', 'TERVERIFIKASI')->get();
+                $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'status')->where('kode_wilayah', $kodeWilayah)->get();
             }
             return response()->json($datAtrBpn);
         } else {

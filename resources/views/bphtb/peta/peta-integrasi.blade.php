@@ -172,17 +172,17 @@
 				<ul class="list-unstyled mb-0">
 					<li class="d-flex align-items-center justify-content-between mb-1">
 						<div class="d-flex align-items-center">
-							<div style="width: 15px; height: 15px; background-color: #FFFFFF; margin-right: 8px;"></div>
-							<span>BIDANG BIASA</span>
+							<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
+							<span>NIB-NOP TERPADAN</span>
 						</div>
-						<span class="badge bg-secondary ms-2" id="count-data-biasa">0</span>
+						<span class="badge bg-info text-dark ms-2" id="count-terpadan">0</span>
 					</li>
 					<li class="d-flex align-items-center justify-content-between mb-1">
 						<div class="d-flex align-items-center">
-							<div style="width: 15px; height: 15px; background-color: #00FFFF; margin-right: 8px;"></div>
-							<span>BIDANG TERVERIFIKASI</span>
+							<div style="width: 15px; height: 15px; background-color: #FFFFFF; margin-right: 8px;"></div>
+							<span>NIB-NOP BELUM TERPADAN</span>
 						</div>
-						<span class="badge bg-info text-dark ms-2" id="count-data-terverfikasi">0</span>
+						<span class="badge bg-secondary ms-2" id="count-belum-terpadan">0</span>
 					</li>
 				</ul>
 			</div>
@@ -221,8 +221,11 @@
         const matchedItem = findMatchedDataVerifikasiBidangTanah(layer, wilayah, nib);
         let nop = '';
 				if (matchedItem) {
-					strokeColor = '#00FFFF';
-					fillColor = 'rgba(0, 255, 255, 0.4)';
+					console.log(matchedItem)
+					if (matchedItem.status == 'TERVERIFIKASI') {
+						strokeColor = '#00FFFF';
+						fillColor = 'rgba(0, 255, 255, 0.4)';
+					}
           nop = matchedItem.nop || '';
 				}
 				const geometry = feature.getGeometry();
@@ -431,6 +434,7 @@
         if (clickedFeature) {
 					selectedFeature = clickedFeature;
 					let nop = '';
+					let status = '';
 					let wilayah = clickedFeature.get('KODEWILAYA');
 					let nib = clickedFeature.get('NIB');
 					const matchedItem = findMatchedDataVerifikasiBidangTanah(layerId, wilayah, nib);
@@ -445,6 +449,7 @@
 						'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
 						'Surat_Ukur': clickedFeature.get('Surat_Ukur'),
 						'TIPEHAK': clickedFeature.get('TIPEHAK'),
+						'status': matchedItem?matchedItem.status:null,
 						'd_nop': nop
 					};
           selectedFeature.setStyle(function(feature, resolution) {
@@ -810,8 +815,8 @@
 			});
 
 			function updateLegendCounters() {
-        let totalBiasa = 0;
-        let totalTerverifikasi = 0;
+        let totalBelumTerpadan = 0;
+        let totalTerpadan = 0;
         Object.keys(baseLayers).forEach(layerId => {
           const entry = baseLayers[layerId];
           if (entry && entry.layer && entry.layer.getVisible()) {
@@ -823,18 +828,18 @@
 								let wilayah = feature.get('KODEWILAYA');
 								let nib = feature.get('NIB');
                 const matchedItem = findMatchedDataVerifikasiBidangTanah(layerId, wilayah, nib);
-                if (matchedItem) {
-										totalTerverifikasi++;
+                if (matchedItem && matchedItem.status == 'TERVERIFIKASI') {
+										totalTerpadan++;
                 } else {
-                  totalBiasa++;
+                  totalBelumTerpadan++;
                 }
               });
             }
           }
         });
 
-        $('#count-data-biasa').text(totalBiasa);
-        $('#count-data-terverfikasi').text(totalTerverifikasi);
+        $('#count-terpadan').text(totalTerpadan);
+        $('#count-belum-terpadan').text(totalBelumTerpadan);
       }
 		});
 	</script>

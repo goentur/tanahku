@@ -1,3 +1,12 @@
+@if ($dataKirim['status'] == 'TERVERIFIKASI')
+<div class="alert alert-info mb-2" style="font-size: 13px" role="alert">
+	<b>STATUS NIB-NOP</b> : SUDAH TERPADAN
+</div>		
+@else
+<div class="alert alert-warning mb-2" style="font-size: 13px" role="alert">
+	<b>STATUS NIB-NOP</b> : BELUM TERPADAN
+</div>		
+@endif
 <div class="accordion" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -23,8 +32,6 @@
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>
 							{{ $objekPajak?->datSubjekPajak->nm_wp }}
-							<br>
-							{{ $objekPajak ? $dataKirim['Pemilik_Ak'] : null }}
 						</td>
 					</tr>
 					<tr>
@@ -82,44 +89,17 @@
 						<td>{{ $dataKirim['LUASTERTUL'] ?? '-' }} m<sup>2</sup></td>
 					</tr>
 					<tr>
-						<td style="vertical-align: top" class="fw-bold text-nowrap">NO HAK</td>
-						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['Nomor_Hak'] ?? '-' }}</td>
-					</tr>
-					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">TIPE HAK</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['TIPEHAK'] ?? '-' }}</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NO HAK</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $dataKirim['Nomor_Hak'] ?? '-' }}</td>
 					</tr>
 				</table>
       </div>
     </div>
   </div>
-	@if (@$bphtb)
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-        BPHTB
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
-      <table style="font-size: 12px" class="table table-bordered table-sm">
-        <tr>
-          <th>Nomor</th>
-          <th>NJOP</th>
-          <th>NiPer</th>
-          <th>Tanah</th>
-        </tr>
-        @foreach ($bphtb as $item)
-        <tr>
-          <td>{{ $item->datPerolehanHak->tahun_perolehan }}.{{ $item->datPerolehanHak->bundel_perolehan }}.{{ $item->datPerolehanHak->no_urut_perolehan }}</td>
-          <td>{{ number_format($item->njop_pbb) }}</td>
-          <td>{{ number_format($item->nilai_perolehan) }}</td>
-          <td>{{ number_format($item->luas_bumi) }}</td>
-        </tr>
-        @endforeach
-      </table>
-    </div>
-  </div>
-	@endif
 </div>
