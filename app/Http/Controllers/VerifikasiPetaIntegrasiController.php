@@ -53,9 +53,9 @@ class VerifikasiPetaIntegrasiController extends Controller
 
         if ($kelurahan && is_null($kelurahan->kd_kelurahan)) {
             $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
-            $datAtrBpn = DatAtrbpn::whereIn('kode_wilayah', $subKelurahan)->whereNotNull('nib')->get();
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')->whereIn('kode_wilayah', $subKelurahan)->whereNotNull('nib')->get();
         } else {
-            $datAtrBpn = DatAtrbpn::where('kode_wilayah', $kodeWilayah)->whereNotNull('nib')->get();
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')->where('kode_wilayah', $kodeWilayah)->whereNotNull('nib')->get();
         }
         return response()->json($datAtrBpn);
     }

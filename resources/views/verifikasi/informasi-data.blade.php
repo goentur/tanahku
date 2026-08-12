@@ -1,4 +1,4 @@
-@if ($datAtrBpn->status == 'TERVERIFIKASI')
+@if ($datAtrBpn?->status == 'TERVERIFIKASI')
 <div class="alert alert-success" role="alert"><i class="fa fa-check"></i> DATA SUDAH TERFERIFIKASI</div>
 @else
 <div class="d-grid gap-2 mb-2">
@@ -176,7 +176,7 @@
 	<div class="accordion-item">
 		<h2 class="accordion-header">
 			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-varifikasi" aria-expanded="false" aria-controls="panelsStayOpen-varifikasi">
-				VERIFIKASI{{$datAtrBpn->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
+				VERIFIKASI{{$datAtrBpn?->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
 			</button>
 		</h2>
 		<div id="panelsStayOpen-varifikasi" class="accordion-collapse collapse">
@@ -275,9 +275,9 @@
 					</table>
 					<div class="d-grid gap-2 mb-2">
 						<button class="btn btn-success btn-sm" type="submit" id="btnVerifikasiDataPertanahan">
-							<i class="fa fa-check"></i> VERIFIKASI{{$datAtrBpn->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
+							<i class="fa fa-check"></i> VERIFIKASI{{$datAtrBpn?->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
 						</button>
-						@if ($datAtrBpn->status == 'TERVERIFIKASI')
+						@if ($datAtrBpn?->status == 'TERVERIFIKASI')
 						<button class="btn btn-danger btn-sm" type="button" id="btnBatalVerifikasiDataPertanahan">
 							<i class="fa fa-reply"></i> BATAL VERIFIKASI DATA
 						</button>

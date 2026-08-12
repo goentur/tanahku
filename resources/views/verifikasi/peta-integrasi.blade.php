@@ -269,7 +269,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		$(document).ready(function() {
-      let datSudahVerifikasi = {}; // Struktur sekarang: { 'layerId1': [data], 'layerId2': [data] }
+      let datSudahVerifikasi = {};
       let selectedFeature = null;
       const baseLayers = {};
       let dataPersilTerpilih = null;
