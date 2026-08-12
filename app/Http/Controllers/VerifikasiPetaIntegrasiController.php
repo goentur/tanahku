@@ -163,9 +163,6 @@ class VerifikasiPetaIntegrasiController extends Controller
                     ->where('status_pembayaran_sptpd', '=', 1)
                     ->orderBy('id')->get();
             }
-            if (empty($datAtrBpn->lokasi) && empty($datAtrBpn->nama_sesuai) && empty($datAtrBpn->luas_sesuai) && empty($datAtrBpn->bangunan_sesuai) && empty($datAtrBpn->nop_gabungan) && empty($datAtrBpn->nop_pecah)) {
-                $sudahVerifikasi = true;
-            }
         }
 
         return view('verifikasi.informasi-data', compact('objekPajak', 'dataKirim', 'urls', 'sudahVerifikasi', 'bphtb', 'sppt', 'datAtrBpn'));
@@ -320,6 +317,48 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'luas_bangunan' => $request->luas_bangunan,
                 'nop_gabungan' => $request->nop_gabungan,
                 'nop_pecah' => $request->nop_pecahan
+            ]);
+
+            if ($updatedRows === 0) {
+                return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan.'], 404);
+            }
+            DB::commit();
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Informasi pertanahan berhasil diverifikasi.'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal menyimpan data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function batalVerifikasiInformasiPertanahan(Request $request)
+    {
+        $request->validate([
+            'kode_wilayah' => 'required|numeric|min_digits:8',
+            'nib' => 'required|numeric|min_digits:5',
+            'nop' => 'required|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $nop = str_replace('.', '', str_replace('-', '', $request->nop));
+            $updatedRows = DatAtrbpn::where([
+                'kode_wilayah' => $request->kode_wilayah,
+                'nib'          => $request->nib,
+                'nop'          => $nop,
+            ])->update([
+                'status' => 'DATA AWAL',
+                'lokasi' => null,
+                'nama_sesuai' => null,
+                'luas_sesuai' => null,
+                'bangunan_sesuai' => null,
+                'luas_bangunan' => null,
+                'nop_gabungan' => null,
+                'nop_pecah' => null
             ]);
 
             if ($updatedRows === 0) {

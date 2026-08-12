@@ -1,8 +1,8 @@
-@if ($dataKirim['status'] == 'final')
+@if ($datAtrBpn->status == 'TERVERIFIKASI')
 <div class="alert alert-success" role="alert"><i class="fa fa-check"></i> DATA SUDAH TERFERIFIKASI</div>
 @else
 <div class="d-grid gap-2 mb-2">
-	<button class="btn btn-primary btn-sm btn-edit-pbb"
+	<button class="btn btn-primary btn-edit-pbb"
 		type="button"
 		data-bs-toggle="modal"
 		data-bs-target="#exampleModal">
@@ -171,12 +171,12 @@
   </div>
 	@endif
 </div>
-@if (($dataKirim['status'] == 'belum' && $objekPajak) || ($dataKirim['status'] == 'final' && $objekPajak && $sudahVerifikasi))
+@if (($objekPajak))
 <div class="accordion mb-2" id="accordionVerifikasi">
 	<div class="accordion-item">
 		<h2 class="accordion-header">
 			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-varifikasi" aria-expanded="false" aria-controls="panelsStayOpen-varifikasi">
-				VERIFIKASI{{ $dataKirim['status'] == 'final' && $objekPajak && $sudahVerifikasi ?' ULANG':'' }} DATA
+				VERIFIKASI{{$datAtrBpn->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
 			</button>
 		</h2>
 		<div id="panelsStayOpen-varifikasi" class="accordion-collapse collapse">
@@ -274,9 +274,14 @@
 						</tr>
 					</table>
 					<div class="d-grid gap-2 mb-2">
-						<button class="btn btn-success btn-sm btn-edit-pbb" type="submit" id="btnVerifikasiDataPertanahan">
-							<i class="fa fa-check"></i> VERIFIKASI DATA
+						<button class="btn btn-success btn-sm" type="submit" id="btnVerifikasiDataPertanahan">
+							<i class="fa fa-check"></i> VERIFIKASI{{$datAtrBpn->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
 						</button>
+						@if ($datAtrBpn->status == 'TERVERIFIKASI')
+						<button class="btn btn-danger btn-sm" type="button" id="btnBatalVerifikasiDataPertanahan">
+							<i class="fa fa-reply"></i> BATAL VERIFIKASI DATA
+						</button>
+						@endif
 					</div>
 				</form>
 			</div>

@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'informasiPertanahan'])->name('informasi-pertanahan');
     Route::post('simpan-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'simpanInformasiPertanahan'])->name('simpan-informasi-pertanahan');
     Route::post('verifikasi-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'verifikasiInformasiPertanahan'])->name('verifikasi-informasi-pertanahan');
+    Route::post('batal-verifikasi-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'batalVerifikasiInformasiPertanahan'])->name('batal-verifikasi-informasi-pertanahan');
   });
   Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');
 });
