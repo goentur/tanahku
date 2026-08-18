@@ -154,6 +154,7 @@
       <table style="font-size: 12px" class="table table-bordered table-sm">
         <tr>
           <th style="width: 1px">Nomor</th>
+          <th style="width: 1px">JPH</th>
           <th style="width: 1px">NJOP</th>
           <th>Nilai Perolehan</th>
           <th>Nilai Perolehan /m</th>
@@ -161,6 +162,7 @@
         @foreach ($bphtb as $item)
         <tr>
           <td class="text-nowrap">{{ $item->datPerolehanHak->tahun_perolehan }}.{{ $item->datPerolehanHak->bundel_perolehan }}.{{ $item->datPerolehanHak->no_urut_perolehan }}</td>
+          <td class="text-nowrap text-center">{{ $item->ref_jph_id }}</td>
           <td class="text-nowrap text-end">{{ number_format($item->njop_pbb) }}</td>
           <td class="text-nowrap text-end">{{ number_format($item->nilai_perolehan) }}</td>
           <td class="text-nowrap text-end">{{ $item->nilai_perolehan>0?number_format($item->nilai_perolehan/$item->luas_bumi):0 }}</td>
