@@ -10,6 +10,7 @@ use App\Models\PBB\PembayaranSppt;
 use App\Models\PBB\Sppt;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -314,7 +315,9 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'bangunan_sesuai' => $request->bangunan_sesuai,
                 'luas_bangunan' => $request->luas_bangunan,
                 'nop_gabungan' => $request->nop_gabungan,
-                'nop_pecah' => $request->nop_pecahan
+                'nop_pecah' => $request->nop_pecahan,
+                'verifikator' => Auth()->user()->name,
+                'tgl_verifikasi' => now()
             ]);
 
             if ($updatedRows === 0) {
@@ -356,7 +359,9 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'bangunan_sesuai' => null,
                 'luas_bangunan' => null,
                 'nop_gabungan' => null,
-                'nop_pecah' => null
+                'nop_pecah' => null,
+                'verifikator' => null,
+                'tgl_verifikasi' => null
             ]);
 
             if ($updatedRows === 0) {

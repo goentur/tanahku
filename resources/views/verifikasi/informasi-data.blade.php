@@ -273,6 +273,21 @@
 							</td>
 						</tr>
 					</table>
+					@if (!empty($datAtrBpn) && $datAtrBpn->verifikator != null && $datAtrBpn->tgl_verifikasi != null)
+					<table class="table table-sm table-bordered" style="font-size: 12px">
+						<tr>
+							<th class="text-center" colspan="2">TERVERIFIKASI</th>
+						</tr>
+						<tr>
+							<th style="width: 1px">OLEH</th>
+							<th>{{ $datAtrBpn->verifikator }}</th>
+						</tr>
+						<tr>
+							<th>TANGGAL</th>
+							<th>{{ $datAtrBpn->tgl_verifikasi }}</th>
+						</tr>
+					</table>
+					@endif
 					<div class="d-grid gap-2 mb-2">
 						<button class="btn btn-success btn-sm" type="submit" id="btnVerifikasiDataPertanahan">
 							<i class="fa fa-check"></i> VERIFIKASI{{$datAtrBpn?->status == 'TERVERIFIKASI' ?' ULANG':'' }} DATA
