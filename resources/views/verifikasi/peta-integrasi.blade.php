@@ -277,10 +277,6 @@
 			let dataBPHTB = {};
 
       $('#modal_nop').mask('00.00.000.000.000-0000.0');
-
-      // =========================================================================
-      // HELPER FUNGSIONAL: Mencari item terverifikasi di dalam struktur Object Key-Value
-      // =========================================================================
       function findMatchedItem(layerId, futureKODEWILAYA, futureNIB) {
         let matched = null;
 				const arrayData = datSudahVerifikasi[layerId];
@@ -309,6 +305,7 @@
 
 				if (matchedItem) {
 					const { status, sumber_data } = matchedItem;
+					console.log(matchedItem)
 					if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('VALIDASI')) {
 						strokeColor = '#AF46FF';
 						fillColor = 'rgba(175, 70, 255, 0.4)';
@@ -592,6 +589,7 @@
             'Pemilik_Ak': clickedFeature.get('Pemilik_Ak'),
             'nop': nop,
             'bphtb': bphtbMatch ? 'YA' : 'NO',
+            'layerId': layerId,
           };
           dataPersilTerpilih = datakirim;
           $('a[href="#informasiTab"]').tab('show');
@@ -1073,9 +1071,9 @@
 							});
 							$('#exampleModal').modal('hide'); // Tutup modal
 							if (activeLayerId) {
-								await refreshDataVerifikasi(activeLayerId);
-								if (baseLayers[activeLayerId]) {
-									baseLayers[activeLayerId].layer.getSource().changed(); 
+								await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+								if (baseLayers[dataPersilTerpilih.layerId]) {
+									baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 								}
 								loadInformasiData(dataPersilTerpilih);
 							}
@@ -1163,9 +1161,9 @@
 								if (data.status === 'success') {
 									Swal.fire("Berhasil!", data.message, "success");
 									if (activeLayerId) {
-										await refreshDataVerifikasi(activeLayerId);
-										if (baseLayers[activeLayerId]) {
-											baseLayers[activeLayerId].layer.getSource().changed(); 
+										await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+										if (baseLayers[dataPersilTerpilih.layerId]) {
+											baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 										}
 										loadInformasiData(dataPersilTerpilih);
 									}
@@ -1230,9 +1228,9 @@
 								if (data.status === 'success') {
 									Swal.fire("Berhasil!", data.message, "success");
 									if (activeLayerId) {
-										await refreshDataVerifikasi(activeLayerId);
-										if (baseLayers[activeLayerId]) {
-											baseLayers[activeLayerId].layer.getSource().changed(); 
+										await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+										if (baseLayers[dataPersilTerpilih.layerId]) {
+											baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 										}
 										loadInformasiData(dataPersilTerpilih);
 									}
@@ -1253,9 +1251,6 @@
 								} else {
 									Swal.fire("Error", "Terjadi kesalahan sistem internal.", "error");
 								}
-							},
-							complete: function() {
-								if(btnSubmit.length) btnSubmit.prop('disabled', false).text('Verifikasi Data');
 							}
 						});
 					}

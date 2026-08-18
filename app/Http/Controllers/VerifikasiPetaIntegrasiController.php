@@ -46,11 +46,9 @@ class VerifikasiPetaIntegrasiController extends Controller
         $request->validate([
             'wilayah' => 'required|string',
         ]);
-
         $wilayah = explode(':', $request->wilayah);
         $kodeWilayah = $wilayah[1] ?? null;
         $kelurahan = Kelurahan::where('kd_wilayah', $kodeWilayah)->first();
-
         if ($kelurahan && is_null($kelurahan->kd_kelurahan)) {
             $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
             $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')->whereIn('kode_wilayah', $subKelurahan)->whereNotNull('nib')->get();
