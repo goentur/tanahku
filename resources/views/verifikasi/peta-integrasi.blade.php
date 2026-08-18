@@ -618,21 +618,39 @@
         });
       }
 
-      async function refreshDataVerifikasi(layerId) {
-        try {
-          datSudahVerifikasi[layerId] = await $.ajax({
-            url: '{{ route("verifikasi-peta-integrasi.data-sudah-verifikasi") }}',
-            method: 'POST',
-            data: {
-              _token: $('meta[name="csrf-token"]').attr('content'),
-              'wilayah': layerId
-            }
-          });
-          updateLegendCounters();
-        } catch (error) {
-          console.error("Gagal memperbarui data verifikasi:", error);
-        }
-      }
+      async function refreshDataVerifikasi(layerId, kodeWilayah = null, nib = null) {
+				return $.ajax({
+					url: '{{ route("verifikasi-peta-integrasi.data-sudah-verifikasi") }}',
+					method: 'POST',
+					data: {
+						_token: $('meta[name="csrf-token"]').attr('content'),
+						layer: layerId,
+						kodeWilayah: kodeWilayah,
+						nib: nib,
+					}
+				})
+				.done(function(responseData) {
+					if (!kodeWilayah && !nib) {
+						datSudahVerifikasi[layerId] = responseData;
+					} else {
+						if (!datSudahVerifikasi[layerId]) datSudahVerifikasi[layerId] = [];
+
+						responseData.forEach(newItem => {
+							const idx = datSudahVerifikasi[layerId].findIndex(i => i.kode_wilayah === newItem.kode_wilayah && i.nib === newItem.nib);
+							if (idx !== -1) {
+								datSudahVerifikasi[layerId][idx] = newItem;
+							} else {
+								datSudahVerifikasi[layerId].push(newItem);
+							}
+						});
+					}
+
+					updateLegendCounters();
+				})
+				.fail(function(xhr, status, error) {
+					console.error("Gagal memperbarui data verifikasi:", error);
+				});
+			}
 
 			$.ajax({
 				url: '{{ route("beranda.data-bphtb") }}',
@@ -1068,9 +1086,9 @@
 								timer: 3000,
 								showConfirmButton: true
 							});
-							$('#exampleModal').modal('hide'); // Tutup modal
+							$('#exampleModal').modal('hide');
 							if (activeLayerId) {
-								await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+								await refreshDataVerifikasi(dataPersilTerpilih.layerId, dataPersilTerpilih.KODEWILAYA, dataPersilTerpilih.NIB);
 								if (baseLayers[dataPersilTerpilih.layerId]) {
 									baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 								}
@@ -1160,7 +1178,7 @@
 								if (data.status === 'success') {
 									Swal.fire("Berhasil!", data.message, "success");
 									if (activeLayerId) {
-										await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+										await refreshDataVerifikasi(dataPersilTerpilih.layerId, dataPersilTerpilih.KODEWILAYA, dataPersilTerpilih.NIB);
 										if (baseLayers[dataPersilTerpilih.layerId]) {
 											baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 										}
@@ -1224,7 +1242,7 @@
 								if (data.status === 'success') {
 									Swal.fire("Berhasil!", data.message, "success");
 									if (activeLayerId) {
-										await refreshDataVerifikasi(dataPersilTerpilih.layerId);
+										await refreshDataVerifikasi(dataPersilTerpilih.layerId, dataPersilTerpilih.KODEWILAYA, dataPersilTerpilih.NIB);
 										if (baseLayers[dataPersilTerpilih.layerId]) {
 											baseLayers[dataPersilTerpilih.layerId].layer.getSource().changed(); 
 										}

@@ -45,16 +45,34 @@ class VerifikasiPetaIntegrasiController extends Controller
     public function dataSudahVerifikasi(Request $request)
     {
         $request->validate([
-            'wilayah' => 'required|string',
+            'layer' => 'required|string',
+            'kodeWilayah' => 'nullable|string',
+            'nib' => 'nullable|string',
         ]);
-        $wilayah = explode(':', $request->wilayah);
-        $kodeWilayah = $wilayah[1] ?? null;
-        $kelurahan = Kelurahan::where('kd_wilayah', $kodeWilayah)->first();
+
+        $layer = explode(':', $request->layer);
+        $kodeLayer = $layer[1] ?? null;
+
+        $kelurahan = Kelurahan::where('kd_wilayah', $kodeLayer)->first();
+
         if ($kelurahan && is_null($kelurahan->kd_kelurahan)) {
-            $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
-            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')->whereIn('kode_wilayah', $subKelurahan)->whereNotNull('nib')->get();
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')
+                ->when(blank($request->kodeWilayah) && blank($request->nib), function ($q) use ($kelurahan) {
+                    $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
+                    $q->whereIn('kode_wilayah', $subKelurahan);
+                })
+                ->when(!blank($request->kodeWilayah) && !blank($request->nib), function ($q) use ($request) {
+                    $q->where('kode_wilayah', $request->kodeWilayah)
+                        ->where('nib', $request->nib);
+                })
+                ->whereNotNull('nib')
+                ->get();
         } else {
-            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')->where('kode_wilayah', $kodeWilayah)->whereNotNull('nib')->get();
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')
+                ->where('kode_wilayah', $kodeLayer)
+                ->when(!blank($request->nib), fn($q) => $q->where('nib', $request->nib))
+                ->whereNotNull('nib')
+                ->get();
         }
         return response()->json($datAtrBpn);
     }
