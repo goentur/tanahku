@@ -280,11 +280,11 @@
 						</tr>
 						<tr>
 							<th style="width: 1px">OLEH</th>
-							<th>{{ $datAtrBpn->verifikator }}</th>
+							<td>{{ $datAtrBpn->verifikator }}</td>
 						</tr>
 						<tr>
 							<th>TANGGAL</th>
-							<th>{{ $datAtrBpn->tgl_verifikasi }}</th>
+							<td>{{ $datAtrBpn->tgl_verifikasi }}</td>
 						</tr>
 					</table>
 					@endif
