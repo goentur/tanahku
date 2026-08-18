@@ -305,7 +305,6 @@
 
 				if (matchedItem) {
 					const { status, sumber_data } = matchedItem;
-					console.log(matchedItem)
 					if (['DATA AWAL', 'DATA MENTAH'].includes(status) && sumber_data?.includes('VALIDASI')) {
 						strokeColor = '#AF46FF';
 						fillColor = 'rgba(175, 70, 255, 0.4)';
@@ -1184,9 +1183,6 @@
 								} else {
 									Swal.fire("Error", "Terjadi kesalahan sistem internal.", "error");
 								}
-							},
-							complete: function() {
-								if(btnSubmit.length) btnSubmit.prop('disabled', false).text('Verifikasi Data');
 							}
 						});
 					}
