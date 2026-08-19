@@ -6,11 +6,9 @@ use App\Models\BPHTB\Sptpd;
 use App\Models\DatAtrbpn;
 use App\Models\Kelurahan;
 use App\Models\PBB\DatObjekPajak;
-use App\Models\PBB\PembayaranSppt;
 use App\Models\PBB\Sppt;
 use App\Services\Geoserver;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -52,6 +50,7 @@ class VerifikasiPetaIntegrasiController extends Controller
 
         $layer = explode(':', $request->layer);
         $kodeLayer = $layer[1] ?? null;
+
 
         $kelurahan = Kelurahan::where('kd_wilayah', $kodeLayer)->first();
 
@@ -211,8 +210,11 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'kode_wilayah' => $request->modal_kode_wilayah,
                 'nib'          => $request->modal_nib,
             ])->first();
-
+            $timer = true;
             if ($cekDatAtrBpn) {
+                $cekDatAtrBpnDanNop = DatAtrbpn::where([
+                    'nop' => $nop,
+                ])->first();
                 DatAtrbpn::where([
                     'kode_wilayah' => $request->modal_kode_wilayah,
                     'nib'          => $request->modal_nib,
@@ -226,7 +228,12 @@ class VerifikasiPetaIntegrasiController extends Controller
                     'no_urut'      => $nop6,
                     'kd_jns_op'    => $nop7,
                 ]);
-                $message = 'Informasi pertanahan berhasil diperbarui.';
+                if ($cekDatAtrBpnDanNop) {
+                    $timer = false;
+                    $message = 'Informasi pertanahan berhasil diperbarui. akan tetapi NOP masih sama dengan NIB : ' . $cekDatAtrBpnDanNop->nib;
+                } else {
+                    $message = 'Informasi pertanahan berhasil diperbarui.';
+                }
             } else {
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
@@ -293,6 +300,7 @@ class VerifikasiPetaIntegrasiController extends Controller
 
             return response()->json([
                 'status'  => 'success',
+                'timer' => $timer,
                 'message' => $message
             ], 200);
         } catch (\Exception $e) {
@@ -321,6 +329,12 @@ class VerifikasiPetaIntegrasiController extends Controller
         DB::beginTransaction();
         try {
             $nop = str_replace('.', '', str_replace('-', '', $request->nop));
+            if ($request->nop_gabungan == 'T') {
+                $cekNopLain = DatAtrbpn::where('nop', $nop)->whereNot('nib', $request->nib)->first();
+                if ($cekNopLain) {
+                    return response()->json(['status' => 'error', 'message' => 'NOP sudah digunakan untuk NIB : ' . $cekNopLain->nib], 500);
+                }
+            }
             $updatedRows = DatAtrbpn::where([
                 'kode_wilayah' => $request->kode_wilayah,
                 'nib'          => $request->nib,

@@ -639,6 +639,7 @@
 							const idx = datSudahVerifikasi[layerId].findIndex(i => i.kode_wilayah === newItem.kode_wilayah && i.nib === newItem.nib);
 							if (idx !== -1) {
 								datSudahVerifikasi[layerId][idx] = newItem;
+								dataPersilTerpilih.nop = newItem.nop;
 							} else {
 								datSudahVerifikasi[layerId].push(newItem);
 							}
@@ -1044,16 +1045,15 @@
 					Swal.fire("Error", "Silakan pilih salah satu bidang tanah di peta terlebih dahulu!.", "error");
 					return;
 				}
-				const dataKirim = dataPersilTerpilih;
-				$('#modal_id_peta_bidang').val(dataKirim.ID_PETA_BIDANG);
-				$('#modal_kode_wilayah').val(dataKirim.KODEWILAYA);
-				$('#modal_nib').val(dataKirim.NIB);
-				$('#modal_nop').val(dataKirim.nop);
-				$('#modal_pemilik_awal').val(dataKirim.Pemilik_Pe);
-				$('#modal_pemilik_akhir').val(dataKirim.Pemilik_Ak);
-				$('#modal_luas').val(dataKirim.LUASTERTUL);
-				$('#modal_tipe_hak').val(dataKirim.TIPEHAK);
-				$('#modal_no_hak').val(dataKirim.Nomor_Hak);
+				$('#modal_id_peta_bidang').val(dataPersilTerpilih.ID_PETA_BIDANG);
+				$('#modal_kode_wilayah').val(dataPersilTerpilih.KODEWILAYA);
+				$('#modal_nib').val(dataPersilTerpilih.NIB);
+				$('#modal_nop').val(dataPersilTerpilih.nop);
+				$('#modal_pemilik_awal').val(dataPersilTerpilih.Pemilik_Pe);
+				$('#modal_pemilik_akhir').val(dataPersilTerpilih.Pemilik_Ak);
+				$('#modal_luas').val(dataPersilTerpilih.LUASTERTUL);
+				$('#modal_tipe_hak').val(dataPersilTerpilih.TIPEHAK);
+				$('#modal_no_hak').val(dataPersilTerpilih.Nomor_Hak);
 			});
 
 			$('#exampleModal').on('shown.bs.modal', function() {
@@ -1080,11 +1080,12 @@
 					success: async function(data) {
 						if (data.status === 'success') {
 							Swal.fire({
-								icon: 'success',
-								title: 'Berhasil!',
+								icon: data.timer ? 'success' : 'warning',
+								title: data.timer ? 'Berhasil' : 'Peringatan',
 								text: data.message,
-								timer: 3000,
-								showConfirmButton: true
+								timer: data.timer ? 3000 : false,
+								showConfirmButton: true,
+								allowOutsideClick: data.timer ? true : false
 							});
 							$('#exampleModal').modal('hide');
 							if (activeLayerId) {
@@ -1154,12 +1155,7 @@
 					cancelButtonText: "Tidak jadi!"
 				}).then((result) => {
 					if (result.isConfirmed) {
-						const btnSubmit = $(this);
-						btnSubmit.prop('disabled', true).text('Memproses...');
-						// 1. Ambil data dari form verifikasi yang di-load via AJAX
 						const formData = $('#formVerifikasi').serialize();
-
-						// 2. Gabungkan data form dengan data tambahan yang sudah ada
 						const dataKirim = $.param({
 							'kode_wilayah': dataPersilTerpilih.KODEWILAYA,
 							'nib': dataPersilTerpilih.NIB,
@@ -1206,6 +1202,7 @@
 					}
 				});
 			});
+			
 			$(document).on('click', '#btnBatalVerifikasiDataPertanahan', function(e) {
 				e.preventDefault();
 				if (!dataPersilTerpilih) {
