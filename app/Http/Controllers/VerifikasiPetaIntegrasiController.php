@@ -190,7 +190,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'modal_kode_wilayah' => 'required|numeric|min_digits:8',
             'modal_nib' => 'required|numeric|min_digits:5',
             'modal_nop' => 'required|string',
-            'modal_nib_el' => 'required|string',
+            'modal_nib_el' => 'nullable|string',
             'modal_pemilik_awal' => 'nullable|string',
             'modal_pemilik_akhir' => 'nullable|string',
             'modal_luas' => 'required|numeric',

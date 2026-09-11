@@ -226,7 +226,7 @@
 								</div>
 								<div class="mb-3">
 									<label for="modal_nib_el" class="form-label">NIB EL</label>
-									<input required type="text" autofocus="true" placeholder="Masukan NOP" name="modal_nib_el" class="form-control" id="modal_nib_el">
+									<input type="text" placeholder="Masukan NOP" name="modal_nib_el" class="form-control" id="modal_nib_el">
 								</div>
 								<div class="mb-3">
 									<label for="modal_nop" class="form-label">NOP</label>
