@@ -115,6 +115,11 @@
 						<td>{{ $dataKirim['NIB'] ?? '-' }}</td>
 					</tr>
 					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB EL</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $datAtrBpn?->nib_el}}</td>
+					</tr>
+					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $dataKirim['LUASTERTUL'] ?? '-' }} m<sup>2</sup></td>
@@ -186,12 +191,12 @@
 				<form action="" id="formVerifikasi" method="post">
 					<table class="table table-sm table-bordered" style="font-size: 12px">
 						<tr>
-							<th>KONDISI</th>
+							<th colspan="2">KONDISI</th>
 							<th style="width: 1px">YA</th>
 							<th style="width: 1px">TIDAK</th>
 						</tr>
 						<tr>
-							<td>LOKASI</td>
+							<td colspan="2">LOKASI</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="lokasi_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="lokasi" id="lokasi_ya" value="Y" {{empty($datAtrBpn->lokasi) || $datAtrBpn->lokasi == 'Y' ? 'checked':'' }}>
@@ -204,7 +209,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>NAMA SESUAI</td>
+							<td colspan="2">NAMA SESUAI</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="nama_sesuai_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="nama_sesuai" id="nama_sesuai_ya" value="Y" {{empty($datAtrBpn->nama_sesuai) || $datAtrBpn->nama_sesuai == 'Y' ? 'checked':'' }}>
@@ -217,7 +222,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>LUAS TANAH PBB X BPN</td>
+							<td colspan="2">LUAS TANAH PBB X BPN</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="luas_tanah_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="luas_tanah" id="luas_tanah_ya" value="Y" {{empty($datAtrBpn->luas_sesuai) || $datAtrBpn->luas_sesuai == 'Y' ? 'checked':'' }}>
@@ -230,7 +235,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>BANGUANAN SESUAI</td>
+							<td colspan="2">BANGUANAN SESUAI</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="bangunan_sesuai_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="bangunan_sesuai" id="bangunan_sesuai_ya" value="Y" {{empty($datAtrBpn->bangunan_sesuai) || $datAtrBpn->bangunan_sesuai == 'Y' ? 'checked':'' }}>
@@ -243,13 +248,13 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="align-middle">LUAS BANGUNAN</td>
+							<td colspan="2" class="align-middle">LUAS BANGUNAN</td>
 							<td colspan="2">
 									<input class="form-control form-control-sm" type="text" name="luas_bangunan" id="luas_bangunan" value="{{ empty($datAtrBpn->luas_bangunan) ? $objekPajak?->total_luas_bng : $datAtrBpn->luas_bangunan }}">
 							</td>
 						</tr>
 						<tr>
-							<td>NOP GABUNGAN</td>
+							<td colspan="2">NOP GABUNGAN</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="nop_gabungan_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="nop_gabungan" id="nop_gabungan_ya" value="Y" {{!empty($datAtrBpn) && $datAtrBpn->nop_gabungan == 'Y' ? 'checked':'' }}>
@@ -262,7 +267,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>NOP PECAHAN</td>
+							<td colspan="2">NOP PECAHAN</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="nop_pecahan_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="nop_pecahan" id="nop_pecahan_ya" value="Y" {{!empty($datAtrBpn) && $datAtrBpn->nop_pecah == 'Y' ? 'checked':'' }}>
@@ -272,6 +277,12 @@
 								<label for="nop_pecahan_tidak" class="w-100 m-0 p-0" style="cursor: pointer;">
 									<input class="form-check-input" type="radio" name="nop_pecahan" id="nop_pecahan_tidak" value="T" {{empty($datAtrBpn->nop_pecah) || $datAtrBpn->nop_pecah == 'T' ? 'checked':'' }}>
 								</label>
+							</td>
+						</tr>
+						<tr>
+							<td class="align-middle">NIB EL</td>
+							<td colspan="3">
+									<input class="form-control form-control-sm" placeholder="Masukan NIBEL" type="text" name="nib_el" id="nib_el" value="{{ $datAtrBpn?->nib_el }}">
 							</td>
 						</tr>
 					</table>

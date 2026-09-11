@@ -225,6 +225,10 @@
 									<input required type="text" placeholder="Masukan NIB" name="modal_nib" class="form-control" id="modal_nib">
 								</div>
 								<div class="mb-3">
+									<label for="modal_nib_el" class="form-label">NIB EL</label>
+									<input required type="text" autofocus="true" placeholder="Masukan NOP" name="modal_nib_el" class="form-control" id="modal_nib_el">
+								</div>
+								<div class="mb-3">
 									<label for="modal_nop" class="form-label">NOP</label>
 									<input required type="text" autofocus="true" placeholder="Masukan NOP" name="modal_nop" class="form-control" id="modal_nop">
 								</div>
@@ -573,14 +577,18 @@
             return getSelectedStyle(feature, resolution);
           });
           let nop = '';
+          let nib_el = '';
+					console.log(matchedItem)
           if (matchedItem) {
             nop = matchedItem.nop || '';
+            nib_el = matchedItem.nib_el || '';
           }
 					const bphtbMatch = dataBPHTB.find(item => item.nopGabungan === nop);
           const datakirim = {
             'ID_PETA_BIDANG': clickedFeature.getId(),
             'KODEWILAYA': kodewilayah,
             'NIB': nib,
+            'NIB_EL': nib_el,
             'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
             'Nomor_Hak': clickedFeature.get('Nomor_Hak'),
             'TIPEHAK': clickedFeature.get('TIPEHAK'),
@@ -639,6 +647,7 @@
 							const idx = datSudahVerifikasi[layerId].findIndex(i => i.kode_wilayah === newItem.kode_wilayah && i.nib === newItem.nib);
 							if (idx !== -1) {
 								datSudahVerifikasi[layerId][idx] = newItem;
+								dataPersilTerpilih.NIB_EL = newItem.nib_el;
 								dataPersilTerpilih.nop = newItem.nop;
 							} else {
 								datSudahVerifikasi[layerId].push(newItem);
@@ -1048,6 +1057,7 @@
 				$('#modal_id_peta_bidang').val(dataPersilTerpilih.ID_PETA_BIDANG);
 				$('#modal_kode_wilayah').val(dataPersilTerpilih.KODEWILAYA);
 				$('#modal_nib').val(dataPersilTerpilih.NIB);
+				$('#modal_nib_el').val(dataPersilTerpilih.NIB_EL);
 				$('#modal_nop').val(dataPersilTerpilih.nop);
 				$('#modal_pemilik_awal').val(dataPersilTerpilih.Pemilik_Pe);
 				$('#modal_pemilik_akhir').val(dataPersilTerpilih.Pemilik_Ak);

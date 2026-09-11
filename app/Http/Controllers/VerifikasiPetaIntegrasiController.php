@@ -55,7 +55,7 @@ class VerifikasiPetaIntegrasiController extends Controller
         $kelurahan = Kelurahan::where('kd_wilayah', $kodeLayer)->first();
 
         if ($kelurahan && is_null($kelurahan->kd_kelurahan)) {
-            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nib_el', 'nop', 'sumber_data', 'status')
                 ->when(blank($request->kodeWilayah) && blank($request->nib), function ($q) use ($kelurahan) {
                     $subKelurahan = Kelurahan::where('header_id', $kelurahan->id)->pluck('kd_wilayah');
                     $q->whereIn('kode_wilayah', $subKelurahan);
@@ -67,7 +67,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 ->whereNotNull('nib')
                 ->get();
         } else {
-            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nop', 'sumber_data', 'status')
+            $datAtrBpn = DatAtrbpn::select('kode_wilayah', 'nib', 'nib_el', 'nop', 'sumber_data', 'status')
                 ->where('kode_wilayah', $kodeLayer)
                 ->when(!blank($request->nib), fn($q) => $q->where('nib', $request->nib))
                 ->whereNotNull('nib')
@@ -190,6 +190,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'modal_kode_wilayah' => 'required|numeric|min_digits:8',
             'modal_nib' => 'required|numeric|min_digits:5',
             'modal_nop' => 'required|string',
+            'modal_nib_el' => 'required|string',
             'modal_pemilik_awal' => 'nullable|string',
             'modal_pemilik_akhir' => 'nullable|string',
             'modal_luas' => 'required|numeric',
@@ -219,6 +220,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                     'kode_wilayah' => $request->modal_kode_wilayah,
                     'nib'          => $request->modal_nib,
                 ])->update([
+                    'nib_el'       => $request->modal_nib_el,
                     'nop'          => $nop,
                     'kd_propinsi'  => $nop1,
                     'kd_dati2'     => $nop2,
@@ -238,6 +240,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 DatAtrbpn::create([
                     'kode_wilayah'       => $request->modal_kode_wilayah,
                     'nib'                => $request->modal_nib,
+                    'nib_el'             => $request->modal_nib_el,
                     'nop'                => $nop,
                     'kd_propinsi'        => $nop1,
                     'kd_dati2'           => $nop2,
@@ -324,6 +327,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'luas_bangunan' => 'required|numeric',
             'nop_gabungan' => 'required|string|in:Y,T',
             'nop_pecahan' => 'required|string|in:Y,T',
+            'nib_el' => 'nullable|numeric|digits:15',
         ]);
 
         DB::beginTransaction();
@@ -348,6 +352,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'luas_bangunan' => $request->luas_bangunan,
                 'nop_gabungan' => $request->nop_gabungan,
                 'nop_pecah' => $request->nop_pecahan,
+                'nib_el' => $request->nib_el,
                 'verifikator' => Auth()->user()->name,
                 'tgl_verifikasi' => now()
             ]);
