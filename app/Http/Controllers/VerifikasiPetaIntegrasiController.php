@@ -327,7 +327,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'luas_bangunan' => 'required|numeric',
             'nop_gabungan' => 'required|string|in:Y,T',
             'nop_pecahan' => 'required|string|in:Y,T',
-            'nib_el' => 'nullable|numeric|digits:15',
+            'nib_el' => 'nullable|numeric',
         ]);
 
         DB::beginTransaction();
