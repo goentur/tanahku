@@ -190,7 +190,7 @@ class VerifikasiPetaIntegrasiController extends Controller
             'modal_kode_wilayah' => 'required|numeric|min_digits:8',
             'modal_nib' => 'required|numeric|min_digits:5',
             'modal_nop' => 'required|string',
-            'modal_nib_el' => 'nullable|numeric|digits:14',
+            'modal_nib_el' => 'nullable|numeric|digits:13',
             'modal_pemilik_awal' => 'nullable|string',
             'modal_pemilik_akhir' => 'nullable|string',
             'modal_luas' => 'required|numeric',
@@ -323,11 +323,12 @@ class VerifikasiPetaIntegrasiController extends Controller
             'lokasi' => 'required|string|in:Y,T',
             'nama_sesuai' => 'required|string|in:Y,T',
             'luas_tanah' => 'required|string|in:Y,T',
+            'luas' => 'required|numeric',
             'bangunan_sesuai' => 'required|string|in:Y,T',
             'luas_bangunan' => 'required|numeric',
             'nop_gabungan' => 'required|string|in:Y,T',
             'nop_pecahan' => 'required|string|in:Y,T',
-            'nib_el' => 'nullable|numeric|digits:14',
+            'nib_el' => 'nullable|numeric|digits:13',
         ]);
 
         DB::beginTransaction();
@@ -349,6 +350,7 @@ class VerifikasiPetaIntegrasiController extends Controller
                 'nama_sesuai' => $request->nama_sesuai,
                 'luas_sesuai' => $request->luas_tanah,
                 'bangunan_sesuai' => $request->bangunan_sesuai,
+                'luas' => $request->luas,
                 'luas_bangunan' => $request->luas_bangunan,
                 'nop_gabungan' => $request->nop_gabungan,
                 'nop_pecah' => $request->nop_pecahan,

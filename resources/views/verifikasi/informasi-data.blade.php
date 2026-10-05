@@ -235,6 +235,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td colspan="2" class="align-middle">LUAS TANAH</td>
+							<td colspan="2">
+									<input class="form-control form-control-sm" type="text" name="luas" id="luas" value="{{ empty($datAtrBpn->luas) ? $objekPajak?->total_luas_bumi : $datAtrBpn->luas }}">
+							</td>
+						</tr>
+						<tr>
 							<td colspan="2">BANGUANAN SESUAI</td>
 							<td class="text-center" style="cursor: pointer;">
 								<label for="bangunan_sesuai_ya" class="w-100 m-0 p-0" style="cursor: pointer;">
