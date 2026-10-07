@@ -578,7 +578,6 @@
           });
           let nop = '';
           let nib_el = '';
-					console.log(matchedItem)
           if (matchedItem) {
             nop = matchedItem.nop || '';
             nib_el = matchedItem.nib_el || '';
