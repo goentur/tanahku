@@ -31,6 +31,11 @@
 						<td>{{ $objekPajak?->nop }}</td>
 					</tr>
 					<tr>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB-EL</td>
+						<td style="vertical-align: top" class="w-1">:</td>
+						<td>{{ $datAtrBpn?->nib_el }}</td>
+					</tr>
+					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LOKASI</td>
 						<td style="vertical-align: top" class="w-1">:</td>
 						<td>{{ $objekPajak?->alamatLengkap }}, {{ $objekPajak?->refKelurahan->nm_kelurahan }}</td>
@@ -115,9 +120,9 @@
 						<td>{{ $dataKirim['NIB'] ?? '-' }}</td>
 					</tr>
 					<tr>
-						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB EL</td>
+						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB EL SPASIAL</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $datAtrBpn?->nib_el}}</td>
+						<td>{{ $dataKirim['NIB_EL_SPASIAL']}}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>

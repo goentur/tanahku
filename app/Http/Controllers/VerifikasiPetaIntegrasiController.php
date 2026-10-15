@@ -269,23 +269,26 @@ class VerifikasiPetaIntegrasiController extends Controller
             }
             $modal_id_peta_bidang = explode('.', $request->modal_id_peta_bidang);
             $idGeoServer = $modal_id_peta_bidang[1];
-
             $xmlUtama = '<?xml version="1.0" encoding="UTF-8"?>
-                <wfs:Transaction service="WFS" version="1.1.0"
-                    xmlns:wfs="http://www.opengis.net/wfs"
-                    xmlns:ogc="http://www.opengis.net/ogc"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-                    <wfs:Update typeName="' . $layer . '">
-                        <wfs:Property>
-                            <wfs:Name>d_nop</wfs:Name>
-                            <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
-                        </wfs:Property>
-                        <ogc:Filter>
-                            <ogc:FeatureId fid="' . $idGeoServer . '"/>
-                        </ogc:Filter>
-                    </wfs:Update>
-                </wfs:Transaction>';
+            <wfs:Transaction service="WFS" version="1.1.0"
+                xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:ogc="http://www.opengis.net/ogc"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+                <wfs:Update typeName="' . $layer . '">
+                    <wfs:Property>
+                        <wfs:Name>NIB_EL</wfs:Name>
+                        <wfs:Value>' . htmlspecialchars($request->modal_nib_el) . '</wfs:Value>
+                    </wfs:Property>
+                    <wfs:Property>
+                        <wfs:Name>d_nop</wfs:Name>
+                        <wfs:Value>' . htmlspecialchars($nop) . '</wfs:Value>
+                    </wfs:Property>
+                    <ogc:Filter>
+                        <ogc:FeatureId fid="' . $idGeoServer . '"/>
+                    </ogc:Filter>
+                </wfs:Update>
+            </wfs:Transaction>';
 
             $urlGeoServer = 'http://192.168.75.15:8080/geoserver/wfs';
             $responseGeoServer = Http::timeout(15)

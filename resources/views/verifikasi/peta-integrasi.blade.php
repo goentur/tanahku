@@ -570,6 +570,7 @@
 					const layerId = clickedFeature.get('layerId');
 					const kodewilayah = clickedFeature.get('KODEWILAYA');
 					const nib = clickedFeature.get('NIB');
+					const nib_el_spasial = clickedFeature.get('NIB_EL');
 
 					const matchedItem = findMatchedItem(layerId, kodewilayah, nib);
 
@@ -588,6 +589,7 @@
             'KODEWILAYA': kodewilayah,
             'NIB': nib,
             'NIB_EL': nib_el,
+            'NIB_EL_SPASIAL': nib_el_spasial,
             'LUASTERTUL': clickedFeature.get('LUASTERTUL'),
             'Nomor_Hak': clickedFeature.get('Nomor_Hak'),
             'TIPEHAK': clickedFeature.get('TIPEHAK'),
@@ -647,6 +649,7 @@
 							if (idx !== -1) {
 								datSudahVerifikasi[layerId][idx] = newItem;
 								dataPersilTerpilih.NIB_EL = newItem.nib_el;
+								dataPersilTerpilih.NIB_EL_SPASIAL = newItem.nib_el;
 								dataPersilTerpilih.nop = newItem.nop;
 							} else {
 								datSudahVerifikasi[layerId].push(newItem);
@@ -1056,7 +1059,10 @@
 				$('#modal_id_peta_bidang').val(dataPersilTerpilih.ID_PETA_BIDANG);
 				$('#modal_kode_wilayah').val(dataPersilTerpilih.KODEWILAYA);
 				$('#modal_nib').val(dataPersilTerpilih.NIB);
-				$('#modal_nib_el').val(dataPersilTerpilih.NIB_EL);
+
+				// Menggunakan operator || untuk fallback ke NIB_EL_SPASIAL jika NIB_EL kosong/null
+				$('#modal_nib_el').val(dataPersilTerpilih.NIB_EL || dataPersilTerpilih.NIB_EL_SPASIAL || '');
+
 				$('#modal_nop').val(dataPersilTerpilih.nop);
 				$('#modal_pemilik_awal').val(dataPersilTerpilih.Pemilik_Pe);
 				$('#modal_pemilik_akhir').val(dataPersilTerpilih.Pemilik_Ak);
