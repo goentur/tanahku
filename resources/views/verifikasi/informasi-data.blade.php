@@ -122,7 +122,7 @@
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">NIB EL SPASIAL</td>
 						<td style="vertical-align: top" class="w-1">:</td>
-						<td>{{ $dataKirim['NIB_EL_SPASIAL']}}</td>
+						<td>{{ $dataKirim['NIB_EL_SPASIAL'] ?? '-'}}</td>
 					</tr>
 					<tr>
 						<td style="vertical-align: top" class="fw-bold text-nowrap">LUAS TANAH</td>
