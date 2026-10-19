@@ -261,7 +261,7 @@
 						<tr>
 							<td colspan="2" class="align-middle">LUAS BANGUNAN</td>
 							<td colspan="2">
-									<input class="form-control form-control-sm" type="text" name="luas_bangunan" id="luas_bangunan" value="{{ empty($datAtrBpn->luas_bangunan) ? $objekPajak?->total_luas_bng : $datAtrBpn->luas_bangunan }}">
+									<input class="form-control form-control-sm" type="text" name="luas_bangunan" id="luas_bangunan" value="{{ empty($datAtrBpn->luas_bangunan) && $datAtrBpn->luas_bangunan == null ? $objekPajak?->total_luas_bng : $datAtrBpn->luas_bangunan }}">
 							</td>
 						</tr>
 						<tr>
