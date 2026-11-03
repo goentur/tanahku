@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BPHTBController;
+use App\Http\Controllers\PendataanController;
 use App\Http\Controllers\PetaIntegrasiController;
 use App\Http\Controllers\SpptElektronikController;
 use App\Http\Controllers\VerifikasiPetaIntegrasiController;
@@ -48,6 +49,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('simpan-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'simpanInformasiPertanahan'])->name('simpan-informasi-pertanahan');
     Route::post('verifikasi-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'verifikasiInformasiPertanahan'])->name('verifikasi-informasi-pertanahan');
     Route::post('batal-verifikasi-informasi-pertanahan', [VerifikasiPetaIntegrasiController::class, 'batalVerifikasiInformasiPertanahan'])->name('batal-verifikasi-informasi-pertanahan');
+  });
+  Route::middleware(['auth', 'verified', 'role:SUPER-ADMIN'])->prefix('pendataan')->name('pendataan.')->group(function () {
+    Route::get('/', [PendataanController::class, 'index'])->name('index');
+    Route::post('data-peta', [PendataanController::class, 'dataPeta'])->name('data-peta');
+    Route::post('detail-persil', [PendataanController::class, 'detailPersil'])->name('detail-persil');
   });
   Route::post('data-peta', [PetaIntegrasiController::class, 'dataPeta'])->name('beranda.data-peta');
 });
